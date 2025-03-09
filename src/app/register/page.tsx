@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaMicrosoft, FaLinkedin, FaGoogle, FaFacebook, FaTwitter, FaApple} from "react-icons/fa"; // Import icons
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState("");
@@ -29,9 +30,9 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50">
-      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl w-full">
+      <div className="flex bg-white rounded-2xl shadow-2xl overflow-hidden max-w-4xl w-full">
         {/* Left Side: Video */}
-        <div className="w-1/2 p-8 flex items-center justify-center bg-blue-500">
+        <div className="w-1/2 p-8 flex items-center justify-center bg-gradient-to-r from-purple-500 to-blue-500 rounded-l-2xl">
           <video
             autoPlay
             loop
@@ -48,7 +49,7 @@ export default function RegisterPage() {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-extrabold text-gray-900">Sign Up</h1>
             <p className="text-gray-600 mt-2">
-              Enter your details and let's get started.
+              Enter your details and lets get started.
             </p>
           </div>
           <form onSubmit={handleRegister}>
@@ -61,7 +62,7 @@ export default function RegisterPage() {
                 placeholder="Enter your first name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[#363636]"
                 required
               />
             </div>
@@ -74,7 +75,7 @@ export default function RegisterPage() {
                 placeholder="Enter your last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[#363636]"
                 required
               />
             </div>
@@ -87,7 +88,7 @@ export default function RegisterPage() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[#363636]"
                 required
               />
             </div>
@@ -100,7 +101,7 @@ export default function RegisterPage() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[#363636]"
                 required
               />
             </div>
@@ -113,7 +114,7 @@ export default function RegisterPage() {
                 placeholder="Confirm your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-[#363636]"
                 required
               />
             </div>
@@ -141,24 +142,53 @@ export default function RegisterPage() {
           <div className="mt-6">
             <p className="text-center text-gray-600 mb-4">Or sign up with:</p>
             <div className="flex justify-center space-x-4">
+              {/* Microsoft Button */}
+              <button
+                type="button"
+                className="flex items-center justify-center w-10 h-10 bg-gray-800 text-white rounded-full hover:bg-gray-900 transition duration-300"
+              >
+                <FaMicrosoft className="w-6 h-6" />
+              </button>
+
+              {/* LinkedIn Button */}
               <button
                 type="button"
                 className="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300"
               >
-                <i className="fab fa-facebook-f"></i>
+                <FaLinkedin className="w-6 h-6" />
               </button>
+
+              {/* Google Button */}
               <button
                 type="button"
                 className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full hover:bg-red-700 transition duration-300"
               >
-                <i className="fab fa-google"></i>
+                <FaGoogle className="w-6 h-6" />
               </button>
+
+              {/* Facebook Button */}
+              <button
+                type="button"
+                className="flex items-center justify-center w-10 h-10 bg-blue-800 text-white rounded-full hover:bg-blue-900 transition duration-300"
+              >
+                <FaFacebook className="w-6 h-6" />
+              </button>
+
+              {/* Twitter Button */}
               <button
                 type="button"
                 className="flex items-center justify-center w-10 h-10 bg-blue-400 text-white rounded-full hover:bg-blue-500 transition duration-300"
               >
-                <i className="fab fa-twitter"></i>
+                <FaTwitter className="w-6 h-6" />
               </button>
+                
+                {/* Apple Button */}
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-full hover:bg-gray-900 transition duration-300"
+                              >
+                                <FaApple className="w-6 h-6" />
+                              </button>
             </div>
           </div>
 
