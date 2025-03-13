@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Calendar, Bell, ChevronDown } from 'lucide-react';
+import { Search, Calendar, Bell, ChevronDown, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
@@ -35,17 +35,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Main Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Topbar */}
-        <header className="border-b border-border/40 bg-background backdrop-blur-sm backdrop-filter">
-          <div className="flex h-16 items-center justify-between px-6">
+        <header className="bg-background border-b border-border/40">
+          <div className="flex h-16 items-center px-6">
             {/* Navigation */}
-            <nav className="hidden md:block">
-              <ul className="flex space-x-2">
+            <nav className="hidden md:flex space-x-1 flex-1">
+              <ul className="flex space-x-1">
                 {navigationItems.map((item) => (
                   <li key={item.label}>
                     <Link
                       to={item.path}
                       className={cn(
-                        "relative px-4 py-2 text-sm font-medium transition-colors rounded-full",
+                        "px-4 py-2 text-sm font-medium transition-colors rounded-full",
                         isActive(item.path) 
                           ? "bg-primary text-primary-foreground" 
                           : "text-foreground hover:bg-accent"
@@ -78,13 +78,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary"></span>
               </button>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <img
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                   alt="User Profile"
                   className="h-8 w-8 rounded-full border border-border/50 hover-scale"
                 />
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
               </div>
             </div>
           </div>

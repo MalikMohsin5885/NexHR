@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
-  Calendar,
   Clock, 
   CheckSquare, 
   Briefcase, 
@@ -14,9 +13,10 @@ import {
   ChevronDown, 
   ChevronRight, 
   Settings, 
-  LifeBuoy, 
+  LifeBuoy,
   PanelRight,
-  PanelLeft
+  PanelLeft,
+  Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -31,7 +31,7 @@ const sidebarItems: SidebarItemType[] = [
   {
     title: 'Dashboard',
     path: '/',
-    icon: LayoutDashboard,
+    icon: Home,
   },
   {
     title: 'Teams',
@@ -107,35 +107,43 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
 
   return (
     <aside className={cn(
-      "flex h-screen flex-col overflow-y-auto border-r bg-sidebar border-sidebar-border transition-all duration-300 ease-in-out",
+      "flex h-screen flex-col overflow-y-auto bg-sidebar border-r border-sidebar-border transition-all duration-300 ease-in-out",
       collapsed ? "w-[70px]" : "w-[250px]"
     )}>
-      <div className="sticky top-0 z-10 bg-sidebar px-3 py-4 border-b border-sidebar-border flex items-center justify-between">
+      <div className="sticky top-0 z-10 bg-sidebar px-4 py-5 flex items-center justify-between">
         {!collapsed && (
-          <span className="text-xl font-bold uppercase tracking-wider text-sidebar-foreground">
+          <span className="text-lg font-bold uppercase text-sidebar-foreground">
             HRISELNIK
+          </span>
+        )}
+        {collapsed && (
+          <span className="mx-auto text-xl font-bold text-primary">
+            H
           </span>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="rounded-md p-1.5 text-sidebar-foreground hover:bg-sidebar-accent"
+          className={cn(
+            "rounded-md p-1.5 text-sidebar-foreground hover:bg-sidebar-accent",
+            collapsed && "mx-auto"
+          )}
         >
           {collapsed ? <PanelRight size={18} /> : <PanelLeft size={18} />}
         </button>
       </div>
       
-      <div className={cn("px-3 py-2", collapsed ? "hidden" : "flex")}>
+      <div className={cn("p-3", collapsed ? "hidden" : "block")}>
         <div className="relative w-full">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="search"
             placeholder="Search..."
-            className="w-full rounded-md border border-input bg-background py-2 pl-8 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="w-full rounded-full border border-input bg-background py-2 pl-9 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           />
         </div>
       </div>
 
-      <nav className="flex-1 px-1.5 py-3 space-y-1">
+      <nav className="flex-1 px-2 py-3 space-y-1">
         {sidebarItems.map((item) => (
           <div key={item.title} className="mb-0.5">
             {item.children ? (
@@ -171,7 +179,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                         className={cn(
                           "block rounded-md px-3 py-2 text-sm transition-colors",
                           isActive(child.path)
-                            ? "text-sidebar-primary-foreground bg-sidebar-primary"
+                            ? "text-primary font-medium"
                             : "text-sidebar-foreground hover:bg-sidebar-accent"
                         )}
                       >
@@ -198,9 +206,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         ))}
       </nav>
 
-      <div className="sticky bottom-0 z-10 mt-auto border-t border-sidebar-border bg-sidebar-accent/50 p-2">
+      <div className="sticky bottom-0 z-10 mt-auto border-t border-sidebar-border bg-sidebar p-3">
         <div className={cn(
-          "flex items-center gap-3 rounded-md bg-sidebar p-2",
+          "flex items-center gap-3 rounded-md bg-sidebar-accent/50 p-2",
           collapsed ? "justify-center" : "justify-between"
         )}>
           {!collapsed && (

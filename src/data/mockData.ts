@@ -1,208 +1,53 @@
 
-import { StaticImageData } from "next/image";
-
-export interface Employee {
-  id: string;
-  name: string;
-  position: string;
-  department: string;
-  avatar: string;
-  salary: number;
-  status: 'online' | 'offline' | 'away' | 'busy';
-  lastActive: string;
-  contact: {
-    email: string;
-    phone: string;
-  };
-  performance?: number;
-}
-
-export interface SalaryReview {
-  id: string;
-  employeeId: string;
-  employeeName: string;
-  avatar: string;
-  amount: number;
-  date: string;
-  status: 'pending' | 'approved' | 'failed' | 'done';
-}
-
-export interface TeamMember {
-  role: string;
-  count: number;
-  color: string;
-}
-
-export interface TalentData {
-  label: string;
-  matched: number;
-  notMatched: number;
-}
-
-export const employees: Employee[] = [
-  {
-    id: '1',
-    name: 'Chris Jonathan',
-    position: 'General manager',
-    department: 'Management',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    salary: 120000,
-    status: 'online',
-    lastActive: 'Now',
-    contact: {
-      email: 'chris.j@example.com',
-      phone: '+1 (555) 123-4567',
-    },
-    performance: 96,
-  },
-  {
-    id: '2',
-    name: 'Syaoran Ian',
-    position: 'UX Designer',
-    department: 'Design',
-    avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    salary: 82540,
-    status: 'online',
-    lastActive: 'Today',
-    contact: {
-      email: 'syaoran.i@example.com',
-      phone: '+1 (555) 234-5678',
-    },
-  },
-  {
-    id: '3',
-    name: 'Devon Lane',
-    position: 'Frontend Developer',
-    department: 'Development',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
-    salary: 67500,
-    status: 'online',
-    lastActive: 'Today',
-    contact: {
-      email: 'devon.l@example.com',
-      phone: '+1 (555) 345-6789',
-    },
-  },
-  {
-    id: '4',
-    name: 'Marvin McKinney',
-    position: 'Backend Developer',
-    department: 'Development',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    salary: 72540,
-    status: 'away',
-    lastActive: 'Yesterday',
-    contact: {
-      email: 'marvin.m@example.com',
-      phone: '+1 (555) 456-7890',
-    },
-  },
-  {
-    id: '5',
-    name: 'Eleanor Ring',
-    position: 'Product Manager',
-    department: 'Product',
-    avatar: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    salary: 95670,
-    status: 'offline',
-    lastActive: 'Yesterday',
-    contact: {
-      email: 'eleanor.r@example.com',
-      phone: '+1 (555) 567-8901',
-    },
-  },
-];
-
-export const salaryReviews: SalaryReview[] = [
-  {
-    id: '1',
-    employeeId: '2',
-    employeeName: 'Syaoran Ian',
-    avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    amount: 82540,
-    date: 'Today',
-    status: 'pending',
-  },
-  {
-    id: '2',
-    employeeId: '3',
-    employeeName: 'Devon Lane',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
-    amount: 67500,
-    date: 'Today',
-    status: 'done',
-  },
-  {
-    id: '3',
-    employeeId: '4',
-    employeeName: 'Marvin McKinney',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    amount: 72540,
-    date: 'Yesterday',
-    status: 'done',
-  },
-  {
-    id: '4',
-    employeeId: '3',
-    employeeName: 'Devon Lane',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80',
-    amount: 65870,
-    date: 'Yesterday',
-    status: 'done',
-  },
-  {
-    id: '5',
-    employeeId: '5',
-    employeeName: 'Eleanor Ring',
-    avatar: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-    amount: 95670,
-    date: 'Yesterday',
-    status: 'failed',
-  },
-];
-
-export const teamMembers: TeamMember[] = [
-  { role: 'Designer', count: 48, color: '#57d54e' },
-  { role: 'Developer', count: 27, color: '#42a5e1' },
-  { role: 'Project manager', count: 18, color: '#0fcbf1' },
-];
-
-export const weeklyHours = [
-  { day: 'Mon', hours: 8.2 },
-  { day: 'Tue', hours: 8.5 },
-  { day: 'Wed', hours: 9.2 },
-  { day: 'Thu', hours: 7.8 },
-  { day: 'Fri', hours: 8.3 },
-];
-
-export const talentData: TalentData[] = [
-  { label: 'Q1', matched: 15, notMatched: 5 },
-  { label: 'Q2', matched: 18, notMatched: 7 },
-  { label: 'Q3', matched: 25, notMatched: 3 },
-  { label: 'Q4', matched: 22, notMatched: 4 },
-];
-
-export const attendanceData = {
-  present: 92,
-  absent: 3,
-  late: 5,
-};
-
-export const recruitmentStats = {
-  applications: 125,
-  interviews: 42,
-  hired: 18,
-  rejected: 65,
-};
+// Remove the next/image import which is causing an error
+import { Users, User, Clock, Calendar, FileText, DollarSign } from 'lucide-react';
 
 export const workHoursDistribution = [
-  { status: 'Present', percentage: 80 },
-  { status: 'Remote', percentage: 20 },
+  { name: 'Monday', value: 8 },
+  { name: 'Tuesday', value: 10 },
+  { name: 'Wednesday', value: 7 },
+  { name: 'Thursday', value: 9 },
+  { name: 'Friday', value: 6 },
 ];
 
-export const performanceRatings = {
-  excellent: 25,
-  good: 45,
-  average: 22,
-  needsImprovement: 8,
+export const employeeStatusData = [
+  { status: 'Present', value: 80, color: '#42a5e1' },
+  { status: 'Remote', value: 20, color: '#0fcbf1' },
+];
+
+export const teamMembers = [
+  { name: 'Alex Morgan', role: 'Designer', status: 'active' },
+  { name: 'Taylor Swift', role: 'Developer', status: 'meeting' },
+  { name: 'Jamie Foxx', role: 'Product Manager', status: 'offline' },
+  { name: 'Emma Watson', role: 'Designer', status: 'active' },
+];
+
+export const salaryData = [
+  { name: 'Sophia can', salary: '$2,540.00', date: 'Today', status: 'waiting' },
+  { name: 'Devon Lane', salary: '$2,540.00', date: 'Today', status: 'done' },
+  { name: 'Marvin McKinney', salary: '$2,540.00', date: 'Yesterday', status: 'done' },
+  { name: 'Devon Lane', salary: '$2,540.00', date: 'Yesterday', status: 'done' },
+  { name: 'Eleanor Pena', salary: '$2,540.00', date: 'Yesterday', status: 'failed' },
+];
+
+export const projectTasks = [
+  { id: 1, title: 'UI Design Review', completed: true },
+  { id: 2, title: 'API Integration', completed: false },
+  { id: 3, title: 'Database Optimization', completed: false },
+  { id: 4, title: 'Mobile Responsiveness', completed: true },
+  { id: 5, title: 'Deployment Pipeline', completed: false },
+];
+
+export const teamData = {
+  totalMembers: 120,
+  breakdown: [
+    { role: 'Designer', count: 48 },
+    { role: 'Developer', count: 27 },
+    { role: 'Project manager', count: 18 },
+  ]
+};
+
+export const recruitmentData = {
+  qaTeam: { matched: [1, 2, 3, 4, 6, 8, 9], notMatched: [5, 7, 10, 11, 12] },
+  rdTeam: { matched: [1, 3, 5, 7], notMatched: [2, 4, 6, 8, 9, 10, 11, 12] },
 };
