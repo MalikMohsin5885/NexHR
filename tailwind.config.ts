@@ -75,6 +75,17 @@ export default {
 					DEFAULT: 'hsl(var(--info))',
 					foreground: 'hsl(var(--info-foreground))'
 				},
+				purple: {
+					100: '#F3E8FF',
+					200: '#E4CCFF',
+					300: '#D1ADFF',
+					400: '#BD8FFF',
+					500: '#9B57FC',
+					600: '#8542F5',
+					700: '#7031DF',
+					800: '#5E26BE',
+					900: '#4A1D96',
+				},
 				green: {
 					100: '#e5f9e0',
 					200: '#c2f0b9',
