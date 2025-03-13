@@ -1,13 +1,12 @@
 
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { workHoursDistribution } from '@/data/mockData';
 import { Clock, Users } from 'lucide-react';
 
 interface ChartCardProps {
   title: string;
   icon: React.ReactNode;
-  data: { status: string; percentage: number }[];
+  data: { status: string; percentage: number; color: string; }[];
   colors: string[];
   change?: number;
 }
@@ -54,8 +53,8 @@ const ChartCard: React.FC<ChartCardProps> = ({
                 endAngle={-270}
                 animationDuration={1000}
               >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color || colors[index % colors.length]} />
                 ))}
               </Pie>
               <Tooltip 
@@ -73,16 +72,16 @@ const ChartCard: React.FC<ChartCardProps> = ({
         </div>
 
         <div className="flex-1">
-          {pieData.map((entry, index) => (
+          {data.map((entry, index) => (
             <div key={index} className="flex items-center justify-between mb-1 last:mb-0">
               <div className="flex items-center">
                 <div 
                   className="h-2.5 w-2.5 rounded-full mr-2" 
-                  style={{ backgroundColor: colors[index % colors.length] }}
+                  style={{ backgroundColor: entry.color || colors[index % colors.length] }}
                 ></div>
-                <span className="text-xs">{entry.name}</span>
+                <span className="text-xs">{entry.status}</span>
               </div>
-              <span className="text-xs font-medium">{entry.value}%</span>
+              <span className="text-xs font-medium">{entry.percentage}%</span>
             </div>
           ))}
         </div>

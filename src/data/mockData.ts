@@ -1,5 +1,4 @@
 
-// Remove the next/image import which is causing an error
 import { Users, User, Clock, Calendar, FileText, DollarSign } from 'lucide-react';
 
 export const workHoursDistribution = [
@@ -11,8 +10,8 @@ export const workHoursDistribution = [
 ];
 
 export const employeeStatusData = [
-  { status: 'Present', value: 80, color: '#42a5e1' },
-  { status: 'Remote', value: 20, color: '#0fcbf1' },
+  { status: 'Present', percentage: 80, color: '#42a5e1' },
+  { status: 'Remote', percentage: 20, color: '#0fcbf1' },
 ];
 
 export const teamMembers = [
@@ -41,9 +40,9 @@ export const projectTasks = [
 export const teamData = {
   totalMembers: 120,
   breakdown: [
-    { role: 'Designer', count: 48 },
-    { role: 'Developer', count: 27 },
-    { role: 'Project manager', count: 18 },
+    { role: 'Designer', count: 48, color: '#42a5e1' },
+    { role: 'Developer', count: 27, color: '#0fcbf1' },
+    { role: 'Project manager', count: 18, color: '#9B57FC' },
   ]
 };
 
@@ -51,3 +50,26 @@ export const recruitmentData = {
   qaTeam: { matched: [1, 2, 3, 4, 6, 8, 9], notMatched: [5, 7, 10, 11, 12] },
   rdTeam: { matched: [1, 3, 5, 7], notMatched: [2, 4, 6, 8, 9, 10, 11, 12] },
 };
+
+// Add the missing exports
+export const employees = [
+  {
+    name: 'Chris Jonathan',
+    position: 'UI/UX Designer',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80',
+    workHours: 46
+  }
+];
+
+export const talentData = {
+  totalCandidates: 182,
+  hired: 48,
+  interviewing: 26,
+  rejected: 108
+};
+
+export const salaryReviews = [
+  { name: 'Marketing', status: 'In progress', date: 'Due Oct 25' },
+  { name: 'Development', status: 'Completed', date: 'Oct 18' },
+  { name: 'Design', status: 'Pending', date: 'Due Oct 30' }
+];

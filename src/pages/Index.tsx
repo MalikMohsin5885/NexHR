@@ -1,7 +1,6 @@
 
 import React from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import GreetingHeader from '@/components/Dashboard/GreetingHeader';
 import StatsCard from '@/components/Dashboard/StatsCard';
 import TeamTracker from '@/components/Dashboard/TeamTracker';
 import EmployeeCard from '@/components/Dashboard/EmployeeCard';
@@ -9,7 +8,7 @@ import RecruitmentCard from '@/components/Dashboard/RecruitmentCard';
 import SalaryCard from '@/components/Dashboard/SalaryCard';
 import ChartCard from '@/components/Dashboard/ChartCard';
 import { Plus, Users, Clock, Calendar, CalendarDays } from 'lucide-react';
-import { workHoursDistribution, employeeStatusData, teamData } from '@/data/mockData';
+import { employeeStatusData, teamData } from '@/data/mockData';
 
 const Index = () => {
   return (
@@ -36,13 +35,14 @@ const Index = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-5">
-        <div className="lg:col-span-1">
+      {/* First row with 3 components */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+        <div className="col-span-1">
           <EmployeeCard />
         </div>
 
-        <div className="lg:col-span-1 space-y-5">
-          <div className="bg-white rounded-xl border p-4">
+        <div className="col-span-1">
+          <div className="bg-white rounded-xl border p-4 h-full">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
@@ -72,7 +72,9 @@ const Index = () => {
               ))}
             </div>
           </div>
+        </div>
 
+        <div className="col-span-1">
           <ChartCard
             title="Present status"
             icon={<Users className="h-4 w-4" />}
@@ -81,10 +83,19 @@ const Index = () => {
             change={2.5}
           />
         </div>
+      </div>
 
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Second row with 3 components */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+        <div className="col-span-1">
           <TeamTracker data={teamData} />
+        </div>
+        
+        <div className="col-span-1">
           <RecruitmentCard />
+        </div>
+        
+        <div className="col-span-1">
           <SalaryCard />
         </div>
       </div>
@@ -98,7 +109,8 @@ const Index = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        {/* Stats cards in a row of 3 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-5">
           <StatsCard
             title="Monthly applications"
             value="125"
@@ -118,13 +130,6 @@ const Index = () => {
             change={-5}
             subtitle="Last 30 days"
             variant="warning"
-          />
-          <StatsCard
-            title="Department efficiency"
-            value="86%"
-            change={7.5}
-            subtitle="Process optimization"
-            variant="success"
           />
         </div>
       </div>
