@@ -15,7 +15,7 @@ const SalaryCard: React.FC = () => {
   };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'pending':
         return <Clock className="h-3 w-3" />;
       case 'done':
@@ -23,12 +23,12 @@ const SalaryCard: React.FC = () => {
       case 'failed':
         return <X className="h-3 w-3" />;
       default:
-        return null;
+        return <Clock className="h-3 w-3" />;
     }
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'pending':
         return 'bg-amber-100 text-amber-700';
       case 'done':

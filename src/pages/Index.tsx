@@ -8,7 +8,7 @@ import RecruitmentCard from '@/components/Dashboard/RecruitmentCard';
 import SalaryCard from '@/components/Dashboard/SalaryCard';
 import ChartCard from '@/components/Dashboard/ChartCard';
 import { Plus, Users, Clock, Calendar, CalendarDays } from 'lucide-react';
-import { employeeStatusData, teamData } from '@/data/mockData';
+import { employeeStatusData } from '@/data/mockData';
 
 const Index = () => {
   return (
@@ -35,10 +35,20 @@ const Index = () => {
         </div>
       </div>
 
-      {/* First row with 3 components */}
+      {/* First row with 3 components - Repositioned to match image */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
         <div className="col-span-1">
           <EmployeeCard />
+        </div>
+
+        <div className="col-span-1">
+          <ChartCard
+            title="Present status"
+            icon={<Users className="h-4 w-4" />}
+            data={employeeStatusData}
+            colors={['#42a5e1', '#0fcbf1']}
+            change={2.5}
+          />
         </div>
 
         <div className="col-span-1">
@@ -73,22 +83,12 @@ const Index = () => {
             </div>
           </div>
         </div>
-
-        <div className="col-span-1">
-          <ChartCard
-            title="Present status"
-            icon={<Users className="h-4 w-4" />}
-            data={employeeStatusData}
-            colors={['#42a5e1', '#0fcbf1']}
-            change={2.5}
-          />
-        </div>
       </div>
 
       {/* Second row with 3 components */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
         <div className="col-span-1">
-          <TeamTracker data={teamData} />
+          <TeamTracker />
         </div>
         
         <div className="col-span-1">

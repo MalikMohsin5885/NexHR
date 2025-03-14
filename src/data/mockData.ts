@@ -15,18 +15,18 @@ export const employeeStatusData = [
 ];
 
 export const teamMembers = [
-  { name: 'Alex Morgan', role: 'Designer', status: 'active' },
-  { name: 'Taylor Swift', role: 'Developer', status: 'meeting' },
-  { name: 'Jamie Foxx', role: 'Product Manager', status: 'offline' },
-  { name: 'Emma Watson', role: 'Designer', status: 'active' },
+  { name: 'Alex Morgan', role: 'Designer', status: 'active', count: 48, color: '#42a5e1' },
+  { name: 'Taylor Swift', role: 'Developer', status: 'meeting', count: 27, color: '#0fcbf1' },
+  { name: 'Jamie Foxx', role: 'Product Manager', status: 'offline', count: 18, color: '#9B57FC' },
+  { name: 'Emma Watson', role: 'Designer', status: 'active', count: 10, color: '#42a5e1' },
 ];
 
 export const salaryData = [
-  { name: 'Sophia can', salary: '$2,540.00', date: 'Today', status: 'waiting' },
-  { name: 'Devon Lane', salary: '$2,540.00', date: 'Today', status: 'done' },
-  { name: 'Marvin McKinney', salary: '$2,540.00', date: 'Yesterday', status: 'done' },
-  { name: 'Devon Lane', salary: '$2,540.00', date: 'Yesterday', status: 'done' },
-  { name: 'Eleanor Pena', salary: '$2,540.00', date: 'Yesterday', status: 'failed' },
+  { id: 1, employeeName: 'Sophia can', amount: 2540, date: 'Today', status: 'waiting', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' },
+  { id: 2, employeeName: 'Devon Lane', amount: 2540, date: 'Today', status: 'done', avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' },
+  { id: 3, employeeName: 'Marvin McKinney', amount: 2540, date: 'Yesterday', status: 'done', avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' },
+  { id: 4, employeeName: 'Devon Lane', amount: 2540, date: 'Yesterday', status: 'done', avatar: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' },
+  { id: 5, employeeName: 'Eleanor Pena', amount: 2540, date: 'Yesterday', status: 'failed', avatar: 'https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' },
 ];
 
 export const projectTasks = [
@@ -46,10 +46,10 @@ export const teamData = {
   ]
 };
 
-export const recruitmentData = {
-  qaTeam: { matched: [1, 2, 3, 4, 6, 8, 9], notMatched: [5, 7, 10, 11, 12] },
-  rdTeam: { matched: [1, 3, 5, 7], notMatched: [2, 4, 6, 8, 9, 10, 11, 12] },
-};
+export const recruitmentData = [
+  { label: 'QA Team', matched: 7, notMatched: 5 },
+  { label: 'RD Team', matched: 4, notMatched: 8 },
+];
 
 // Add the missing exports
 export const employees = [
@@ -61,15 +61,15 @@ export const employees = [
   }
 ];
 
-export const talentData = {
-  totalCandidates: 182,
-  hired: 48,
-  interviewing: 26,
-  rejected: 108
-};
+export const talentData = [
+  { label: 'Total', candidates: 182 },
+  { label: 'Hired', candidates: 48 },
+  { label: 'Interviewing', candidates: 26 },
+  { label: 'Rejected', candidates: 108 }
+];
 
 export const salaryReviews = [
-  { name: 'Marketing', status: 'In progress', date: 'Due Oct 25' },
-  { name: 'Development', status: 'Completed', date: 'Oct 18' },
-  { name: 'Design', status: 'Pending', date: 'Due Oct 30' }
+  { id: 1, name: 'Marketing', employeeName: 'Marketing Team', status: 'pending', date: 'Due Oct 25', amount: 2540, avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' },
+  { id: 2, name: 'Development', employeeName: 'Development Team', status: 'done', date: 'Oct 18', amount: 2340, avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' },
+  { id: 3, name: 'Design', employeeName: 'Design Team', status: 'failed', date: 'Due Oct 30', amount: 2180, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80' }
 ];

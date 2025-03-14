@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { talentData } from '@/data/mockData';
+import { recruitmentData } from '@/data/mockData';
 import { ArrowRight } from 'lucide-react';
 
 const RecruitmentCard: React.FC = () => {
@@ -44,7 +44,7 @@ const RecruitmentCard: React.FC = () => {
         <div className="h-32 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
-              data={talentData}
+              data={recruitmentData}
               barGap={4}
               barSize={8}
             >
