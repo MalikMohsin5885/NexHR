@@ -44,7 +44,7 @@ const Index = () => {
         </div>
 
         {/* Middle section - 2x2 grid */}
-        <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="md:col-span-4 grid grid-cols-1 gap-5">
           <div>
             <ChartCard
               title="Present status"
@@ -89,19 +89,21 @@ const Index = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
 
+        <div className="md:col-span-4 grid grid-cols-1 gap-5">
           <div>
             <TeamTracker />
-          </div>
-
-          <div>
-            <RecruitmentCard />
           </div>
         </div>
 
         {/* Last column - SalaryCard */}
         <div className="md:col-span-4">
           <SalaryCard />
+        </div>
+        
+        <div className="md:col-span-8">
+          <RecruitmentCard />
         </div>
 
         {/* Stats cards - span full width */}
