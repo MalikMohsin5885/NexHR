@@ -9,6 +9,7 @@ import SalaryCard from '@/components/Dashboard/SalaryCard';
 import ChartCard from '@/components/Dashboard/ChartCard';
 import { Plus, Users, Clock, Calendar, CalendarDays } from 'lucide-react';
 import { employeeStatusData } from '@/data/mockData';
+import { Card, CardContent } from '@/components/ui/card';
 
 const Index = () => {
   return (
@@ -52,36 +53,38 @@ const Index = () => {
         </div>
 
         <div className="col-span-1">
-          <div className="bg-white rounded-xl border p-4 h-full">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Clock className="h-4 w-4 text-primary" />
-                </div>
-                <h3 className="text-sm font-medium">Avg. hours / week</h3>
-              </div>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">+0.5%</span>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold">46,5</span>
-            </div>
-            <div className="flex justify-between mt-2 pt-2">
-              {[...Array(7)].map((_, i) => (
-                <div key={i} className="flex flex-col items-center gap-1">
-                  <div className="flex flex-col space-y-1">
-                    {[...Array(5)].map((_, j) => (
-                      <div 
-                        key={j} 
-                        className={`h-1.5 w-1.5 rounded-full 
-                          ${Math.random() > 0.5 ? 'bg-blue-500' : 'bg-blue-200'}`}
-                      />
-                    ))}
+          <Card className="h-auto">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Clock className="h-4 w-4 text-primary" />
                   </div>
-                  <span className="text-[10px] text-muted-foreground">{i + 1}h</span>
+                  <h3 className="text-sm font-medium">Avg. hours / week</h3>
                 </div>
-              ))}
-            </div>
-          </div>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">+0.5%</span>
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold">46,5</span>
+              </div>
+              <div className="flex justify-between mt-2 pt-2">
+                {[...Array(7)].map((_, i) => (
+                  <div key={i} className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col space-y-1">
+                      {[...Array(5)].map((_, j) => (
+                        <div 
+                          key={j} 
+                          className={`h-1.5 w-1.5 rounded-full 
+                            ${Math.random() > 0.5 ? 'bg-blue-500' : 'bg-blue-200'}`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground">{i + 1}h</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
