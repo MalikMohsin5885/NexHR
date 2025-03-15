@@ -25,12 +25,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   };
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return location.pathname === path || 
+           location.pathname.startsWith(path + '/') ||
+           (path !== '/' && location.pathname.startsWith(path));
   };
 
   return (
     <aside className={cn(
-      "flex h-screen flex-col overflow-y-auto bg-sidebar border-r border-sidebar-border transition-all duration-300 ease-in-out",
+      "fixed top-0 left-0 h-screen flex flex-col overflow-y-auto border-r border-sidebar-border transition-all duration-300 ease-in-out bg-white z-30",
       collapsed ? "w-[60px]" : "w-[240px]"
     )}>
       <SidebarHeader collapsed={collapsed} setCollapsed={setCollapsed} />

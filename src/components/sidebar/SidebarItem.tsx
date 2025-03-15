@@ -36,8 +36,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           className={cn(
             "w-full flex items-center py-2 px-3 rounded-md text-sm transition-colors",
             active 
-              ? "text-sidebar-foreground font-medium" 
-              : "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+              ? "text-sidebar-foreground font-medium bg-sidebar-accent/10" 
+              : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/5",
             collapsed ? "justify-center" : "justify-between"
           )}
         >
@@ -63,7 +63,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           
           {/* Submenu dropdown for collapsed sidebar */}
           {collapsed && hasSubMenu && (
-            <div className="absolute left-full top-0 ml-2 w-48 bg-sidebar shadow-lg rounded-md py-2 z-50 hidden group-hover:block">
+            <div className="absolute left-full top-0 ml-2 w-48 bg-white shadow-lg rounded-md py-2 z-50 hidden group-hover:block">
               <div className="py-1 px-3 font-medium border-b border-sidebar-border mb-1">
                 {item.title}
               </div>
@@ -72,8 +72,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   key={subItem.title}
                   to={subItem.path}
                   className={cn(
-                    "flex items-center px-3 py-2 text-sm hover:bg-sidebar-accent/30",
-                    isActive(subItem.path) && "bg-sidebar-accent/50 font-medium"
+                    "flex items-center px-3 py-2 text-sm hover:bg-sidebar-accent/10",
+                    isActive(subItem.path) && "bg-sidebar-accent/20 font-medium text-primary"
                   )}
                 >
                   {subItem.title}
@@ -88,8 +88,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           className={cn(
             "flex items-center py-2 px-3 rounded-md text-sm transition-colors",
             active 
-              ? "text-sidebar-foreground font-medium" 
-              : "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+              ? "text-sidebar-foreground font-medium bg-sidebar-accent/10" 
+              : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/5",
             collapsed && "justify-center"
           )}
         >

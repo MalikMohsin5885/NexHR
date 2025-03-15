@@ -8,9 +8,9 @@ import {
   PanelRight,
   LifeBuoy
 } from 'lucide-react';
-import { SidebarItemType } from './types';
+import { SidebarMenuItem } from './types';
 
-export const sidebarItems: SidebarItemType[] = [
+export const sidebarItems: SidebarMenuItem[] = [
   {
     title: 'Dashboard',
     path: '/',
@@ -20,7 +20,7 @@ export const sidebarItems: SidebarItemType[] = [
     title: 'Teams',
     path: '/teams',
     icon: Users,
-    children: [
+    submenu: [
       { title: 'Employees', path: '/employees' },
       { title: 'Attendance', path: '/attendance' },
       { title: 'Checklist', path: '/checklist' },
@@ -31,7 +31,7 @@ export const sidebarItems: SidebarItemType[] = [
     title: 'Hiring',
     path: '/hiring',
     icon: Briefcase,
-    children: [
+    submenu: [
       { title: 'Onboarding', path: '/onboarding' },
       { title: 'Hiring handbook', path: '/hiring-handbook' },
     ],
@@ -40,7 +40,7 @@ export const sidebarItems: SidebarItemType[] = [
     title: 'Finance',
     path: '/finance',
     icon: DollarSign,
-    children: [
+    submenu: [
       { title: 'Payroll', path: '/payroll' },
       { title: 'Expenses', path: '/expenses' },
       { title: 'Invoices', path: '/invoices' },
