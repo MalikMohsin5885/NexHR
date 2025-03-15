@@ -23,7 +23,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 }) => {
   if (item.children) {
     return (
-      <div className="mb-0.5">
+      <div className="mb-0">
         <button
           onClick={() => toggleMenu(item.title)}
           className={cn(
@@ -47,15 +47,20 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           )}
         </button>
         {!collapsed && openMenus[item.title] && (
-          <div className="mt-1 space-y-1 pl-10">
-            {item.children.map((child) => (
-              <SidebarSubmenuItem
-                key={child.title}
-                title={child.title}
-                path={child.path}
-                isActive={isActive(child.path)}
-              />
-            ))}
+          <div className="mt-1 space-y-0 pl-3">
+            <div className="relative">
+              <div className="absolute left-[9px] top-0 bottom-0 w-[1px] bg-gray-200"></div>
+              <div className="ml-4 space-y-0">
+                {item.children.map((child) => (
+                  <SidebarSubmenuItem
+                    key={child.title}
+                    title={child.title}
+                    path={child.path}
+                    isActive={isActive(child.path)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -63,7 +68,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   }
 
   return (
-    <div className="mb-0.5">
+    <div className="mb-0">
       <Link
         to={item.path}
         className={cn(

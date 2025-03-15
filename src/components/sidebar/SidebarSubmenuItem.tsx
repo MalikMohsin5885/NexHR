@@ -18,13 +18,18 @@ const SidebarSubmenuItem: React.FC<SidebarSubmenuItemProps> = ({
     <Link
       to={path}
       className={cn(
-        "block rounded-md px-3 py-2 text-sm transition-colors",
+        "block rounded-md py-2 text-sm transition-colors relative",
         isActive
           ? "text-primary font-medium"
           : "text-sidebar-foreground hover:bg-sidebar-accent"
       )}
     >
-      {title}
+      <span className="relative">
+        {isActive && (
+          <span className="absolute left-[-16px] top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-primary"></span>
+        )}
+        {title}
+      </span>
     </Link>
   );
 };

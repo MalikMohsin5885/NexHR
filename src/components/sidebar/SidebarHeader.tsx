@@ -10,22 +10,27 @@ interface SidebarHeaderProps {
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, setCollapsed }) => {
   return (
-    <div className="sticky top-0 z-10 bg-sidebar px-4 py-5 flex items-center justify-between">
+    <div className="sticky top-0 z-10 bg-sidebar px-4 py-4 flex items-center justify-between">
       {!collapsed && (
-        <span className="text-lg font-bold uppercase text-sidebar-foreground">
-          HRISELNIK
-        </span>
+        <div className="flex items-center space-x-2">
+          <div className="h-8 w-8 bg-black text-white rounded-md flex items-center justify-center">
+            <span className="font-bold text-sm">H</span>
+          </div>
+          <span className="text-lg font-bold text-sidebar-foreground tracking-tight">
+            HRISELNIK
+          </span>
+        </div>
       )}
       {collapsed && (
-        <span className="mx-auto text-xl font-bold text-primary">
-          H
-        </span>
+        <div className="mx-auto h-8 w-8 bg-black text-white rounded-md flex items-center justify-center">
+          <span className="font-bold text-sm">H</span>
+        </div>
       )}
       <button
         onClick={() => setCollapsed(!collapsed)}
         className={cn(
           "rounded-md p-1.5 text-sidebar-foreground hover:bg-sidebar-accent",
-          collapsed && "mx-auto"
+          collapsed && "mx-auto mt-4"
         )}
       >
         {collapsed ? <PanelRight size={18} /> : <PanelLeft size={18} />}

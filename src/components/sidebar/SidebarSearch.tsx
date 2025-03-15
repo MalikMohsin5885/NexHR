@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarSearchProps {
@@ -9,15 +9,27 @@ interface SidebarSearchProps {
 
 const SidebarSearch: React.FC<SidebarSearchProps> = ({ collapsed }) => {
   return (
-    <div className={cn("p-3", collapsed ? "hidden" : "block")}>
-      <div className="relative w-full">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <input
-          type="search"
-          placeholder="Search..."
-          className="w-full rounded-full border border-input bg-background py-2 pl-9 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        />
-      </div>
+    <div className="px-3 py-2">
+      {!collapsed ? (
+        <div className="flex items-center gap-2 px-2 py-1.5 bg-gray-100 rounded-md">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-transparent outline-none text-sm flex-1 text-muted-foreground"
+          />
+          <button className="text-muted-foreground">
+            <Filter className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <div className={cn(
+          "flex items-center justify-center",
+          "h-8 w-full rounded-md bg-gray-100 p-1.5"
+        )}>
+          <Search className="h-4 w-4 text-muted-foreground" />
+        </div>
+      )}
     </div>
   );
 };

@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       <SidebarHeader collapsed={collapsed} setCollapsed={setCollapsed} />
       <SidebarSearch collapsed={collapsed} />
       
-      <nav className="flex-1 px-2 py-3 space-y-1">
+      <nav className="flex-1 px-2 py-3 space-y-0">
         {sidebarItems.map((item) => (
           <SidebarItem
             key={item.title}
