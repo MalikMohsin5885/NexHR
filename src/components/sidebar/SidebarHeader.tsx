@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PanelRight, PanelLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarHeaderProps {
@@ -29,11 +29,11 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, setCollapsed }
       <button
         onClick={() => setCollapsed(!collapsed)}
         className={cn(
-          "rounded-md p-1.5 text-sidebar-foreground hover:bg-sidebar-accent",
-          collapsed && "mx-auto mt-4"
+          "rounded-sm p-1 text-sidebar-foreground hover:bg-sidebar-accent opacity-60 hover:opacity-100 transition-opacity",
+          collapsed && "absolute right-1 top-4"
         )}
       >
-        {collapsed ? <PanelRight size={18} /> : <PanelLeft size={18} />}
+        {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
       </button>
     </div>
   );

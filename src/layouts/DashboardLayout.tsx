@@ -33,7 +33,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
 
       {/* Main Content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className={cn(
+        "flex flex-1 flex-col overflow-hidden transition-all duration-300",
+        sidebarCollapsed ? "ml-[60px]" : "ml-[240px]"
+      )}>
         {/* Topbar */}
         <header className="bg-background border-b border-border/40">
           <div className="flex h-16 items-center px-6">

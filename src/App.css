@@ -41,3 +41,21 @@
 .read-the-docs {
   color: #5C5470; /* Updated to english-violet */
 }
+
+/* Fix for sidebar transitions */
+.sidebar-item-transition {
+  transition: all 0.3s ease;
+}
+
+/* Fix for sidebar collapse animation */
+.sidebar-collapse {
+  transition: width 0.3s ease, padding 0.3s ease;
+  will-change: width, padding;
+}
+
+/* Fix for sidebar content clipping during transitions */
+.sidebar-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

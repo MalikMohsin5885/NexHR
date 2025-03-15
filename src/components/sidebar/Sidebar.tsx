@@ -31,12 +31,15 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   return (
     <aside className={cn(
       "flex h-screen flex-col overflow-y-auto bg-sidebar border-r border-sidebar-border transition-all duration-300 ease-in-out",
-      collapsed ? "w-[70px]" : "w-[250px]"
+      collapsed ? "w-[60px]" : "w-[240px]"
     )}>
       <SidebarHeader collapsed={collapsed} setCollapsed={setCollapsed} />
       <SidebarSearch collapsed={collapsed} />
       
-      <nav className="flex-1 px-2 py-3 space-y-0">
+      <nav className={cn(
+        "flex-1 px-2 py-2 space-y-1",
+        collapsed && "px-1"
+      )}>
         {sidebarItems.map((item) => (
           <SidebarItem
             key={item.title}

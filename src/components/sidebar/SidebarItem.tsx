@@ -3,11 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { SidebarItemType } from './types';
+import { SidebarMenuItem } from './types';
 import SidebarSubmenuItem from './SidebarSubmenuItem';
 
 interface SidebarItemProps {
-  item: SidebarItemType;
+  item: SidebarMenuItem;
   isActive: (path: string) => boolean;
   collapsed: boolean;
   openMenus: Record<string, boolean>;
@@ -21,66 +21,100 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   openMenus,
   toggleMenu,
 }) => {
-  if (item.children) {
-    return (
-      <div className="mb-1">
+  const hasSubMenu = item.submenu && item.submenu.length > 0;
+  const isOpen = openMenus[item.title] || false;
+  const active = hasSubMenu 
+    ? item.submenu?.some(subItem => isActive(subItem.path)) 
+    : isActive(item.path);
+
+  return (
+    <div className={cn("mb-1", collapsed && "relative group")}>
+      {/* Main menu item */}
+      {hasSubMenu ? (
         <button
-          onClick={() => toggleMenu(item.title)}
+          onClick={() => !collapsed && toggleMenu(item.title)}
           className={cn(
-            "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
-            isActive(item.path) ? "sidebar-link-active" : "sidebar-link-inactive",
-            collapsed && "justify-center"
+            "w-full flex items-center py-2 px-3 rounded-md text-sm transition-colors",
+            active 
+              ? "text-sidebar-foreground font-medium" 
+              : "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+            collapsed ? "justify-center" : "justify-between"
           )}
         >
-          <div className="flex items-center">
-            <item.icon className={cn("h-5 w-5", collapsed && "mx-auto")} />
-            {!collapsed && <span className="ml-3">{item.title}</span>}
+          <div className="flex items-center gap-3">
+            <span className={cn(
+              "flex items-center justify-center w-5 h-5",
+              active && "text-primary"
+            )}>
+              {item.icon}
+            </span>
+            {!collapsed && <span>{item.title}</span>}
           </div>
-          {!collapsed && (
-            <div className="opacity-75">
-              {openMenus[item.title] ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
+          
+          {!collapsed && hasSubMenu && (
+            <ChevronDown
+              size={16}
+              className={cn(
+                "transition-transform",
+                isOpen ? "transform rotate-180" : ""
               )}
+            />
+          )}
+          
+          {/* Submenu dropdown for collapsed sidebar */}
+          {collapsed && hasSubMenu && (
+            <div className="absolute left-full top-0 ml-2 w-48 bg-sidebar shadow-lg rounded-md py-2 z-50 hidden group-hover:block">
+              <div className="py-1 px-3 font-medium border-b border-sidebar-border mb-1">
+                {item.title}
+              </div>
+              {item.submenu?.map((subItem) => (
+                <Link
+                  key={subItem.title}
+                  to={subItem.path}
+                  className={cn(
+                    "flex items-center px-3 py-2 text-sm hover:bg-sidebar-accent/30",
+                    isActive(subItem.path) && "bg-sidebar-accent/50 font-medium"
+                  )}
+                >
+                  {subItem.title}
+                </Link>
+              ))}
             </div>
           )}
         </button>
-        {!collapsed && openMenus[item.title] && (
-          <div className="mt-1 space-y-1 pl-4">
-            <div className="relative">
-              {/* Vertical line for submenu */}
-              <div className="absolute left-[9px] top-0 bottom-0 w-[1.5px] bg-gray-200 dark:bg-gray-700"></div>
-              <div className="ml-4 space-y-1">
-                {item.children.map((child) => (
-                  <SidebarSubmenuItem
-                    key={child.title}
-                    title={child.title}
-                    path={child.path}
-                    isActive={isActive(child.path)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
+      ) : (
+        <Link
+          to={item.path}
+          className={cn(
+            "flex items-center py-2 px-3 rounded-md text-sm transition-colors",
+            active 
+              ? "text-sidebar-foreground font-medium" 
+              : "text-sidebar-foreground/70 hover:text-sidebar-foreground",
+            collapsed && "justify-center"
+          )}
+        >
+          <span className={cn(
+            "flex items-center justify-center w-5 h-5",
+            active && "text-primary"
+          )}>
+            {item.icon}
+          </span>
+          {!collapsed && <span className="ml-3">{item.title}</span>}
+        </Link>
+      )}
 
-  return (
-    <div className="mb-1">
-      <Link
-        to={item.path}
-        className={cn(
-          "sidebar-link",
-          isActive(item.path) ? "sidebar-link-active" : "sidebar-link-inactive",
-          collapsed && "justify-center"
-        )}
-      >
-        <item.icon className="h-5 w-5" />
-        {!collapsed && <span className="ml-3">{item.title}</span>}
-      </Link>
+      {/* Submenu items for expanded sidebar */}
+      {!collapsed && hasSubMenu && isOpen && (
+        <div className="ml-2 pl-4 border-l border-sidebar-border/40 mt-1 space-y-1">
+          {item.submenu?.map((subItem) => (
+            <SidebarSubmenuItem
+              key={subItem.title}
+              item={subItem}
+              isActive={isActive}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
