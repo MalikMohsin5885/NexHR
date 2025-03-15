@@ -46,7 +46,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
               "flex items-center justify-center w-5 h-5",
               active && "text-primary"
             )}>
-              {item.icon}
+              {React.createElement(item.icon)}
             </span>
             {!collapsed && <span>{item.title}</span>}
           </div>
@@ -97,7 +97,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             "flex items-center justify-center w-5 h-5",
             active && "text-primary"
           )}>
-            {item.icon}
+            {React.createElement(item.icon)}
           </span>
           {!collapsed && <span className="ml-3">{item.title}</span>}
         </Link>
