@@ -43,17 +43,21 @@ const Index = () => {
           <EmployeeCard />
         </div>
 
-        {/* Middle section - first column */}
+        {/* Middle section - first column - Adjusted for equal heights */}
         <div className="md:col-span-4 flex flex-col gap-5 h-full">
-          <ChartCard
-            title="Present status"
-            icon={<Users className="h-4 w-4" />}
-            data={employeeStatusData}
-            colors={['#42a5e1', '#0fcbf1']}
-            change={2.5}
-          />
+          {/* Present status card with fixed height */}
+          <div className="h-[250px]">
+            <ChartCard
+              title="Present status"
+              icon={<Users className="h-4 w-4" />}
+              data={employeeStatusData}
+              colors={['#42a5e1', '#0fcbf1']}
+              change={2.5}
+            />
+          </div>
 
-          <Card className="flex-1 flex flex-col min-h-[calc(100%-16px)]">
+          {/* Hours per week card with fixed height */}
+          <Card className="h-[250px] flex flex-col">
             <CardContent className="p-4 flex flex-col h-full justify-between">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -87,9 +91,9 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Middle section - second column - Team tracker with equal height */}
+        {/* Middle section - second column - Team tracker with fixed height */}
         <div className="md:col-span-4 flex flex-col">
-          <div className="h-full">
+          <div className="h-[512px]">
             <TeamTracker />
           </div>
         </div>

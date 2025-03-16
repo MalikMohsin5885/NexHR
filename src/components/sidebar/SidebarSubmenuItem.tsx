@@ -22,7 +22,7 @@ const SidebarSubmenuItem: React.FC<SidebarSubmenuItemProps> = ({ item, isActive 
           : "text-english-violet"
       )}
     >
-      {/* Active indicator line */}
+      {/* Active indicator line - changed to primary color (purple) */}
       {active && (
         <span className="absolute left-[-1.25rem] w-[2px] h-full bg-primary" />
       )}
