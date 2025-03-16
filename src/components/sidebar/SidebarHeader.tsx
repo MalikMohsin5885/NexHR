@@ -22,7 +22,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, setCollapsed }
         </div>
       )}
       {collapsed && (
-        <div className="mx-auto h-7 w-7 bg-black text-white rounded-md flex items-center justify-center">
+        <div className="h-7 w-7 bg-black text-white rounded-md flex items-center justify-center">
           <span className="font-bold text-sm">H</span>
         </div>
       )}
@@ -30,7 +30,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, setCollapsed }
         onClick={() => setCollapsed(!collapsed)}
         className={cn(
           "rounded-sm p-1 text-gray-500 hover:bg-gray-100 opacity-70 hover:opacity-100 transition-opacity",
-          collapsed && "absolute right-1 top-4"
+          collapsed ? "ml-auto" : ""
         )}
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >

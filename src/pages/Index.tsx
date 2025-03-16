@@ -39,12 +39,12 @@ const Index = () => {
       {/* Main dashboard grid layout */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
         {/* First column - Employee Card */}
-        <div className="md:col-span-4">
+        <div className="md:col-span-4 flex flex-col">
           <EmployeeCard />
         </div>
 
         {/* Middle section - first column */}
-        <div className="md:col-span-4 flex flex-col gap-5">
+        <div className="md:col-span-4 flex flex-col gap-5 h-full">
           <ChartCard
             title="Present status"
             icon={<Users className="h-4 w-4" />}
@@ -53,8 +53,8 @@ const Index = () => {
             change={2.5}
           />
 
-          <Card>
-            <CardContent className="p-4">
+          <Card className="flex-1 flex flex-col">
+            <CardContent className="p-4 flex flex-col h-full justify-between">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
@@ -67,7 +67,7 @@ const Index = () => {
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-bold">46,5</span>
               </div>
-              <div className="flex justify-between mt-2 pt-2">
+              <div className="flex justify-between mt-auto pt-6">
                 {[...Array(7)].map((_, i) => (
                   <div key={i} className="flex flex-col items-center gap-1">
                     <div className="flex flex-col space-y-1">
