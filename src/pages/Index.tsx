@@ -25,11 +25,11 @@ const Index = () => {
         </div>
 
         <div className="flex gap-3 mt-4 md:mt-0">
-          <button className="flex items-center gap-1.5 text-sm border border-input rounded-full px-3 py-1.5">
+          <button className="flex items-center gap-1.5 text-sm border border-input rounded-full px-3 py-1.5 hover:bg-lavender hover:text-english-violet transition-colors">
             <Calendar className="h-4 w-4" />
             <span className="hidden sm:inline">18 - 22 November</span>
           </button>
-          <button className="flex items-center gap-1.5 text-sm bg-primary text-primary-foreground rounded-full px-3 py-1.5">
+          <button className="flex items-center gap-1.5 text-sm bg-primary text-primary-foreground rounded-full px-3 py-1.5 hover:bg-primary/90 transition-colors">
             <Plus className="h-4 w-4" />
             <span>Add report</span>
           </button>
@@ -53,7 +53,7 @@ const Index = () => {
             change={2.5}
           />
 
-          <Card className="flex-1 flex flex-col">
+          <Card className="flex-1 flex flex-col min-h-[calc(100%-16px)]">
             <CardContent className="p-4 flex flex-col h-full justify-between">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -87,9 +87,11 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Middle section - second column */}
-        <div className="md:col-span-4">
-          <TeamTracker />
+        {/* Middle section - second column - Team tracker with equal height */}
+        <div className="md:col-span-4 flex flex-col">
+          <div className="h-full">
+            <TeamTracker />
+          </div>
         </div>
 
         {/* Last column - SalaryCard */}

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Calendar, Bell, ChevronDown, Plus } from 'lucide-react';
+import { Search, Calendar, Bell, ChevronDown, Plus, PanelLeft, PanelRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
@@ -49,6 +49,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* Topbar */}
         <header className="bg-white border-b border-gray-100">
           <div className="flex h-16 items-center px-6">
+            {/* Sidebar collapse button outside sidebar */}
+            <button 
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="mr-4 rounded-full p-2 text-gray-500 hover:bg-lavender hover:text-english-violet transition-colors"
+            >
+              {sidebarCollapsed ? <PanelRight size={18} /> : <PanelLeft size={18} />}
+            </button>
+
             {/* Navigation */}
             <nav className="hidden md:flex space-x-1 flex-1">
               <ul className="flex space-x-1">
@@ -59,8 +67,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                       className={cn(
                         "px-4 py-2 text-sm font-medium transition-colors rounded-full",
                         isActive(item.path) 
-                          ? "bg-gray-900 text-white" 
-                          : "text-gray-700 hover:bg-gray-100"
+                          ? "bg-primary text-white" 
+                          : "text-gray-700 hover:bg-lavender hover:text-dark-purple-1"
                       )}
                     >
                       {item.label}
@@ -81,11 +89,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 />
               </div>
 
-              <button className="rounded-full p-2 text-gray-500 hover:bg-gray-100">
+              <button className="rounded-full p-2 text-gray-500 hover:bg-lavender hover:text-english-violet transition-colors">
                 <Calendar className="h-5 w-5" />
               </button>
 
-              <button className="rounded-full p-2 text-gray-500 hover:bg-gray-100 relative">
+              <button className="rounded-full p-2 text-gray-500 hover:bg-lavender hover:text-english-violet transition-colors relative">
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
               </button>

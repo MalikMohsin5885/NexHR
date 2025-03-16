@@ -36,8 +36,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           className={cn(
             "w-full flex items-center py-2 px-3 rounded-md text-sm transition-colors",
             active 
-              ? "text-gray-900 font-medium bg-gray-100" 
-              : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
+              ? "text-primary font-medium bg-ghost-white" 
+              : "text-gray-700 hover:text-dark-purple-1 hover:bg-lavender",
             collapsed ? "justify-center" : "justify-between"
           )}
           aria-expanded={isOpen && !collapsed}
@@ -45,7 +45,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           <div className="flex items-center gap-3">
             <span className={cn(
               "flex items-center justify-center w-5 h-5",
-              active && "text-gray-900"
+              active && "text-primary"
             )}>
               {React.createElement(item.icon, { size: 18 })}
             </span>
@@ -69,8 +69,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   key={subItem.title}
                   to={subItem.path}
                   className={cn(
-                    "flex items-center px-3 py-2 text-sm hover:bg-gray-50",
-                    isActive(subItem.path) && "bg-gray-50 font-medium text-gray-900"
+                    "flex items-center px-3 py-2 text-sm hover:bg-lavender",
+                    isActive(subItem.path) && "bg-ghost-white font-medium text-primary"
                   )}
                 >
                   {subItem.title}
@@ -85,14 +85,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           className={cn(
             "flex items-center py-2 px-3 rounded-md text-sm transition-colors",
             active 
-              ? "text-gray-900 font-medium bg-gray-100" 
-              : "text-gray-700 hover:text-gray-900 hover:bg-gray-50",
+              ? "text-primary font-medium bg-ghost-white" 
+              : "text-gray-700 hover:text-dark-purple-1 hover:bg-lavender",
             collapsed && "justify-center"
           )}
         >
           <span className={cn(
             "flex items-center justify-center w-5 h-5",
-            active && "text-gray-900"
+            active && "text-primary"
           )}>
             {React.createElement(item.icon, { size: 18 })}
           </span>
@@ -102,7 +102,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
       {/* Submenu items for expanded sidebar */}
       {!collapsed && hasSubMenu && isOpen && (
-        <div className="ml-2 pl-4 border-l border-gray-200 mt-1 space-y-1">
+        <div className="ml-2 pl-4 border-l border-primary mt-1 space-y-1">
           {item.submenu?.map((subItem) => (
             <SidebarSubmenuItem
               key={subItem.title}
