@@ -45,8 +45,8 @@ const Index = () => {
 
         {/* Middle section - first column - Adjusted for equal heights */}
         <div className="md:col-span-4 flex flex-col gap-5 h-full">
-          {/* Present status card with fixed height */}
-          <div className="h-[250px]">
+          {/* Present status card with increased height */}
+          <div className="h-[300px]">
             <ChartCard
               title="Present status"
               icon={<Users className="h-4 w-4" />}
@@ -56,8 +56,8 @@ const Index = () => {
             />
           </div>
 
-          {/* Hours per week card with fixed height */}
-          <Card className="h-[250px] flex flex-col">
+          {/* Hours per week card with adjusted height to complement the increased present status card */}
+          <Card className="h-[200px] flex flex-col">
             <CardContent className="p-4 flex flex-col h-full justify-between">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
