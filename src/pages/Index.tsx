@@ -39,19 +39,19 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Main dashboard grid layout with original positioning */}
+      {/* Main dashboard grid layout */}
       <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-5">
-        {/* Top section - one or two columns based on screen size */}
-        <div className="grid grid-cols-1 md:grid-cols-8 gap-3 sm:gap-4 md:gap-5">
+        {/* First row - Employee card, Chart card and TeamTracker */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 md:gap-5">
           {/* Employee Card */}
-          <div className="md:col-span-4 lg:col-span-3">
+          <div className="md:col-span-3">
             <EmployeeCard />
           </div>
 
-          {/* Middle section - Status cards */}
-          <div className="md:col-span-4 lg:col-span-5 grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-4">
+          {/* Present status and Avg hours cards */}
+          <div className="md:col-span-5 grid grid-cols-1 gap-3 sm:gap-4">
             {/* Present status card */}
-            <div className="sm:col-span-3 h-auto">
+            <div>
               <ChartCard
                 title="Present status"
                 icon={<Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
@@ -62,7 +62,7 @@ const Index = () => {
             </div>
 
             {/* Hours per week card */}
-            <div className="sm:col-span-2 h-auto">
+            <div>
               <Card className="h-full flex flex-col">
                 <CardContent className="p-3 sm:p-4 flex flex-col h-full justify-between">
                   <div className="flex items-center justify-between mb-2">
@@ -97,11 +97,11 @@ const Index = () => {
               </Card>
             </div>
           </div>
-        </div>
 
-        {/* Team tracker */}
-        <div className="h-[350px] sm:h-[400px] md:h-[450px]">
-          <TeamTracker />
+          {/* Team tracker - Side by side with present status */}
+          <div className="md:col-span-4">
+            <TeamTracker />
+          </div>
         </div>
 
         {/* Bottom section - SalaryCard and RecruitmentCard */}
