@@ -39,7 +39,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Main dashboard grid layout with improved mobile responsiveness */}
+      {/* Main dashboard grid layout with original positioning */}
       <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-5">
         {/* Top section - one or two columns based on screen size */}
         <div className="grid grid-cols-1 md:grid-cols-8 gap-3 sm:gap-4 md:gap-5">
