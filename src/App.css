@@ -8,7 +8,13 @@
 
 @media (max-width: 768px) {
   #root {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 0.75rem 0.25rem;
   }
 }
 
@@ -18,6 +24,14 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
+@media (max-width: 768px) {
+  .logo {
+    height: 4em;
+    padding: 1em;
+  }
+}
+
 .logo:hover {
   filter: drop-shadow(0 0 2em rgba(91, 84, 112, 0.6)); /* Updated to use english-violet */
 }
@@ -42,6 +56,18 @@
 
 .card {
   padding: 2em;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1em;
+  }
 }
 
 .read-the-docs {
@@ -76,19 +102,38 @@
   display: none;
 }
 
+/* Responsive text sizing by screen size */
+.text-responsive {
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .text-responsive {
+    font-size: 0.925rem;
+  }
+}
+
 @media (max-width: 640px) {
   .text-responsive {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
   }
-  
-  .p-responsive {
-    padding: 0.75rem;
+}
+
+@media (max-width: 480px) {
+  .text-responsive {
+    font-size: 0.8rem;
   }
 }
 
 /* Responsive padding helper classes */
 .p-responsive {
   padding: 1.25rem;
+}
+
+@media (min-width: 480px) {
+  .p-responsive {
+    padding: 1rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -100,5 +145,93 @@
 @media (min-width: 1024px) {
   .p-responsive {
     padding: 2rem;
+  }
+}
+
+/* Responsive card height classes */
+.h-card-sm {
+  height: 150px;
+}
+
+.h-card-md {
+  height: 250px;
+}
+
+.h-card-lg {
+  height: 350px;
+}
+
+@media (max-width: 768px) {
+  .h-card-sm {
+    height: 130px;
+  }
+  
+  .h-card-md {
+    height: 220px;
+  }
+  
+  .h-card-lg {
+    height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .h-card-sm {
+    height: 120px;
+  }
+  
+  .h-card-md {
+    height: 200px;
+  }
+  
+  .h-card-lg {
+    height: 300px;
+  }
+}
+
+/* Responsive grid breakpoints */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Typography scaling for mobile */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.25rem !important;
+  }
+  
+  h3 {
+    font-size: 1.125rem !important;
+  }
+  
+  p, li, a {
+    font-size: 0.875rem;
   }
 }

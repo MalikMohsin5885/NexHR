@@ -29,29 +29,29 @@ const ChartCard: React.FC<ChartCardProps> = ({
   const remoteEmployees = Math.round(totalEmployees * (data[1]?.percentage || 0) / 100);
 
   return (
-    <div className="hr-card flex flex-col p-5 animate-scale-in h-full">
-      <div className="flex items-center justify-between mb-3">
+    <div className="hr-card flex flex-col p-4 sm:p-5 animate-scale-in h-full">
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700">
             {icon}
           </div>
-          <h3 className="font-medium">{title}</h3>
+          <h3 className="text-sm sm:text-base font-medium">{title}</h3>
         </div>
         {change && (
-          <div className="text-sm text-green-600 font-medium">+{change}%</div>
+          <div className="text-xs sm:text-sm text-green-600 font-medium">+{change}%</div>
         )}
       </div>
 
-      <div className="flex items-center mt-2 space-x-3">
-        <div className="h-16 w-16 md:h-20 md:w-20">
+      <div className="flex items-center mt-1 sm:mt-2 space-x-2 sm:space-x-3">
+        <div className="h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={pieData}
                 cx="50%"
                 cy="50%"
-                innerRadius={15}
-                outerRadius={30}
+                innerRadius={14}
+                outerRadius={28}
                 paddingAngle={2}
                 dataKey="value"
                 startAngle={90}
@@ -81,7 +81,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
             <div key={index} className="flex items-center justify-between mb-1 last:mb-0">
               <div className="flex items-center">
                 <div 
-                  className="h-2.5 w-2.5 rounded-full mr-2" 
+                  className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full mr-1.5 sm:mr-2" 
                   style={{ backgroundColor: entry.color || colors[index % colors.length] }}
                 ></div>
                 <span className="text-xs sm:text-sm">{entry.status}</span>
@@ -92,31 +92,33 @@ const ChartCard: React.FC<ChartCardProps> = ({
         </div>
       </div>
 
-      {/* Enhanced content for Present Status card */}
-      <div className="mt-4 border-t pt-3 text-sm">
-        <div className="text-gray-700 font-medium mb-2">Team Attendance Summary</div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="bg-lavender/20 p-2 rounded-md">
-            <p className="text-xs text-gray-600">On-site</p>
-            <p className="font-medium">{presentEmployees} employees</p>
+      {/* Enhanced content for Present Status card with better responsive design */}
+      <div className="mt-3 sm:mt-4 border-t pt-2 sm:pt-3 text-xs sm:text-sm">
+        <div className="text-gray-700 font-medium mb-1.5 sm:mb-2">Team Attendance Summary</div>
+        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+          <div className="bg-lavender/20 p-1.5 sm:p-2 rounded-md">
+            <p className="text-[11px] sm:text-xs text-gray-600">On-site</p>
+            <p className="font-medium text-xs sm:text-sm">{presentEmployees} employees</p>
           </div>
-          <div className="bg-blue-50 p-2 rounded-md">
-            <p className="text-xs text-gray-600">Remote</p>
-            <p className="font-medium">{remoteEmployees} employees</p>
+          <div className="bg-blue-50 p-1.5 sm:p-2 rounded-md">
+            <p className="text-[11px] sm:text-xs text-gray-600">Remote</p>
+            <p className="font-medium text-xs sm:text-sm">{remoteEmployees} employees</p>
           </div>
         </div>
         
-        <div className="mt-3 space-y-2">
-          <p className="text-xs text-gray-600">
+        <div className="mt-2 sm:mt-3 space-y-1.5 sm:space-y-2">
+          <p className="text-[11px] sm:text-xs text-gray-600">
             Overall attendance rate is higher than last week.
             Team productivity has increased by 3.2%.
           </p>
           
-          <div className="text-xs bg-primary/10 p-2 rounded-md">
+          <div className="text-[11px] sm:text-xs bg-primary/10 p-1.5 sm:p-2 rounded-md">
             <p className="font-medium text-primary">Today's Highlights:</p>
-            <ul className="list-disc pl-4 mt-1 text-gray-600">
+            <ul className="list-disc pl-3 sm:pl-4 mt-0.5 sm:mt-1 text-gray-600">
               <li>5 team members have scheduled meetings</li>
               <li>3 employees working remotely today</li>
+              <li>Team standup at 10:00 AM</li>
+              <li>Project deadline reminder: UI design by Friday</li>
             </ul>
           </div>
         </div>
