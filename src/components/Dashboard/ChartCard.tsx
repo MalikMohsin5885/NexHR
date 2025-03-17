@@ -43,7 +43,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
       </div>
 
       <div className="flex items-center mt-2 space-x-3">
-        <div className="h-16 w-16">
+        <div className="h-16 w-16 md:h-20 md:w-20">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -84,15 +84,15 @@ const ChartCard: React.FC<ChartCardProps> = ({
                   className="h-2.5 w-2.5 rounded-full mr-2" 
                   style={{ backgroundColor: entry.color || colors[index % colors.length] }}
                 ></div>
-                <span className="text-xs">{entry.status}</span>
+                <span className="text-xs sm:text-sm">{entry.status}</span>
               </div>
-              <span className="text-xs font-medium">{entry.percentage}%</span>
+              <span className="text-xs sm:text-sm font-medium">{entry.percentage}%</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Additional content for Present Status card */}
+      {/* Enhanced content for Present Status card */}
       <div className="mt-4 border-t pt-3 text-sm">
         <div className="text-gray-700 font-medium mb-2">Team Attendance Summary</div>
         <div className="grid grid-cols-2 gap-2">
@@ -105,10 +105,21 @@ const ChartCard: React.FC<ChartCardProps> = ({
             <p className="font-medium">{remoteEmployees} employees</p>
           </div>
         </div>
-        <p className="text-xs text-gray-500 mt-2">
-          Overall attendance rate is higher than last week.
-          Team productivity has increased by 3.2%.
-        </p>
+        
+        <div className="mt-3 space-y-2">
+          <p className="text-xs text-gray-600">
+            Overall attendance rate is higher than last week.
+            Team productivity has increased by 3.2%.
+          </p>
+          
+          <div className="text-xs bg-primary/10 p-2 rounded-md">
+            <p className="font-medium text-primary">Today's Highlights:</p>
+            <ul className="list-disc pl-4 mt-1 text-gray-600">
+              <li>5 team members have scheduled meetings</li>
+              <li>3 employees working remotely today</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

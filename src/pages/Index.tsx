@@ -10,8 +10,11 @@ import ChartCard from '@/components/Dashboard/ChartCard';
 import { Plus, Users, Clock, Calendar, CalendarDays } from 'lucide-react';
 import { employeeStatusData } from '@/data/mockData';
 import { Card, CardContent } from '@/components/ui/card';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
+  const isMobile = useIsMobile();
+
   return (
     <DashboardLayout>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
@@ -21,15 +24,15 @@ const Index = () => {
             <span>/</span>
             <span>Dashboard</span>
           </div>
-          <h1 className="text-3xl font-bold mt-1">Good morning Jhon</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mt-1">Good morning Jhon</h1>
         </div>
 
         <div className="flex gap-3 mt-4 md:mt-0">
-          <button className="flex items-center gap-1.5 text-sm border border-input rounded-full px-3 py-1.5 hover:bg-lavender hover:text-english-violet transition-colors">
+          <button className="flex items-center gap-1.5 text-xs sm:text-sm border border-input rounded-full px-3 py-1.5 hover:bg-lavender hover:text-english-violet transition-colors">
             <Calendar className="h-4 w-4" />
             <span className="hidden sm:inline">18 - 22 November</span>
           </button>
-          <button className="flex items-center gap-1.5 text-sm bg-primary text-primary-foreground rounded-full px-3 py-1.5 hover:bg-primary/90 transition-colors">
+          <button className="flex items-center gap-1.5 text-xs sm:text-sm bg-primary text-primary-foreground rounded-full px-3 py-1.5 hover:bg-primary/90 transition-colors">
             <Plus className="h-4 w-4" />
             <span>Add report</span>
           </button>
@@ -46,7 +49,7 @@ const Index = () => {
         {/* Middle section - first column - Adjusted for equal heights */}
         <div className="md:col-span-4 flex flex-col gap-5 h-full">
           {/* Present status card with increased height */}
-          <div className="h-[300px]">
+          <div className="h-[300px] sm:h-[320px] md:h-[300px]">
             <ChartCard
               title="Present status"
               icon={<Users className="h-4 w-4" />}
@@ -93,7 +96,7 @@ const Index = () => {
 
         {/* Middle section - second column - Team tracker with fixed height */}
         <div className="md:col-span-4 flex flex-col">
-          <div className="h-[512px]">
+          <div className="h-[420px] sm:h-[470px] md:h-[512px]">
             <TeamTracker />
           </div>
         </div>
@@ -112,15 +115,15 @@ const Index = () => {
         <div className="md:col-span-12">
           <div className="mt-5">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold">Recent activities</h2>
-              <button className="flex items-center gap-1.5 rounded-md bg-primary/10 text-primary px-3 py-1.5 text-sm font-medium transition-colors hover:bg-primary/20">
+              <h2 className="text-lg md:text-xl font-bold">Recent activities</h2>
+              <button className="flex items-center gap-1.5 rounded-md bg-primary/10 text-primary px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors hover:bg-primary/20">
                 <Plus className="h-4 w-4" />
                 <span>Add widget</span>
               </button>
             </div>
 
             {/* Stats cards in a row of 3 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-5">
               <StatsCard
                 title="Monthly applications"
                 value="125"
