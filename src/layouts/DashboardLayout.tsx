@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Calendar, Bell, ChevronDown, Plus, PanelLeft, PanelRight, Menu } from 'lucide-react';
+import { Search, Calendar, Bell, Menu, PanelLeft, PanelRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -22,7 +22,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   
   // Auto-collapse sidebar on mobile
   useEffect(() => {
-    if (isMobile && !sidebarCollapsed) {
+    if (isMobile) {
       setSidebarCollapsed(true);
     }
   }, [isMobile]);
@@ -49,32 +49,31 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   // Toggle mobile menu and collapse sidebar
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
-    if (!mobileMenuOpen && !sidebarCollapsed && isMobile) {
-      setSidebarCollapsed(true);
-    }
   };
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      {/* Sidebar with mobile overlay handling */}
-      <div className={cn(
-        "fixed inset-0 z-40 bg-black/50 transition-opacity lg:hidden",
-        mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-      )}>
-        <div onClick={() => setMobileMenuOpen(false)} className="absolute inset-0 z-0" />
-      </div>
+      {/* Overlay for mobile menu */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
       
+      {/* Sidebar - position fixed on mobile to prevent content shift */}
       <div className={cn(
-        "fixed z-50 h-full transition-transform duration-300 lg:static lg:z-0",
+        "fixed z-50 h-full transition-transform duration-300 lg:relative",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - fixed margins on desktop, no offset on mobile */}
       <div className={cn(
         "flex flex-1 flex-col overflow-hidden transition-all duration-300 w-full",
-        sidebarCollapsed ? "lg:ml-[60px]" : "lg:ml-[240px]"
+        !mobileMenuOpen && sidebarCollapsed ? "lg:ml-[60px]" : "",
+        !mobileMenuOpen && !sidebarCollapsed ? "lg:ml-[240px]" : ""
       )}>
         {/* Topbar */}
         <header className="bg-white border-b border-gray-100 sticky top-0 z-20">
@@ -95,8 +94,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               {sidebarCollapsed ? <PanelRight size={18} /> : <PanelLeft size={18} />}
             </button>
 
-            {/* Navigation */}
-            <nav className="hidden md:flex space-x-1 flex-1">
+            {/* Navigation - horizontal scrolling on smaller screens */}
+            <nav className="hidden md:flex space-x-1 flex-1 overflow-x-auto">
               <ul className="flex space-x-1 overflow-x-auto pb-1 scrollbar-none">
                 {navigationItems.map((item) => (
                   <li key={item.label}>
@@ -147,7 +146,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* Page Content - with proper padding on mobile */}
         <main className="flex-1 overflow-auto p-2 sm:p-3 md:p-6 pb-12">
           {children}
         </main>
