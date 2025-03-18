@@ -32,20 +32,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     localStorage.setItem('sidebarCollapsed', JSON.stringify(sidebarCollapsed));
   }, [sidebarCollapsed]);
 
-  const navigationItems = [
-    { label: 'Dashboard', path: '/' },
-    { label: 'Calendar', path: '/calendar' },
-    { label: 'Projects', path: '/projects' },
-    { label: 'Team', path: '/team' },
-    { label: 'Documents', path: '/documents' },
-  ];
-
-  const isActive = (path: string) => {
-    if (path === '/' && location.pathname === '/') return true;
-    if (path !== '/' && location.pathname.startsWith(path)) return true;
-    return false;
-  };
-
   // Toggle mobile menu and collapse sidebar
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -94,26 +80,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               {sidebarCollapsed ? <PanelRight size={18} /> : <PanelLeft size={18} />}
             </button>
 
-            {/* Navigation - horizontal scrolling on smaller screens */}
-            <nav className="hidden md:flex space-x-1 flex-1 overflow-x-auto">
-              <ul className="flex space-x-1 overflow-x-auto pb-1 scrollbar-none">
-                {navigationItems.map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      to={item.path}
-                      className={cn(
-                        "px-3 sm:px-4 py-1.5 sm:py-2 text-sm font-medium transition-colors rounded-full whitespace-nowrap",
-                        isActive(item.path) 
-                          ? "bg-primary text-white" 
-                          : "text-gray-700 hover:bg-lavender hover:text-dark-purple-1"
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            {/* Empty space to replace the removed navigation */}
+            <div className="flex-1"></div>
 
             {/* Search and User */}
             <div className="flex items-center gap-1 sm:gap-2 md:gap-4 ml-auto">
