@@ -44,12 +44,12 @@ const Index = () => {
         {/* First row - Employee card, Chart card and TeamTracker */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 md:gap-5">
           {/* Employee Card */}
-          <div className="md:col-span-3">
+          <div className="md:col-span-4">
             <EmployeeCard />
           </div>
 
           {/* Present status and Avg hours cards */}
-          <div className="md:col-span-5 grid grid-cols-1 gap-3 sm:gap-4">
+          <div className="md:col-span-4 grid grid-cols-1 gap-3 sm:gap-4">
             {/* Present status card */}
             <div>
               <ChartCard
