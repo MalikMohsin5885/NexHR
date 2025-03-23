@@ -3,12 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import lottie from "lottie-web";
 import {
-  FaMicrosoft,
-  FaLinkedin,
+ 
   FaGoogle,
-  FaFacebook,
-  FaTwitter,
-  FaApple,
+ 
 } from "react-icons/fa";
 
 interface FormErrors {
@@ -137,7 +134,7 @@ export default function RegisterPage() {
             <div className="text-center mb-8">
               <h1 className="text-4xl font-extrabold text-[#352F44]">Sign Up</h1>
               <p className="text-gray-600 mt-2">
-                Enter your details and let’s get started.
+              Experience NexHR—Get started today !
               </p>
             </div>
 
@@ -294,24 +291,13 @@ export default function RegisterPage() {
             <div className="mt-6">
               <p className="text-center text-gray-600 mb-4">Or sign up with:</p>
               <div className="flex justify-center space-x-4">
-                <button type="button" className="flex items-center justify-center w-10 h-10 bg-gray-800 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50">
-                  <FaMicrosoft className="w-6 h-6" />
-                </button>
-                <button type="button" className="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50">
-                  <FaLinkedin className="w-6 h-6" />
-                </button>
+               
                 <button type="button" className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50">
                   <FaGoogle className="w-6 h-6" />
                 </button>
-                <button type="button" className="flex items-center justify-center w-10 h-10 bg-blue-800 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50">
-                  <FaFacebook className="w-6 h-6" />
-                </button>
-                <button type="button" className="flex items-center justify-center w-10 h-10 bg-blue-400 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50">
-                  <FaTwitter className="w-6 h-6" />
-                </button>
-                <button type="button" className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50">
-                  <FaApple className="w-6 h-6" />
-                </button>
+               
+                
+               
               </div>
             </div>
             <p className="text-center mt-6 text-gray-600">

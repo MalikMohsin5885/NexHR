@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import lottie from "lottie-web";
-import { FaGoogle } from "react-icons/fa"; // Only Google needed now
+import { FaGoogle } from "react-icons/fa"; 
 
 interface LoginErrors {
   email?: string;
