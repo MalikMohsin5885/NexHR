@@ -22,7 +22,7 @@ const LoginPage = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
@@ -77,7 +77,7 @@ const LoginPage = () => {
 
     const result = await login(email, password);
     if (result.success) {
-      navigate('/');
+      navigate('/dashboard');
     } else {
       setErrors({
         credentials: result.message

@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
@@ -39,34 +39,37 @@ const App = () => (
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             
+            {/* Redirect to login if accessing the root path without authentication */}
+            <Route path="/" element={<Navigate to="/login" />} />
+            
             {/* Protected routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/documents" element={<Documents />} />
+            <Route path="/dashboard" element={<ProtectedRoute />}>
+              <Route index element={<Index />} />
+              <Route path="calendar" element={<Calendar />} />
+              <Route path="team" element={<Team />} />
+              <Route path="projects" element={<Projects />} />
+              <Route path="documents" element={<Documents />} />
               
               {/* Add routes for sidebar items */}
-              <Route path="/teams" element={<PlaceholderPage title="Teams" />} />
-              <Route path="/employees" element={<PlaceholderPage title="Employees" />} />
-              <Route path="/attendance" element={<PlaceholderPage title="Attendance" />} />
-              <Route path="/checklist" element={<PlaceholderPage title="Checklist" />} />
-              <Route path="/time-off" element={<PlaceholderPage title="Time Off" />} />
+              <Route path="teams" element={<PlaceholderPage title="Teams" />} />
+              <Route path="employees" element={<PlaceholderPage title="Employees" />} />
+              <Route path="attendance" element={<PlaceholderPage title="Attendance" />} />
+              <Route path="checklist" element={<PlaceholderPage title="Checklist" />} />
+              <Route path="time-off" element={<PlaceholderPage title="Time Off" />} />
               
-              <Route path="/hiring" element={<PlaceholderPage title="Hiring" />} />
-              <Route path="/onboarding" element={<PlaceholderPage title="Onboarding" />} />
-              <Route path="/hiring-handbook" element={<PlaceholderPage title="Hiring Handbook" />} />
+              <Route path="hiring" element={<PlaceholderPage title="Hiring" />} />
+              <Route path="onboarding" element={<PlaceholderPage title="Onboarding" />} />
+              <Route path="hiring-handbook" element={<PlaceholderPage title="Hiring Handbook" />} />
               
-              <Route path="/finance" element={<PlaceholderPage title="Finance" />} />
-              <Route path="/payroll" element={<PlaceholderPage title="Payroll" />} />
-              <Route path="/expenses" element={<PlaceholderPage title="Expenses" />} />
-              <Route path="/invoices" element={<PlaceholderPage title="Invoices" />} />
-              <Route path="/payment-information" element={<PlaceholderPage title="Payment Information" />} />
+              <Route path="finance" element={<PlaceholderPage title="Finance" />} />
+              <Route path="payroll" element={<PlaceholderPage title="Payroll" />} />
+              <Route path="expenses" element={<PlaceholderPage title="Expenses" />} />
+              <Route path="invoices" element={<PlaceholderPage title="Invoices" />} />
+              <Route path="payment-information" element={<PlaceholderPage title="Payment Information" />} />
               
-              <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
-              <Route path="/integrations" element={<PlaceholderPage title="Integrations" />} />
-              <Route path="/support" element={<PlaceholderPage title="Help & Support" />} />
+              <Route path="settings" element={<PlaceholderPage title="Settings" />} />
+              <Route path="integrations" element={<PlaceholderPage title="Integrations" />} />
+              <Route path="support" element={<PlaceholderPage title="Help & Support" />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
