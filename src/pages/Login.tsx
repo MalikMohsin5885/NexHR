@@ -32,7 +32,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (animationContainer.current) {
-      // As a fallback, we'll use a placeholder if the animation file isn't available
+      // Use the lottie animation from your files
       const animationPath = "/lottieFiles/login.json";
       
       const anim = lottie.loadAnimation({

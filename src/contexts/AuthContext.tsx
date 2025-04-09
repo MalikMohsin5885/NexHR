@@ -98,34 +98,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setRefreshToken(refreshToken);
         setIsAuthenticated(true);
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
         return { success: true };
       }
 
-      // Fallback to local authentication method for development/testing
-      const storedUsers = localStorage.getItem('registeredUsers');
-      if (storedUsers) {
-        const users = JSON.parse(storedUsers);
-        const userExists = users.some(
-          (user: { email: string; password: string }) =>
-            user.email === email && user.password === password
-        );
-
-        if (userExists) {
+      // If no tokens were provided, attempt to login with the API
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
           const currentUser = { email };
+          
+          // Store tokens and user info
           setUser(currentUser);
+          setAccessToken(data.access_token);
+          setRefreshToken(data.refresh_token);
           setIsAuthenticated(true);
+          
           localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          localStorage.setItem('access_token', data.access_token);
+          localStorage.setItem('refresh_token', data.refresh_token);
+          
           return { success: true };
         } else {
+          const errorData = await response.json();
           return { 
             success: false, 
-            message: "User not found or incorrect credentials. Please register or try again."
+            message: errorData.detail || "Invalid credentials. Please try again."
           };
         }
-      } else {
+      } catch (error) {
+        console.error("API login error:", error);
         return { 
           success: false, 
-          message: "No registered users found. Please register first."
+          message: "Network error. Please check your connection and try again."
         };
       }
     } catch (error) {
