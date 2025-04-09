@@ -2,30 +2,28 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import lottie from "lottie-web";
-import {
- 
-  FaGoogle,
- 
-} from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 
 interface FormErrors {
-  fullName?: string;
-  companyName?: string;
-  noOfEmployees?: string;
-  phoneNo?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
+  phoneNo?: string;
   password?: string;
   privacy?: string;
 }
 
 export default function RegisterPage() {
-  const [fullName, setFullName] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [noOfEmployees, setNoOfEmployees] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [agree, setAgree] = useState(false);
+  // Store all the form fields into one object
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNo: "",
+    password: "",
+    agree: false,
+  });
+
   const [errors, setErrors] = useState<FormErrors>({});
 
   const router = useRouter();
@@ -48,38 +46,33 @@ export default function RegisterPage() {
     e.preventDefault();
     const newErrors: FormErrors = {};
 
-    if (!fullName.trim()) {
-      newErrors.fullName = "Full name is required.";
+    if (!form.firstName.trim()) {
+      newErrors.firstName = "First name is required.";
     }
-    if (!companyName.trim()) {
-      newErrors.companyName = "Company name is required.";
+    if (!form.lastName.trim()) {
+      newErrors.lastName = "Last name is required.";
     }
-    if (!noOfEmployees.trim()) {
-      newErrors.noOfEmployees = "Number of employees is required.";
-    } else if (isNaN(Number(noOfEmployees))) {
-      newErrors.noOfEmployees = "Please enter a valid number.";
-    }
-    if (!phoneNo.trim()) {
-      newErrors.phoneNo = "Phone number is required.";
-    }
-    if (!email.trim()) {
+    if (!form.email.trim()) {
       newErrors.email = "Email is required.";
     } else {
       const emailRegex =
         /^(?!\.)(?!.*\.\.)[A-Za-z0-9!#$%&'*+/=?^_`{|}~.]+(?<!\.)@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-      if (!emailRegex.test(email)) {
+      if (!emailRegex.test(form.email)) {
         newErrors.email = "Please enter a valid email address.";
       }
     }
-    if (!password.trim()) {
+    if (!form.phoneNo.trim()) {
+      newErrors.phoneNo = "Phone number is required.";
+    }
+    if (!form.password.trim()) {
       newErrors.password = "Password is required.";
     } else {
-      if (password.length < 8 || !/\d/.test(password)) {
+      if (form.password.length < 8 || !/\d/.test(form.password)) {
         newErrors.password =
           "Must be at least 8 characters and include at least one number.";
       }
     }
-    if (!agree) {
+    if (!form.agree) {
       newErrors.privacy = "You must agree to the Privacy Statement and Disclaimer.";
     }
 
@@ -92,7 +85,7 @@ export default function RegisterPage() {
     const users = storedUsers ? JSON.parse(storedUsers) : [];
 
     const userExists = users.some(
-      (user: { email: string }) => user.email === email
+      (user: { email: string }) => user.email === form.email
     );
     if (userExists) {
       setErrors({ ...newErrors, email: "User already registered. Please log in." });
@@ -100,20 +93,18 @@ export default function RegisterPage() {
     }
 
     users.push({
-      fullName,
-      companyName,
-      noOfEmployees,
-      phoneNo,
-      email,
-      password,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phoneNo: form.phoneNo,
+      password: form.password,
     });
     localStorage.setItem("registeredUsers", JSON.stringify(users));
     router.push("/dashboard");
   };
 
-  // Add "normal-case" to the input to override uppercase transforms
   const inputClass = (fieldError?: string) =>
-    `w-full p-2 border rounded-lg focus:outline-none text-[#363636] 
+    `w-full p-2 border rounded-lg focus:outline-none text-[#363636]
      placeholder:normal-case placeholder:text-sm normal-case
      ${
        fieldError
@@ -121,9 +112,13 @@ export default function RegisterPage() {
          : "border-gray-300 focus:ring-2 focus:ring-[#5C5470]"
      }`;
 
+  // Helper function to update form state dynamically
+  const updateField = (field: string, value: string | boolean) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 font-nura">
-      {/* Increased to max-w-5xl to give more space */}
       <div className="relative max-w-5xl w-full p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
           <div className="w-1/2 p-8 flex items-center justify-center bg-transparent">
@@ -134,108 +129,56 @@ export default function RegisterPage() {
             <div className="text-center mb-8">
               <h1 className="text-4xl font-extrabold text-[#352F44]">Sign Up</h1>
               <p className="text-gray-600 mt-2">
-              Experience NexHR—Get started today !
+                Experience NexHR—Get started today!
               </p>
             </div>
 
             <form onSubmit={handleRegister}>
-              {/* Full Name & Phone Number */}
+              {/* First Name & Last Name */}
               <div className="flex flex-col md:flex-row gap-4 mb-4">
                 <div className="md:w-1/2 w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Full name
+                    First Name
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter full name"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className={inputClass(errors.fullName)}
+                    placeholder="Enter first name"
+                    value={form.firstName}
+                    onChange={(e) => updateField("firstName", e.target.value)}
+                    className={inputClass(errors.firstName)}
                   />
-                  {errors.fullName && (
-                    <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
+                  {errors.firstName && (
+                    <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
                   )}
                 </div>
                 <div className="md:w-1/2 w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Phone number
+                    Last Name
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter phone number"
-                    value={phoneNo}
-                    onChange={(e) => setPhoneNo(e.target.value)}
-                    className={inputClass(errors.phoneNo)}
+                    placeholder="Enter last name"
+                    value={form.lastName}
+                    onChange={(e) => updateField("lastName", e.target.value)}
+                    className={inputClass(errors.lastName)}
                   />
-                  {errors.phoneNo && (
-                    <p className="text-red-500 text-xs mt-1">{errors.phoneNo}</p>
+                  {errors.lastName && (
+                    <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
                   )}
                 </div>
               </div>
 
-              {/* Company Name & Number of Employees */}
-              <div className="flex flex-col md:flex-row gap-4 mb-4">
-                <div className="md:w-[48%] w-full">
-                  <label
-                    className="
-                      block 
-                      text-gray-700 
-                      text-sm 
-                      font-bold 
-                      mb-1 
-                      whitespace-nowrap
-                    "
-                  >
-                    Company name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your company name"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    className={inputClass(errors.companyName)}
-                  />
-                  {errors.companyName && (
-                    <p className="text-red-500 text-xs mt-1">{errors.companyName}</p>
-                  )}
-                </div>
-                <div className="md:w-[48%] w-full">
-                  <label
-                    className="
-                      block 
-                      text-gray-700 
-                      text-sm 
-                      font-bold 
-                      mb-1 
-                      whitespace-nowrap
-                    "
-                  >
-                    Number of employees
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter no employees"
-                    value={noOfEmployees}
-                    onChange={(e) => setNoOfEmployees(e.target.value)}
-                    className={inputClass(errors.noOfEmployees)}
-                  />
-                  {errors.noOfEmployees && (
-                    <p className="text-red-500 text-xs mt-1">{errors.noOfEmployees}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Email & Password */}
+              {/* Email Address & Phone Number */}
               <div className="flex flex-col md:flex-row gap-4 mb-4">
                 <div className="md:w-1/2 w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Email address
+                    Email Address
                   </label>
                   <input
                     type="email"
                     placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={form.email}
+                    onChange={(e) => updateField("email", e.target.value)}
                     className={inputClass(errors.email)}
                   />
                   {errors.email && (
@@ -244,19 +187,36 @@ export default function RegisterPage() {
                 </div>
                 <div className="md:w-1/2 w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-1">
-                    Password
+                    Phone Number
                   </label>
                   <input
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={inputClass(errors.password)}
+                    type="text"
+                    placeholder="Enter phone number"
+                    value={form.phoneNo}
+                    onChange={(e) => updateField("phoneNo", e.target.value)}
+                    className={inputClass(errors.phoneNo)}
                   />
-                  {errors.password && (
-                    <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                  {errors.phoneNo && (
+                    <p className="text-red-500 text-xs mt-1">{errors.phoneNo}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Password */}
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-1">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={form.password}
+                  onChange={(e) => updateField("password", e.target.value)}
+                  className={inputClass(errors.password)}
+                />
+                {errors.password && (
+                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                )}
               </div>
 
               {/* Privacy Checkbox */}
@@ -264,12 +224,9 @@ export default function RegisterPage() {
                 <input
                   type="checkbox"
                   id="agree"
-                  checked={agree}
-                  onChange={(e) => setAgree(e.target.checked)}
-                  className={`
-                    mr-2
-                    ${errors.privacy ? "outline-red-500 ring-2 ring-red-500" : ""}
-                  `}
+                  checked={form.agree}
+                  onChange={(e) => updateField("agree", e.target.checked)}
+                  className={`mr-2 ${errors.privacy ? "outline-red-500 ring-2 ring-red-500" : ""}`}
                 />
                 <label htmlFor="agree" className="text-sm text-gray-700">
                   I agree with Privacy Statement and Disclaimer
@@ -291,18 +248,20 @@ export default function RegisterPage() {
             <div className="mt-6">
               <p className="text-center text-gray-600 mb-4">Or sign up with:</p>
               <div className="flex justify-center space-x-4">
-               
-                <button type="button" className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50">
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50"
+                >
                   <FaGoogle className="w-6 h-6" />
                 </button>
-               
-                
-               
               </div>
             </div>
             <p className="text-center mt-6 text-gray-600">
               Already have an account?{" "}
-              <a href="/login" className="text-[#5C5470] hover:text-[#352F44] hover:underline">
+              <a
+                href="/login"
+                className="text-[#5C5470] hover:text-[#352F44] hover:underline"
+              >
                 Sign In
               </a>
             </p>

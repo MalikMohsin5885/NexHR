@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import lottie from "lottie-web";
-import { FaGoogle } from "react-icons/fa"; 
+import { FaGoogle } from "react-icons/fa";
 
 interface LoginErrors {
   email?: string;
@@ -11,9 +11,13 @@ interface LoginErrors {
 }
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Consolidate email and password into one state object
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
   const [errors, setErrors] = useState<LoginErrors>({});
+
   const router = useRouter();
   const animationContainer = useRef<HTMLDivElement>(null);
 
@@ -30,7 +34,7 @@ export default function LoginPage() {
     }
   }, []);
 
-  // Normal-case to avoid forced uppercase
+  // Normal-case styling for input fields
   const inputClass = (fieldError?: string) =>
     `w-full p-2 border rounded-lg focus:outline-none text-[#363636] 
      placeholder:normal-case placeholder:text-sm normal-case
@@ -40,14 +44,19 @@ export default function LoginPage() {
          : "border-gray-300 focus:ring-2 focus:ring-[#5C5470]"
      }`;
 
+  // Helper function to update individual form fields
+  const updateField = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: LoginErrors = {};
 
-    if (!email.trim()) {
+    if (!form.email.trim()) {
       newErrors.email = "Email is required.";
     }
-    if (!password.trim()) {
+    if (!form.password.trim()) {
       newErrors.password = "Password is required.";
     }
     if (Object.keys(newErrors).length > 0) {
@@ -61,7 +70,7 @@ export default function LoginPage() {
       const users = JSON.parse(storedUsers);
       const userExists = users.some(
         (user: { email: string; password: string }) =>
-          user.email === email && user.password === password
+          user.email === form.email && user.password === form.password
       );
       if (userExists) {
         router.push("/dashboard");
@@ -105,8 +114,8 @@ export default function LoginPage() {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={form.email}
+                  onChange={(e) => updateField("email", e.target.value)}
                   className={inputClass(errors.email)}
                   required
                 />
@@ -122,8 +131,8 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={form.password}
+                  onChange={(e) => updateField("password", e.target.value)}
                   className={inputClass(errors.password)}
                   required
                 />
@@ -161,30 +170,11 @@ export default function LoginPage() {
 
             {/* Single Google Auth Button */}
             <div className="mt-6">
-              {/* Optional lines around "Or log in with Google" */}
-              {/* 
-              <div className="flex items-center my-4">
-                <hr className="flex-grow border-gray-300" />
-                <span className="mx-2 text-gray-600">Or log in with:</span>
-                <hr className="flex-grow border-gray-300" />
-              </div>
-              */}
               <p className="text-center text-gray-600 mb-4">Or log in with:</p>
               <div className="flex justify-center">
                 <button
                   type="button"
-                  className="
-                    flex items-center justify-center 
-                    w-10 h-10 
-                    bg-red-600 
-                    text-white 
-                    rounded-full 
-                    transition 
-                    duration-300 
-                    hover:scale-105
-                    hover:shadow-lg 
-                    hover:shadow-[#5C5470]/50
-                  "
+                  className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50"
                 >
                   <FaGoogle className="w-6 h-6" />
                 </button>
