@@ -3,20 +3,32 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import lottie from "lottie-web";
 import { useAuth } from "../contexts/AuthContext";
+import { toast } from "@/components/ui/use-toast";
 
 interface RegisterErrors {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
+  phoneNo?: string;
   password?: string;
   confirmPassword?: string;
+  privacy?: string;
 }
 
 const RegisterPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  // Store all form fields in one object
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNo: "",
+    password: "",
+    confirmPassword: "",
+    agree: false,
+  });
+
   const [errors, setErrors] = useState<RegisterErrors>({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const animationContainer = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuth();
@@ -24,7 +36,7 @@ const RegisterPage = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
@@ -43,6 +55,11 @@ const RegisterPage = () => {
     }
   }, []);
 
+  // Helper function to update form state dynamically
+  const updateField = (field: string, value: string | boolean) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
   // Input styling with error states
   const inputClass = (fieldError?: string) =>
     `w-full p-2 border rounded-lg focus:outline-none text-[#363636] 
@@ -53,16 +70,34 @@ const RegisterPage = () => {
          : "border-gray-300 focus:ring-2 focus:ring-[#5C5470]"
      }`;
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: RegisterErrors = {};
 
     // Form validation
-    if (!name.trim()) newErrors.name = "Name is required.";
-    if (!email.trim()) newErrors.email = "Email is required.";
-    if (!password.trim()) newErrors.password = "Password is required.";
-    if (password !== confirmPassword) {
+    if (!form.firstName.trim()) newErrors.firstName = "First name is required.";
+    if (!form.lastName.trim()) newErrors.lastName = "Last name is required.";
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required.";
+    } else {
+      const emailRegex = /^(?!\.)(?!.*\.\.)[A-Za-z0-9!#$%&'*+/=?^_`{|}~.]+(?<!\.)@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+      if (!emailRegex.test(form.email)) {
+        newErrors.email = "Please enter a valid email address.";
+      }
+    }
+    if (!form.phoneNo?.trim()) newErrors.phoneNo = "Phone number is required.";
+    if (!form.password.trim()) {
+      newErrors.password = "Password is required.";
+    } else {
+      if (form.password.length < 8 || !/\d/.test(form.password)) {
+        newErrors.password = "Must be at least 8 characters and include at least one number.";
+      }
+    }
+    if (form.password !== form.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
+    }
+    if (!form.agree) {
+      newErrors.privacy = "You must agree to the Privacy Statement and Disclaimer.";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -70,23 +105,62 @@ const RegisterPage = () => {
       return;
     }
 
-    // Store user in localStorage
-    const newUser = { name, email, password };
-    const existingUsers = localStorage.getItem("registeredUsers");
-    const users = existingUsers ? JSON.parse(existingUsers) : [];
-    
-    // Check if email already exists
-    const emailExists = users.some((user: { email: string }) => user.email === email);
-    if (emailExists) {
-      setErrors({ email: "Email already registered. Please login instead." });
-      return;
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: form.firstName,
+          last_name: form.lastName,
+          email: form.email,
+          phone_number: form.phoneNo,
+          password: form.password,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast({
+          title: "Registration successful",
+          description: "Your account has been created. Please log in.",
+          variant: "default",
+        });
+        
+        // Redirect to login page
+        navigate("/login");
+      } else {
+        // Handle API errors
+        if (data.email) {
+          setErrors({ email: data.email[0] });
+        } else if (data.detail) {
+          setErrors({ email: data.detail });
+        } else {
+          setErrors({ 
+            email: "Registration failed. Please try again or contact support." 
+          });
+        }
+        
+        toast({
+          title: "Registration failed",
+          description: "Please check your information and try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast({
+        title: "Connection error",
+        description: "Could not connect to the server. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    
-    users.push(newUser);
-    localStorage.setItem("registeredUsers", JSON.stringify(users));
-    
-    // Redirect to login page
-    navigate("/login");
   };
 
   return (
@@ -105,7 +179,7 @@ const RegisterPage = () => {
           <div className="w-full md:w-1/2 p-6 md:p-8">
             <div className="text-center mb-6 md:mb-8">
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#352F44]">Register</h1>
-              <p className="text-gray-600 mt-2 text-sm md:text-base">Create your account and get started.</p>
+              <p className="text-gray-600 mt-2 text-sm md:text-base">Experience NexHR—Get started today!</p>
             </div>
 
             {/* Mobile animation container */}
@@ -114,23 +188,43 @@ const RegisterPage = () => {
             </div>
 
             <form onSubmit={handleRegister}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={inputClass(errors.name)}
-                  required
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-                )}
+              {/* First Name & Last Name */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                <div className="sm:w-1/2 w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-1">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter first name"
+                    value={form.firstName}
+                    onChange={(e) => updateField("firstName", e.target.value)}
+                    className={inputClass(errors.firstName)}
+                    required
+                  />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+                  )}
+                </div>
+                <div className="sm:w-1/2 w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-1">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter last name"
+                    value={form.lastName}
+                    onChange={(e) => updateField("lastName", e.target.value)}
+                    className={inputClass(errors.lastName)}
+                    required
+                  />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                  )}
+                </div>
               </div>
 
+              {/* Email Address */}
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-1">
                   Email address
@@ -138,8 +232,8 @@ const RegisterPage = () => {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={form.email}
+                  onChange={(e) => updateField("email", e.target.value)}
                   className={inputClass(errors.email)}
                   required
                 />
@@ -148,6 +242,25 @@ const RegisterPage = () => {
                 )}
               </div>
 
+              {/* Phone Number */}
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-1">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter phone number"
+                  value={form.phoneNo}
+                  onChange={(e) => updateField("phoneNo", e.target.value)}
+                  className={inputClass(errors.phoneNo)}
+                  required
+                />
+                {errors.phoneNo && (
+                  <p className="text-red-500 text-xs mt-1">{errors.phoneNo}</p>
+                )}
+              </div>
+
+              {/* Password */}
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-1">
                   Password
@@ -155,8 +268,8 @@ const RegisterPage = () => {
                 <input
                   type="password"
                   placeholder="Create a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={form.password}
+                  onChange={(e) => updateField("password", e.target.value)}
                   className={inputClass(errors.password)}
                   required
                 />
@@ -165,15 +278,16 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              <div className="mb-6">
+              {/* Confirm Password */}
+              <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-1">
                   Confirm Password
                 </label>
                 <input
                   type="password"
                   placeholder="Confirm your password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={form.confirmPassword}
+                  onChange={(e) => updateField("confirmPassword", e.target.value)}
                   className={inputClass(errors.confirmPassword)}
                   required
                 />
@@ -182,11 +296,32 @@ const RegisterPage = () => {
                 )}
               </div>
 
+              {/* Privacy Checkbox */}
+              <div className="mb-6 flex items-center">
+                <input
+                  type="checkbox"
+                  id="agree"
+                  checked={form.agree as boolean}
+                  onChange={(e) => updateField("agree", e.target.checked)}
+                  className={`mr-2 ${errors.privacy ? "outline-red-500 ring-2 ring-red-500" : ""}`}
+                />
+                <label htmlFor="agree" className="text-sm text-gray-700">
+                  I agree with Privacy Statement and Disclaimer
+                </label>
+              </div>
+              {errors.privacy && (
+                <p className="text-red-500 text-xs mb-4">{errors.privacy}</p>
+              )}
+
               <button
                 type="submit"
-                className="w-full bg-[#5C5470] text-white py-2 rounded-lg hover:bg-[#352F44] transition duration-300"
+                disabled={isLoading}
+                className="w-full bg-[#5C5470] text-white py-2 rounded-lg hover:bg-[#352F44] transition duration-300 flex items-center justify-center"
               >
-                REGISTER
+                {isLoading ? (
+                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                ) : null}
+                {isLoading ? "REGISTERING..." : "REGISTER"}
               </button>
             </form>
 

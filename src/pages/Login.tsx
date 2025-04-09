@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import lottie from "lottie-web";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
+import { toast } from "@/components/ui/use-toast";
 
 interface LoginErrors {
   email?: string;
@@ -12,9 +13,12 @@ interface LoginErrors {
 }
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
   const [errors, setErrors] = useState<LoginErrors>({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const animationContainer = useRef<HTMLDivElement>(null);
   const { login, isAuthenticated } = useAuth();
@@ -27,13 +31,6 @@ const LoginPage = () => {
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    // Mock registration data for testing if none exists
-    if (!localStorage.getItem('registeredUsers')) {
-      localStorage.setItem('registeredUsers', JSON.stringify([
-        { email: 'user@example.com', password: 'password123' }
-      ]));
-    }
-
     if (animationContainer.current) {
       // As a fallback, we'll use a placeholder if the animation file isn't available
       const animationPath = "/lottieFiles/login.json";
@@ -49,6 +46,11 @@ const LoginPage = () => {
     }
   }, []);
 
+  // Helper function to update individual form fields
+  const updateField = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
   // Normal-case to avoid forced uppercase
   const inputClass = (fieldError?: string) =>
     `w-full p-2 border rounded-lg focus:outline-none text-[#363636] 
@@ -63,10 +65,10 @@ const LoginPage = () => {
     e.preventDefault();
     const newErrors: LoginErrors = {};
 
-    if (!email.trim()) {
+    if (!form.email.trim()) {
       newErrors.email = "Email is required.";
     }
-    if (!password.trim()) {
+    if (!form.password.trim()) {
       newErrors.password = "Password is required.";
     }
     if (Object.keys(newErrors).length > 0) {
@@ -75,13 +77,64 @@ const LoginPage = () => {
     }
     setErrors({});
 
-    const result = await login(email, password);
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      setErrors({
-        credentials: result.message
+    // Set loading state during API call
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
       });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Store tokens in localStorage
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+        
+        // Use the authContext to update authentication state
+        await login(form.email, form.password, data.access_token, data.refresh_token);
+        
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+          variant: "default",
+        });
+        
+        // Redirect to dashboard
+        navigate('/dashboard');
+      } else {
+        // Handle API errors
+        setErrors({
+          credentials: data.detail || "Invalid credentials. Please try again.",
+        });
+        
+        toast({
+          title: "Login failed",
+          description: data.detail || "Invalid credentials. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setErrors({
+        credentials: "Network error. Please check your connection and try again.",
+      });
+      
+      toast({
+        title: "Connection error",
+        description: "Could not connect to the server. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -117,8 +170,8 @@ const LoginPage = () => {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={form.email}
+                  onChange={(e) => updateField("email", e.target.value)}
                   className={inputClass(errors.email)}
                   required
                 />
@@ -134,8 +187,8 @@ const LoginPage = () => {
                 <input
                   type="password"
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={form.password}
+                  onChange={(e) => updateField("password", e.target.value)}
                   className={inputClass(errors.password)}
                   required
                 />
@@ -165,9 +218,13 @@ const LoginPage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-[#5C5470] text-white py-2 rounded-lg hover:bg-[#352F44] transition duration-300"
+                disabled={isLoading}
+                className="w-full bg-[#5C5470] text-white py-2 rounded-lg hover:bg-[#352F44] transition duration-300 flex items-center justify-center"
               >
-                LOGIN
+                {isLoading ? (
+                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                ) : null}
+                {isLoading ? "LOGGING IN..." : "LOGIN"}
               </button>
             </form>
 
