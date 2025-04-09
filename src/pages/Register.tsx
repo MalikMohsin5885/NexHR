@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import lottie from "lottie-web";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
+import api from "../lib/api";
 
 interface RegisterErrors {
   firstName?: string;
@@ -108,23 +109,15 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          first_name: form.firstName,
-          last_name: form.lastName,
-          email: form.email,
-          phone_number: form.phoneNo,
-          password: form.password,
-        }),
+      const response = await api.post('/auth/register/', {
+        first_name: form.firstName,
+        last_name: form.lastName,
+        email: form.email,
+        phone_number: form.phoneNo,
+        password: form.password,
       });
-
-      const data = await response.json();
       
-      if (response.ok) {
+      if (response.status === 201) {
         toast({
           title: "Registration successful",
           description: "Your account has been created. Please log in.",
@@ -134,30 +127,38 @@ const RegisterPage = () => {
         // Redirect to login page
         navigate("/login");
       } else {
-        // Handle API errors
-        if (data.email) {
-          setErrors({ email: data.email[0] });
-        } else if (data.detail) {
-          setErrors({ email: data.detail });
-        } else {
-          setErrors({ 
-            email: "Registration failed. Please try again or contact support." 
-          });
-        }
-        
+        // This branch shouldn't execute since non-2xx responses throw errors
+        // but kept for defensive programming
         toast({
           title: "Registration failed",
           description: "Please check your information and try again.",
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
-      toast({
-        title: "Connection error",
-        description: "Could not connect to the server. Please try again later.",
-        variant: "destructive",
-      });
+      
+      // Handle API error responses
+      if (error.response?.data) {
+        const apiErrors = error.response.data;
+        
+        if (apiErrors.email) {
+          setErrors({ email: apiErrors.email[0] });
+        } else if (apiErrors.detail) {
+          setErrors({ email: apiErrors.detail });
+        } else {
+          setErrors({ 
+            email: "Registration failed. Please try again or contact support." 
+          });
+        }
+      } else {
+        // Handle network errors or other issues
+        toast({
+          title: "Connection error",
+          description: "Could not connect to the server. Please try again later.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }

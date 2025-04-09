@@ -10,13 +10,21 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!isAuthenticated && accessToken) {
-        // Try to refresh token if we have one but not authenticated
+      // Check if we're authenticated already
+      if (isAuthenticated) {
+        setIsTokenValid(true);
+        setIsLoading(false);
+        return;
+      }
+      
+      // If we have an access token but not authenticated, try to refresh
+      if (accessToken) {
         const refreshed = await refreshAccessToken();
         setIsTokenValid(refreshed);
       } else {
-        setIsTokenValid(isAuthenticated);
+        setIsTokenValid(false);
       }
+      
       setIsLoading(false);
     };
 

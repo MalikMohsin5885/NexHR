@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import lottie from "lottie-web";
@@ -11,6 +10,9 @@ interface LoginErrors {
   password?: string;
   credentials?: string;
 }
+
+const TEST_EMAIL = "admin@admin.com";
+const TEST_PASSWORD = "admin";
 
 const LoginPage = () => {
   const [form, setForm] = useState({
@@ -81,57 +83,66 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (response.ok) {
-        // Store tokens in localStorage
-        localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
+      // If using test credentials, use the provided tokens
+      if (form.email === TEST_EMAIL && form.password === TEST_PASSWORD) {
+        const testAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MzA1NjczLCJpYXQiOjE3NDQyMTkyNzMsImp0aSI6ImQ0ZjM4MmJkOTk0YTQzMzdiNmFhNjdjZWQwNzA3YmY2IiwidXNlcl9pZCI6NCwiZm5hbWUiOiJTYWlyYSIsImxuYW1lIjoiTmFzaXIiLCJlbWFpbCI6InNhaXJhbmFzaXIxMDAxNEBnbWFpbC5jb20ifQ.TEpncQ2Hyp7LEglCl1wNLe4JahRpWTkrcNkTbPZkeFs";
+        const testRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NDgyNDA3MywiaWF0IjoxNzQ0MjE5MjczLCJqdGkiOiIwNWM3ZjU5Nzk1YmM0NTdkOTdkNTYyMzQ2Y2FmMGQzMiIsInVzZXJfaWQiOjQsImZuYW1lIjoiU2FpcmEiLCJsbmFtZSI6Ik5hc2lyIiwiZW1haWwiOiJzYWlyYW5hc2lyMTAwMTRAZ21haWwuY29tIn0.2ByayaMlNWwR7ZMh3-v_qcatZbPBXBAZZKcGZqjvxlU";
         
-        // Use the authContext to update authentication state
-        await login(form.email, form.password, data.access_token, data.refresh_token);
+        const result = await login(form.email, form.password, testAccessToken, testRefreshToken);
         
-        toast({
-          title: "Login successful",
-          description: "Welcome back!",
-          variant: "default",
-        });
-        
-        // Redirect to dashboard
-        navigate('/dashboard');
+        if (result.success) {
+          toast({
+            title: "Login successful",
+            description: "Welcome back!",
+            variant: "default",
+          });
+          
+          navigate('/dashboard');
+        } else {
+          toast({
+            title: "Login failed",
+            description: result.message || "Invalid credentials. Please try again.",
+            variant: "destructive",
+          });
+          
+          setErrors({
+            credentials: result.message || "Invalid credentials. Please try again.",
+          });
+        }
       } else {
-        // Handle API errors
-        setErrors({
-          credentials: data.detail || "Invalid credentials. Please try again.",
-        });
+        // Regular login with API
+        const result = await login(form.email, form.password);
         
-        toast({
-          title: "Login failed",
-          description: data.detail || "Invalid credentials. Please try again.",
-          variant: "destructive",
-        });
+        if (result.success) {
+          toast({
+            title: "Login successful",
+            description: "Welcome back!",
+            variant: "default",
+          });
+          
+          navigate('/dashboard');
+        } else {
+          toast({
+            title: "Login failed",
+            description: result.message || "Invalid credentials. Please try again.",
+            variant: "destructive",
+          });
+          
+          setErrors({
+            credentials: result.message || "Invalid credentials. Please try again.",
+          });
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
-      setErrors({
-        credentials: "Network error. Please check your connection and try again.",
-      });
-      
       toast({
         title: "Connection error",
         description: "Could not connect to the server. Please try again later.",
         variant: "destructive",
+      });
+      
+      setErrors({
+        credentials: "Network error. Please check your connection and try again.",
       });
     } finally {
       setIsLoading(false);
@@ -142,22 +153,18 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4">
       <div className="relative max-w-5xl w-full p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
-          {/* Left Side: Lottie Animation (hidden on mobile) */}
           <div className="hidden md:block w-full md:w-1/2 p-8 flex items-center justify-center bg-transparent">
             <div ref={animationContainer} className="w-full h-64" />
           </div>
 
-          {/* Neon vertical gradient divider (hidden on mobile) */}
           <div className="hidden md:block w-[2px] bg-gradient-to-b from-[#352F44] to-[#5C5470] shadow-[0_0_10px_3px_rgba(80,0,80,0.8)]" />
 
-          {/* Right Side: Login Form */}
           <div className="w-full md:w-1/2 p-6 md:p-8">
             <div className="text-center mb-6 md:mb-8">
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#352F44]">Login</h1>
               <p className="text-gray-600 mt-2 text-sm md:text-base">Enter your details and let's get started.</p>
             </div>
 
-            {/* Mobile animation container (only visible on mobile) */}
             <div className="md:hidden w-full h-48 mb-4">
               <div ref={animationContainer} className="w-full h-full" />
             </div>
@@ -228,7 +235,6 @@ const LoginPage = () => {
               </button>
             </form>
 
-            {/* Google Auth Button */}
             <div className="mt-6">
               <p className="text-center text-gray-600 mb-4 text-sm">Or log in with:</p>
               <div className="flex justify-center">

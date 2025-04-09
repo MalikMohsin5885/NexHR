@@ -1,9 +1,12 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../lib/api';
 
 interface User {
   email: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 interface AuthContextType {
@@ -62,16 +65,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!refreshToken) return false;
 
-      const response = await fetch('http://127.0.0.1:8000/api/auth/token/refresh/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refresh: refreshToken }),
-      });
+      // Use the API instance for consistent error handling
+      const response = await api.post('/auth/token/refresh/', { refresh: refreshToken });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = response.data;
         localStorage.setItem('access_token', data.access);
         setAccessToken(data.access);
         setIsAuthenticated(true);
@@ -90,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string, accessToken?: string, refreshToken?: string) => {
     try {
-      // If tokens are provided directly (e.g., from login form)
+      // If tokens are provided directly (e.g., for testing)
       if (accessToken && refreshToken) {
         const currentUser = { email };
         setUser(currentUser);
@@ -105,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // If no tokens were provided, attempt to login with the API
       try {
+        // Use direct fetch for login to avoid circular dependencies with API instance
         const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
           method: 'POST',
           headers: {
@@ -115,15 +114,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         if (response.ok) {
           const data = await response.json();
-          const currentUser = { email };
+          
+          // Extract user information from token if available
+          let userInfo: User = { email };
+          try {
+            const payload = JSON.parse(atob(data.access_token.split('.')[1]));
+            if (payload.fname) userInfo.firstName = payload.fname;
+            if (payload.lname) userInfo.lastName = payload.lname;
+          } catch (e) {
+            console.log("Could not extract user data from token");
+          }
           
           // Store tokens and user info
-          setUser(currentUser);
+          setUser(userInfo);
           setAccessToken(data.access_token);
           setRefreshToken(data.refresh_token);
           setIsAuthenticated(true);
           
-          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          localStorage.setItem('currentUser', JSON.stringify(userInfo));
           localStorage.setItem('access_token', data.access_token);
           localStorage.setItem('refresh_token', data.refresh_token);
           
