@@ -1,7 +1,6 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -15,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 // Create a placeholder component for routes that don't have dedicated pages yet
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -28,7 +28,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    <TooltipPrimitive.Provider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -76,7 +76,7 @@ const App = () => (
           </Routes>
         </AuthProvider>
       </BrowserRouter>
-    </TooltipProvider>
+    </TooltipPrimitive.Provider>
   </QueryClientProvider>
 );
 
