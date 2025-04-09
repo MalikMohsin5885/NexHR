@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import lottie from "lottie-web";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
-import api from "../lib/api";
+import api, { handleApiError } from "../lib/api";
 
 interface RegisterErrors {
   firstName?: string;
@@ -59,6 +58,15 @@ const RegisterPage = () => {
   // Helper function to update form state dynamically
   const updateField = (field: string, value: string | boolean) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    
+    // Clear error when field is changed
+    if (errors[field as keyof RegisterErrors]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field as keyof RegisterErrors];
+        return newErrors;
+      });
+    }
   };
 
   // Input styling with error states
@@ -109,6 +117,30 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
+      console.log('Registering user with:', {
+        first_name: form.firstName,
+        last_name: form.lastName,
+        email: form.email,
+        phone_number: form.phoneNo,
+      });
+      
+      // For testing purposes, let's use the admin credentials to bypass actual registration
+      const TEST_EMAIL = "admin@admin.com";
+      const TEST_PASSWORD = "admin";
+      
+      // If using test credentials, bypass actual registration
+      if (form.email === TEST_EMAIL && form.password === TEST_PASSWORD) {
+        toast({
+          title: "Test Account",
+          description: "Using test account instead of registration",
+          variant: "default",
+        });
+        navigate("/login");
+        setIsLoading(false);
+        return;
+      }
+      
+      // Try registration with the real API
       const response = await api.post('/auth/register/', {
         first_name: form.firstName,
         last_name: form.lastName,
@@ -138,24 +170,36 @@ const RegisterPage = () => {
     } catch (error: any) {
       console.error('Registration error:', error);
       
-      // Handle API error responses
+      // Use our improved error handler
+      const errorResult = handleApiError(error, "Registration failed. Please try again.");
+      
       if (error.response?.data) {
+        // Map backend errors to form fields
         const apiErrors = error.response.data;
+        const mappedErrors: RegisterErrors = {};
         
-        if (apiErrors.email) {
-          setErrors({ email: apiErrors.email[0] });
-        } else if (apiErrors.detail) {
-          setErrors({ email: apiErrors.detail });
+        // Map specific fields
+        if (apiErrors.email) mappedErrors.email = apiErrors.email[0];
+        if (apiErrors.first_name) mappedErrors.firstName = apiErrors.first_name[0];
+        if (apiErrors.last_name) mappedErrors.lastName = apiErrors.last_name[0];
+        if (apiErrors.phone_number) mappedErrors.phoneNo = apiErrors.phone_number[0];
+        if (apiErrors.password) mappedErrors.password = apiErrors.password[0];
+        
+        if (Object.keys(mappedErrors).length > 0) {
+          setErrors(mappedErrors);
         } else {
-          setErrors({ 
-            email: "Registration failed. Please try again or contact support." 
+          // If no field-specific errors, show a toast with the general error
+          toast({
+            title: "Registration failed",
+            description: errorResult.message,
+            variant: "destructive",
           });
         }
       } else {
-        // Handle network errors or other issues
+        // For network errors or other issues
         toast({
           title: "Connection error",
-          description: "Could not connect to the server. Please try again later.",
+          description: errorResult.message,
           variant: "destructive",
         });
       }

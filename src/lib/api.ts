@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { toast } from "@/components/ui/use-toast";
 
-const BASE_URL = 'http://127.0.0.1:8000/api';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
 
 // Create axios instance
 const api = axios.create({
@@ -11,7 +11,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   // Add timeout to prevent long hanging requests
-  timeout: 10000,
+  timeout: 15000, // Increased timeout for slower connections
 });
 
 // Request interceptor to add auth token
@@ -36,6 +36,7 @@ api.interceptors.response.use(
     
     // Network error handling
     if (!error.response) {
+      console.error('Network error detected:', error);
       toast({
         title: "Network Error",
         description: "Cannot connect to the server. Please check your connection and try again.",
@@ -82,5 +83,50 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Helper function to handle API errors in a consistent way
+export const handleApiError = (error: any, defaultMessage = "An unexpected error occurred") => {
+  console.error('API error:', error);
+  
+  if (!error.response) {
+    // Network error
+    return {
+      success: false,
+      message: "Cannot connect to the server. Please check your connection and try again."
+    };
+  }
+  
+  if (error.response.data) {
+    // Get the first error message from the response
+    const errorData = error.response.data;
+    let errorMessage = defaultMessage;
+    
+    if (typeof errorData === 'string') {
+      errorMessage = errorData;
+    } else if (errorData.detail) {
+      errorMessage = errorData.detail;
+    } else if (errorData.non_field_errors) {
+      errorMessage = errorData.non_field_errors[0];
+    } else {
+      // Look for the first error in any field
+      const firstErrorField = Object.keys(errorData)[0];
+      if (firstErrorField && errorData[firstErrorField]) {
+        const fieldErrors = errorData[firstErrorField];
+        errorMessage = Array.isArray(fieldErrors) ? fieldErrors[0] : fieldErrors;
+      }
+    }
+    
+    return {
+      success: false,
+      message: errorMessage,
+      errors: errorData
+    };
+  }
+  
+  return {
+    success: false,
+    message: defaultMessage
+  };
+};
 
 export default api;
