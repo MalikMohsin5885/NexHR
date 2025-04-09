@@ -2,6 +2,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
+import { toast } from "@/components/ui/use-toast";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, accessToken, refreshAccessToken } = useAuth();
@@ -10,22 +11,39 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      // Check if we're authenticated already
-      if (isAuthenticated) {
-        setIsTokenValid(true);
-        setIsLoading(false);
-        return;
-      }
-      
-      // If we have an access token but not authenticated, try to refresh
-      if (accessToken) {
-        const refreshed = await refreshAccessToken();
-        setIsTokenValid(refreshed);
-      } else {
+      try {
+        // Check if we're authenticated already
+        if (isAuthenticated) {
+          setIsTokenValid(true);
+          setIsLoading(false);
+          return;
+        }
+        
+        // If we have an access token but not authenticated, try to refresh
+        if (accessToken) {
+          const refreshed = await refreshAccessToken();
+          setIsTokenValid(refreshed);
+          if (!refreshed) {
+            toast({
+              title: "Authentication Error",
+              description: "Your session has expired. Please log in again.",
+              variant: "destructive",
+            });
+          }
+        } else {
+          setIsTokenValid(false);
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
         setIsTokenValid(false);
+        toast({
+          title: "Authentication Error",
+          description: "There was an issue verifying your authentication. Please log in again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     };
 
     checkAuth();

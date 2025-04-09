@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import { toast } from "@/components/ui/use-toast";
 
 interface User {
   email: string;
@@ -101,10 +102,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true };
       }
 
+      const TEST_EMAIL = "admin@admin.com";
+      const TEST_PASSWORD = "admin";
+      
+      // If using test credentials, use the hardcoded tokens
+      if (email === TEST_EMAIL && password === TEST_PASSWORD) {
+        const testAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MzA1NjczLCJpYXQiOjE3NDQyMTkyNzMsImp0aSI6ImQ0ZjM4MmJkOTk0YTQzMzdiNmFhNjdjZWQwNzA3YmY2IiwidXNlcl9pZCI6NCwiZm5hbWUiOiJTYWlyYSIsImxuYW1lIjoiTmFzaXIiLCJlbWFpbCI6InNhaXJhbmFzaXIxMDAxNEBnbWFpbC5jb20ifQ.TEpncQ2Hyp7LEglCl1wNLe4JahRpWTkrcNkTbPZkeFs";
+        const testRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NDgyNDA3MywiaWF0IjoxNzQ0MjE5MjczLCJqdGkiOiIwNWM3ZjU5Nzk1YmM0NTdkOTdkNTYyMzQ2Y2FmMGQzMiIsInVzZXJfaWQiOjQsImZuYW1lIjoiU2FpcmEiLCJsbmFtZSI6Ik5hc2lyIiwiZW1haWwiOiJzYWlyYW5hc2lyMTAwMTRAZ21haWwuY29tIn0.2ByayaMlNWwR7ZMh3-v_qcatZbPBXBAZZKcGZqjvxlU";
+        
+        const currentUser = { email };
+        setUser(currentUser);
+        setAccessToken(testAccessToken);
+        setRefreshToken(testRefreshToken);
+        setIsAuthenticated(true);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        localStorage.setItem('access_token', testAccessToken);
+        localStorage.setItem('refresh_token', testRefreshToken);
+        
+        return { success: true };
+      }
+
       // If no tokens were provided, attempt to login with the API
       try {
         // Use direct fetch for login to avoid circular dependencies with API instance
-        const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'}/auth/login/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

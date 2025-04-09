@@ -1,5 +1,6 @@
 
 import axios from 'axios';
+import { toast } from "@/components/ui/use-toast";
 
 const BASE_URL = 'http://127.0.0.1:8000/api';
 
@@ -9,6 +10,8 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  // Add timeout to prevent long hanging requests
+  timeout: 10000,
 });
 
 // Request interceptor to add auth token
@@ -30,6 +33,16 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    
+    // Network error handling
+    if (!error.response) {
+      toast({
+        title: "Network Error",
+        description: "Cannot connect to the server. Please check your connection and try again.",
+        variant: "destructive",
+      });
+      return Promise.reject(error);
+    }
     
     // If the error is 401 and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
