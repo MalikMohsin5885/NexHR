@@ -1,7 +1,6 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import lottie from "lottie-web";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
@@ -31,7 +30,6 @@ const RegisterPage = () => {
   const [errors, setErrors] = useState<RegisterErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const animationContainer = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuth();
 
   // Redirect if already logged in
@@ -40,24 +38,6 @@ const RegisterPage = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
-
-  useEffect(() => {
-    if (animationContainer.current) {
-      const animationPath = "/lottieFiles/register.json";
-      
-      const anim = lottie.loadAnimation({
-        container: animationContainer.current,
-        renderer: "svg",
-        loop: true,
-        autoplay: true,
-        path: animationPath,
-      });
-      
-      console.log("Register animation loaded with path:", animationPath);
-      
-      return () => anim.destroy();
-    }
-  }, []);
 
   // Normal-case styling for input fields with consistent styling
   const inputClass = (fieldError?: string) =>
@@ -247,9 +227,9 @@ const RegisterPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
-          {/* Left Side: Lottie Animation */}
+          {/* Left Side: Static Image */}
           <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 bg-transparent">
-            <div ref={animationContainer} className="w-full h-64" />
+            <img src="/images/register-illustration.svg" alt="Register" className="w-full max-w-xs" />
           </div>
           
           {/* Neon vertical gradient divider - only visible on desktop */}
@@ -264,9 +244,9 @@ const RegisterPage = () => {
               </p>
             </div>
 
-            {/* Mobile animation container */}
-            <div className="md:hidden w-full h-48 mb-4">
-              <div ref={animationContainer} className="w-full h-full" />
+            {/* Mobile illustration container */}
+            <div className="md:hidden w-full h-48 mb-4 flex items-center justify-center">
+              <img src="/images/register-illustration.svg" alt="Register" className="h-full" />
             </div>
 
             <form onSubmit={handleRegister}>

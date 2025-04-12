@@ -1,7 +1,6 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import lottie from "lottie-web";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
@@ -26,7 +25,6 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const animationContainer = useRef<HTMLDivElement>(null);
   const { login, isAuthenticated } = useAuth();
 
   // Redirect if already logged in
@@ -35,24 +33,6 @@ const LoginPage = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
-
-  useEffect(() => {
-    if (animationContainer.current) {
-      const animationPath = "/lottieFiles/login.json";
-      
-      const anim = lottie.loadAnimation({
-        container: animationContainer.current,
-        renderer: "svg",
-        loop: true,
-        autoplay: true,
-        path: animationPath,
-      });
-      
-      console.log("Lottie animation loaded with path:", animationPath);
-      
-      return () => anim.destroy();
-    }
-  }, []);
 
   // Normal-case styling for input fields with consistent styling like the provided example
   const inputClass = (fieldError?: string) =>
@@ -208,7 +188,7 @@ const LoginPage = () => {
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
           {/* Left side with illustration - only visible on desktop */}
           <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 bg-transparent">
-            <div ref={animationContainer} className="w-full h-64" />
+            <img src="/images/login-illustration.svg" alt="Login" className="w-full max-w-xs" />
           </div>
 
           {/* Neon vertical gradient divider - only visible on desktop */}
@@ -223,9 +203,9 @@ const LoginPage = () => {
               </p>
             </div>
 
-            {/* Mobile animation container */}
-            <div className="md:hidden w-full h-48 mb-6">
-              <div ref={animationContainer} className="w-full h-full" />
+            {/* Mobile illustration container */}
+            <div className="md:hidden w-full h-48 mb-6 flex items-center justify-center">
+              <img src="/images/login-illustration.svg" alt="Login" className="h-full" />
             </div>
 
             <form onSubmit={handleLogin}>

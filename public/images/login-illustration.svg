@@ -1,0 +1,32 @@
+
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stylized illustration of 4 people group -->
+  <!-- Person 1 (Woman with yellow top) -->
+  <path d="M50 150c0 0 2 30 10 35s18 5 25 0 10-35 10-35" fill="#FFD166"/>
+  <circle cx="72" cy="120" r="20" fill="#FFA8A8"/>
+  <path d="M50 150h45v100H50z" fill="#111"/>
+  <path d="M50 250h45l-5 30H55z" fill="#111"/>
+
+  <!-- Person 2 (Man with tie) -->
+  <path d="M100 150c0 0 2 30 10 35s18 5 25 0 10-35 10-35" fill="#F7E3DA"/>
+  <circle cx="122" cy="120" r="20" fill="#FFBB91"/>
+  <path d="M115 140v110h20V140" fill="#FFF"/>
+  <path d="M125 140v110" stroke="#FF5959" stroke-width="5"/>
+  <path d="M100 250h45l-5 30h-35z" fill="#262F58"/>
+
+  <!-- Person 3 (Man in blue) -->
+  <path d="M150 150c0 0 2 30 10 35s18 5 25 0 10-35 10-35" fill="#F7E3DA"/>
+  <circle cx="172" cy="120" r="20" fill="#FFBB91"/>
+  <path d="M150 150h45v100h-45z" fill="#1A365D"/>
+  <path d="M150 250h45l-5 30h-35z" fill="#1A365D"/>
+
+  <!-- Person 4 (Woman in red) -->
+  <path d="M200 150c0 0 2 30 10 35s18 5 25 0 10-35 10-35" fill="#D53F8C"/>
+  <circle cx="222" cy="120" r="20" fill="#FFA8A8"/>
+  <path d="M200 150h45v100h-45z" fill="#1A365D"/>
+  <path d="M200 250h45l-5 30h-35z" fill="#1A365D"/>
+
+  <!-- Briefcase for woman 1 -->
+  <rect x="65" y="170" width="25" height="30" fill="#89022B" />
+  <rect x="75" y="165" width="5" height="5" fill="#89022B" />
+</svg>
