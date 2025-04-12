@@ -1,9 +1,14 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import lottie from "lottie-web";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 
 interface LoginErrors {
   email?: string;
@@ -21,6 +26,7 @@ const LoginPage = () => {
   });
   const [errors, setErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const animationContainer = useRef<HTMLDivElement>(null);
   const { login, isAuthenticated } = useAuth();
@@ -34,7 +40,6 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (animationContainer.current) {
-      // Use the lottie animation from your files
       const animationPath = "/lottieFiles/login.json";
       
       const anim = lottie.loadAnimation({
@@ -51,17 +56,16 @@ const LoginPage = () => {
   // Helper function to update individual form fields
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    
+    // Clear error when field is updated
+    if (errors[field as keyof LoginErrors]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field as keyof LoginErrors];
+        return newErrors;
+      });
+    }
   };
-
-  // Normal-case to avoid forced uppercase
-  const inputClass = (fieldError?: string) =>
-    `w-full p-2 border rounded-lg focus:outline-none text-[#363636] 
-     placeholder:normal-case placeholder:text-sm normal-case
-     ${
-       fieldError
-         ? "border-red-500 focus:ring-2 focus:ring-red-500"
-         : "border-gray-300 focus:ring-2 focus:ring-[#5C5470]"
-     }`;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,119 +154,119 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4">
-      <div className="relative max-w-5xl w-full p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
-        <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
-          <div className="hidden md:block w-full md:w-1/2 p-8 flex items-center justify-center bg-transparent">
-            <div ref={animationContainer} className="w-full h-64" />
+    <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
+      <div className="relative w-full max-w-5xl p-[2px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[3rem] shadow-2xl">
+        <div className="flex flex-col md:flex-row bg-white rounded-[3rem] overflow-hidden min-h-[600px]">
+          {/* Left side with illustration */}
+          <div className="hidden md:flex md:w-1/2 bg-[#f8f8fc] items-center justify-center p-8">
+            <div ref={animationContainer} className="w-full h-80" />
           </div>
 
-          <div className="hidden md:block w-[2px] bg-gradient-to-b from-[#352F44] to-[#5C5470] shadow-[0_0_10px_3px_rgba(80,0,80,0.8)]" />
-
-          <div className="w-full md:w-1/2 p-6 md:p-8">
-            <div className="text-center mb-6 md:mb-8">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-[#352F44]">Login</h1>
-              <p className="text-gray-600 mt-2 text-sm md:text-base">Enter your details and let's get started.</p>
+          {/* Right side with login form */}
+          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-[#352F44] uppercase tracking-wide">Login</h1>
+              <p className="text-gray-600 mt-3 uppercase text-sm tracking-wide">
+                Enter your details and let's get started.
+              </p>
             </div>
 
-            <div className="md:hidden w-full h-48 mb-4">
+            {/* Mobile animation container */}
+            <div className="md:hidden w-full h-48 mb-6">
               <div ref={animationContainer} className="w-full h-full" />
             </div>
 
-            <form onSubmit={handleLogin}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-1">
-                  Email address
-                </label>
-                <input
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label className="uppercase text-sm font-medium text-gray-700">
+                  Email Address
+                </Label>
+                <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="ENTER YOUR EMAIL"
                   value={form.email}
                   onChange={(e) => updateField("email", e.target.value)}
-                  className={inputClass(errors.email)}
-                  required
+                  className={`bg-gray-100 border ${errors.email ? "border-red-500" : "border-gray-300"}`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-xs mt-1">{errors.email}</p>
                 )}
               </div>
 
-              <div className="mb-6">
-                <label className="block text-gray-700 text-sm font-bold mb-1">
+              <div className="space-y-2">
+                <Label className="uppercase text-sm font-medium text-gray-700">
                   Password
-                </label>
-                <input
+                </Label>
+                <Input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="ENTER YOUR PASSWORD"
                   value={form.password}
                   onChange={(e) => updateField("password", e.target.value)}
-                  className={inputClass(errors.password)}
-                  required
+                  className={`bg-gray-100 border ${errors.password ? "border-red-500" : "border-gray-300"}`}
                 />
                 {errors.password && (
                   <p className="text-red-500 text-xs mt-1">{errors.password}</p>
                 )}
               </div>
 
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <input type="checkbox" id="rememberMe" className="mr-2" />
-                  <label htmlFor="rememberMe" className="text-sm text-gray-700">
+                  <input 
+                    type="checkbox" 
+                    id="rememberMe" 
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                    className="mr-2" 
+                  />
+                  <label htmlFor="rememberMe" className="text-sm uppercase text-gray-700">
                     Remember Me
                   </label>
                 </div>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[#5C5470] hover:text-[#352F44] hover:underline"
+                  className="text-sm uppercase text-[#5C5470] hover:text-[#352F44]"
                 >
-                  Forgot password?
+                  Forgot your password?
                 </Link>
               </div>
 
               {errors.credentials && (
-                <p className="text-red-500 text-xs mb-4">{errors.credentials}</p>
+                <p className="text-red-500 text-xs text-center">{errors.credentials}</p>
               )}
 
-              <button
+              <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#5C5470] text-white py-2 rounded-lg hover:bg-[#352F44] transition duration-300 flex items-center justify-center"
+                className="w-full bg-[#5C5470] text-white py-3 rounded-lg hover:bg-[#352F44] uppercase font-medium"
               >
                 {isLoading ? (
-                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                ) : null}
-                {isLoading ? "LOGGING IN..." : "LOGIN"}
-              </button>
+                  <>
+                    <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                    Logging in...
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </Button>
             </form>
 
-            <div className="mt-6">
-              <p className="text-center text-gray-600 mb-4 text-sm">Or log in with:</p>
+            <div className="mt-8">
+              <div className="text-center text-sm text-gray-600 uppercase mb-4">Or log in with:</div>
               <div className="flex justify-center">
                 <button
                   type="button"
-                  className="
-                    flex items-center justify-center 
-                    w-10 h-10 
-                    bg-red-600 
-                    text-white 
-                    rounded-full 
-                    transition 
-                    duration-300 
-                    hover:scale-105
-                    hover:shadow-lg 
-                    hover:shadow-[#5C5470]/50
-                  "
+                  className="flex items-center justify-center w-12 h-12 bg-red-600 text-white rounded-full hover:scale-105 transition-transform duration-200"
                 >
-                  <FaGoogle className="w-5 h-5" />
+                  <FaGoogle className="w-6 h-6" />
                 </button>
               </div>
             </div>
 
-            <p className="text-center mt-6 text-gray-600 text-sm">
+            <p className="text-center mt-8 text-gray-600 text-sm uppercase">
               Don't have an account?{" "}
               <Link
                 to="/register"
-                className="text-[#5C5470] hover:text-[#352F44] hover:underline"
+                className="text-[#5C5470] hover:text-[#352F44] font-medium"
               >
                 Sign Up
               </Link>
