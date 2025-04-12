@@ -47,6 +47,9 @@ const LoginPage = () => {
         autoplay: true,
         path: animationPath,
       });
+      
+      console.log("Lottie animation loaded with path:", animationPath);
+      
       return () => anim.destroy();
     }
   }, []);
@@ -122,27 +125,65 @@ const LoginPage = () => {
           });
         }
       } else {
-        // Regular login with API
-        const result = await login(form.email, form.password);
-        
-        if (result.success) {
-          toast({
-            title: "Login successful",
-            description: "Welcome back!",
-            variant: "default",
-          });
+        // Check local storage for registered users (like in the provided sample code)
+        const storedUsers = localStorage.getItem("registeredUsers");
+        if (storedUsers) {
+          const users = JSON.parse(storedUsers);
+          const userExists = users.some(
+            (user: { email: string; password: string }) =>
+              user.email === form.email && user.password === form.password
+          );
           
-          navigate('/dashboard');
+          if (userExists) {
+            // Simulate login with stored user
+            const mockAccessToken = "mock-access-token";
+            const mockRefreshToken = "mock-refresh-token";
+            
+            const result = await login(form.email, form.password, mockAccessToken, mockRefreshToken);
+            
+            if (result.success) {
+              toast({
+                title: "Login successful",
+                description: "Welcome back!",
+                variant: "default",
+              });
+              
+              navigate('/dashboard');
+            }
+          } else {
+            toast({
+              title: "Login failed",
+              description: "User not found or incorrect credentials. Please register or try again.",
+              variant: "destructive",
+            });
+            
+            setErrors({
+              credentials: "User not found or incorrect credentials. Please register or try again.",
+            });
+          }
         } else {
-          toast({
-            title: "Login failed",
-            description: result.message || "Invalid credentials. Please try again.",
-            variant: "destructive",
-          });
+          // Regular login with API
+          const result = await login(form.email, form.password);
           
-          setErrors({
-            credentials: result.message || "Invalid credentials. Please try again.",
-          });
+          if (result.success) {
+            toast({
+              title: "Login successful",
+              description: "Welcome back!",
+              variant: "default",
+            });
+            
+            navigate('/dashboard');
+          } else {
+            toast({
+              title: "Login failed",
+              description: result.message || "Invalid credentials. Please try again.",
+              variant: "destructive",
+            });
+            
+            setErrors({
+              credentials: result.message || "Invalid credentials. Please try again.",
+            });
+          }
         }
       }
     } catch (error) {
@@ -165,7 +206,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
-          {/* Left side with illustration */}
+          {/* Left side with illustration - only visible on desktop */}
           <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 bg-transparent">
             <div ref={animationContainer} className="w-full h-64" />
           </div>
