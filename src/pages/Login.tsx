@@ -1,11 +1,12 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import lottie from "lottie-web";
 
 interface LoginErrors {
   email?: string;
@@ -26,6 +27,24 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  const lottieContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Initialize Lottie animation
+  useEffect(() => {
+    if (lottieContainerRef.current) {
+      const animation = lottie.loadAnimation({
+        container: lottieContainerRef.current,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '/lottieFiles/login.json',
+      });
+      
+      return () => {
+        animation.destroy();
+      };
+    }
+  }, []);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -186,9 +205,9 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
-          {/* Left side with illustration - only visible on desktop */}
+          {/* Left side with Lottie animation - only visible on desktop */}
           <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 bg-transparent">
-            <img src="/images/login-illustration.svg" alt="Login" className="w-full max-w-xs" />
+            <div ref={lottieContainerRef} className="w-full max-w-xs h-72"></div>
           </div>
 
           {/* Neon vertical gradient divider - only visible on desktop */}
@@ -203,9 +222,9 @@ const LoginPage = () => {
               </p>
             </div>
 
-            {/* Mobile illustration container */}
+            {/* Mobile animation container */}
             <div className="md:hidden w-full h-48 mb-6 flex items-center justify-center">
-              <img src="/images/login-illustration.svg" alt="Login" className="h-full" />
+              <div ref={lottieContainerRef} className="h-full w-full"></div>
             </div>
 
             <form onSubmit={handleLogin}>
