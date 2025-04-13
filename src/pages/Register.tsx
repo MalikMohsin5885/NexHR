@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import lottie from "lottie-web";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaFacebook, FaTwitter, FaLinkedin, FaWindows, FaApple } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 
@@ -55,8 +55,8 @@ const RegisterPage = () => {
           {/* Right Side: Register Form */}
           <div className="w-full md:w-1/2 p-8">
             <div className="text-center mb-6">
-              <h1 className="text-4xl font-extrabold text-[#352F44]">Sign Up</h1>
-              <p className="text-gray-600 mt-2">
+              <h1 className="text-4xl font-extrabold text-[#352F44] uppercase">Sign Up</h1>
+              <p className="text-gray-600 mt-2 uppercase">
                 Experience NexHR—Get started today!
               </p>
             </div>
@@ -68,24 +68,36 @@ const RegisterPage = () => {
 
             <RegisterForm onSuccess={() => navigate('/login')} />
 
-            {/* Social Login Button */}
+            {/* Social Login Buttons */}
             <div className="mt-6">
-              <p className="text-center text-gray-600 mb-4">Or sign up with:</p>
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50"
-                >
-                  <FaGoogle className="w-6 h-6" />
+              <p className="text-center text-gray-600 mb-4 uppercase">Or sign up with:</p>
+              <div className="flex justify-center gap-2">
+                <button className="p-2 rounded-full bg-[#0077B5] text-white">
+                  <FaWindows className="w-5 h-5" />
+                </button>
+                <button className="p-2 rounded-full bg-[#0077B5] text-white">
+                  <FaLinkedin className="w-5 h-5" />
+                </button>
+                <button className="p-2 rounded-full bg-[#DB4437] text-white">
+                  <FaGoogle className="w-5 h-5" />
+                </button>
+                <button className="p-2 rounded-full bg-[#1877F2] text-white">
+                  <FaFacebook className="w-5 h-5" />
+                </button>
+                <button className="p-2 rounded-full bg-[#1DA1F2] text-white">
+                  <FaTwitter className="w-5 h-5" />
+                </button>
+                <button className="p-2 rounded-full bg-black text-white">
+                  <FaApple className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
-            <p className="text-center mt-6 text-gray-600">
+            <p className="text-center mt-6 text-gray-600 uppercase">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-[#5C5470] hover:text-[#352F44] hover:underline"
+                className="text-[#5C5470] hover:text-[#352F44] hover:underline uppercase"
               >
                 Sign In
               </Link>
