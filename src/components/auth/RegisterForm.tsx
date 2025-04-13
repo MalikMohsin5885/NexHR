@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,90 +56,40 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     setIsLoading(true);
 
     try {
-      // Log form data being sent
-      console.log('Sending registration data:', {
+      // Corrected payload to match Django serializer field names
+      const response = await api.post('http://127.0.0.1:8000/api/auth/register/', {
+        fname: data.fname,
+        lname: data.lname,
         email: data.email,
-        password1: data.password,
-        password2: data.password,
-        first_name: data.fname,
-        last_name: data.lname,
-        phone_number: data.phone,
+        phone: data.phone,
+        password: data.password,
       });
 
-      // ✅ Make API request to Django backend (corrected URL & payload format)
-      const response = await api.post('/auth/registration/', {
-        email: data.email,
-        password1: data.password,
-        password2: data.password,
-        first_name: data.fname,
-        last_name: data.lname,
-        phone_number: data.phone,
-      });
-
-      // Handle successful registration
       if (response.status === 201) {
-        console.log('Registration successful:', response.data);
-
-        // Store user in localStorage for local testing
-        const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
-        users.push({
-          firstName: data.fname,
-          lastName: data.lname,
-          email: data.email,
-          phoneNo: data.phone,
-          password: data.password,
-        });
-        localStorage.setItem("registeredUsers", JSON.stringify(users));
-
         toast({
-          title: "Registration successful",
-          description: "Your account has been created. Please log in.",
-          variant: "default",
+          title: "Success",
+          description: "Account created! Please verify your email.",
         });
 
-        if (onSuccess) {
-          onSuccess();
-        } else {
-          navigate("/login");
-        }
+        if (onSuccess) onSuccess();
+        else navigate("/login");
       }
     } catch (error: any) {
       console.error('Registration error:', error);
 
-      if (error.response?.data) {
-        const apiErrors = error.response.data;
+      const apiErrors = error.response?.data;
 
-        if (apiErrors.email) {
-          form.setError("email", { message: apiErrors.email[0] });
-        }
-        if (apiErrors.first_name) {
-          form.setError("fname", { message: apiErrors.first_name[0] });
-        }
-        if (apiErrors.last_name) {
-          form.setError("lname", { message: apiErrors.last_name[0] });
-        }
-        if (apiErrors.phone_number) {
-          form.setError("phone", { message: apiErrors.phone_number[0] });
-        }
-        if (apiErrors.password1) {
-          form.setError("password", { message: apiErrors.password1[0] });
-        }
+      if (apiErrors?.email) form.setError("email", { message: apiErrors.email[0] });
+      if (apiErrors?.fname) form.setError("fname", { message: apiErrors.fname[0] });
+      if (apiErrors?.lname) form.setError("lname", { message: apiErrors.lname[0] });
+      if (apiErrors?.phone) form.setError("phone", { message: apiErrors.phone[0] });
+      if (apiErrors?.password) form.setError("password", { message: apiErrors.password[0] });
 
-        if (!Object.keys(apiErrors).some(key =>
-          ['email', 'first_name', 'last_name', 'phone_number', 'password1'].includes(key))) {
-          toast({
-            title: "Registration failed",
-            description: "Please check your information and try again.",
-            variant: "destructive",
-          });
-        }
-      } else {
-        toast({
-          title: "Connection error",
-          description: "Could not connect to the server. Please try again later.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Registration Failed",
+        description: "Please fix the errors and try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
