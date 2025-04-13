@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import lottie from "lottie-web";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import lottie from "lottie-web";
 
 interface LoginErrors {
   email?: string;
@@ -26,25 +26,8 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  const animationContainer = useRef<HTMLDivElement>(null);
   const { login, isAuthenticated } = useAuth();
-  const lottieContainerRef = useRef<HTMLDivElement>(null);
-  
-  // Initialize Lottie animation
-  useEffect(() => {
-    if (lottieContainerRef.current) {
-      const animation = lottie.loadAnimation({
-        container: lottieContainerRef.current,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: '/lottieFiles/login.json',
-      });
-      
-      return () => {
-        animation.destroy();
-      };
-    }
-  }, []);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -52,6 +35,24 @@ const LoginPage = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (animationContainer.current) {
+      const animationPath = "/lottieFiles/login.json";
+      
+      const anim = lottie.loadAnimation({
+        container: animationContainer.current,
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        path: animationPath,
+      });
+      
+      console.log("Lottie animation loaded with path:", animationPath);
+      
+      return () => anim.destroy();
+    }
+  }, []);
 
   // Normal-case styling for input fields with consistent styling like the provided example
   const inputClass = (fieldError?: string) =>
@@ -205,9 +206,9 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
-          {/* Left side with Lottie animation - only visible on desktop */}
+          {/* Left side with illustration - only visible on desktop */}
           <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 bg-transparent">
-            <div ref={lottieContainerRef} className="w-full max-w-xs h-72"></div>
+            <div ref={animationContainer} className="w-full h-64" />
           </div>
 
           {/* Neon vertical gradient divider - only visible on desktop */}
@@ -223,8 +224,8 @@ const LoginPage = () => {
             </div>
 
             {/* Mobile animation container */}
-            <div className="md:hidden w-full h-48 mb-6 flex items-center justify-center">
-              <div ref={lottieContainerRef} className="h-full w-full"></div>
+            <div className="md:hidden w-full h-48 mb-6">
+              <div ref={animationContainer} className="w-full h-full" />
             </div>
 
             <form onSubmit={handleLogin}>
