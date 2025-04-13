@@ -17,11 +17,6 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    console.log(`Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
-    if (config.data) {
-      console.log('Request payload:', config.data);
-    }
-    
     const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -35,10 +30,7 @@ api.interceptors.request.use(
 
 // Response interceptor to handle token refresh
 api.interceptors.response.use(
-  (response) => {
-    console.log(`Response from ${response.config.url}:`, response.status, response.statusText);
-    return response;
-  },
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
     
@@ -52,8 +44,6 @@ api.interceptors.response.use(
       });
       return Promise.reject(error);
     }
-    
-    console.error(`Error ${error.response?.status} from ${originalRequest.url}:`, error.response?.data);
     
     // If the error is 401 and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
