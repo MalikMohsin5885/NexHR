@@ -59,26 +59,28 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     try {
       // Log form data being sent
       console.log('Sending registration data:', {
+        email: data.email,
+        password1: data.password,
+        password2: data.password,
         first_name: data.fname,
         last_name: data.lname,
-        email: data.email,
         phone_number: data.phone,
-        password: data.password,
       });
 
-      // Make API request to Django backend
-      const response = await api.post('/auth/register/', {
+      // ✅ Make API request to Django backend (corrected URL & payload format)
+      const response = await api.post('/auth/registration/', {
+        email: data.email,
+        password1: data.password,
+        password2: data.password,
         first_name: data.fname,
         last_name: data.lname,
-        email: data.email,
         phone_number: data.phone,
-        password: data.password,
       });
 
       // Handle successful registration
       if (response.status === 201) {
         console.log('Registration successful:', response.data);
-        
+
         // Store user in localStorage for local testing
         const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
         users.push({
@@ -89,15 +91,13 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           password: data.password,
         });
         localStorage.setItem("registeredUsers", JSON.stringify(users));
-        
-        // Show success message
+
         toast({
           title: "Registration successful",
           description: "Your account has been created. Please log in.",
           variant: "default",
         });
-        
-        // Execute success callback if provided
+
         if (onSuccess) {
           onSuccess();
         } else {
@@ -106,12 +106,10 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       }
     } catch (error: any) {
       console.error('Registration error:', error);
-      
-      // Handle API error responses
+
       if (error.response?.data) {
         const apiErrors = error.response.data;
-        
-        // Map backend field errors to form fields
+
         if (apiErrors.email) {
           form.setError("email", { message: apiErrors.email[0] });
         }
@@ -124,12 +122,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         if (apiErrors.phone_number) {
           form.setError("phone", { message: apiErrors.phone_number[0] });
         }
-        if (apiErrors.password) {
-          form.setError("password", { message: apiErrors.password[0] });
+        if (apiErrors.password1) {
+          form.setError("password", { message: apiErrors.password1[0] });
         }
-        
-        // Show generic error if no specific field errors
-        if (!Object.keys(apiErrors).some(key => ['email', 'first_name', 'last_name', 'phone_number', 'password'].includes(key))) {
+
+        if (!Object.keys(apiErrors).some(key =>
+          ['email', 'first_name', 'last_name', 'phone_number', 'password1'].includes(key))) {
           toast({
             title: "Registration failed",
             description: "Please check your information and try again.",
@@ -137,7 +135,6 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           });
         }
       } else {
-        // Network or other errors
         toast({
           title: "Connection error",
           description: "Could not connect to the server. Please try again later.",
