@@ -1,9 +1,10 @@
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Phone, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import api from "@/lib/api";
 
@@ -56,7 +57,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     setIsLoading(true);
 
     try {
-      // Corrected payload to match Django serializer field names
+      // Use the API endpoint provided by the user
       const response = await api.post('http://127.0.0.1:8000/api/auth/register/', {
         fname: data.fname,
         lname: data.lname,

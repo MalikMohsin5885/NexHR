@@ -41,11 +41,10 @@ const RegisterPage = () => {
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
           {/* Left Side: Lottie Animation - visible on desktop */}
-          <div className="hidden md:flex md:w-1/2 items-center justify-center p-8">
+          <div className="hidden md:block md:w-1/2 items-center justify-center p-8">
             <div 
               ref={animationContainer} 
-              className="w-full h-full min-h-[400px]" 
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              className="w-full h-full min-h-[400px] flex items-center justify-center" 
             />
           </div>
           
