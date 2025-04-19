@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { toast } from "@/components/ui/use-toast";
 
+// Use environment variable or fallback with full URL for development
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
 
 // Create axios instance
@@ -12,6 +13,8 @@ const api = axios.create({
   },
   // Add timeout to prevent long hanging requests
   timeout: 15000, // Increased timeout for slower connections
+  // Enable credentials to send cookies cross-origin
+  withCredentials: true,
 });
 
 // Request interceptor to add auth token
@@ -26,7 +29,8 @@ api.interceptors.request.use(
     console.log(`API Request to ${config.url}:`, { 
       method: config.method, 
       data: config.data,
-      headers: config.headers 
+      headers: config.headers,
+      baseURL: config.baseURL
     });
     
     return config;
@@ -62,6 +66,24 @@ api.interceptors.response.use(
     // Network error handling
     if (!error.response) {
       console.error('Network error detected:', error);
+      
+      // Special handling for CORS errors
+      if (error.message === 'Network Error' && originalRequest?.url) {
+        const requestUrl = originalRequest.baseURL + originalRequest.url;
+        if (requestUrl.includes('127.0.0.1') || requestUrl.includes('localhost')) {
+          toast({
+            title: "Local Server Connection Error",
+            description: "Cannot connect to your local development server. Make sure your Django server is running and CORS is configured correctly.",
+            variant: "destructive",
+          });
+          console.error('CORS ERROR HELP: Make sure your Django server has django-cors-headers installed and properly configured with:');
+          console.error('1. CORS_ALLOW_ALL_ORIGINS = True or CORS_ALLOWED_ORIGINS = ["https://preview--hr-hub-navigator.lovable.app"]');
+          console.error('2. CORS_ALLOW_CREDENTIALS = True');
+          console.error('3. corsheaders.middleware.CorsMiddleware added to MIDDLEWARE (before other middleware)');
+          return Promise.reject(error);
+        }
+      }
+      
       toast({
         title: "Network Error",
         description: "Cannot connect to the server. Please check your connection and try again.",

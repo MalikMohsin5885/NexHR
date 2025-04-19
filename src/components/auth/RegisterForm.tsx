@@ -62,8 +62,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       console.log("Registration data:", data);
       console.log("Sending registration request to the API endpoint");
       
+      // Explicitly show the full URL being used for debugging
+      const apiUrl = '/auth/register/';
+      console.log(`Full API URL: ${api.defaults.baseURL}${apiUrl}`);
+      
       // Use the API instance with the correct URL (without hardcoding the full URL)
-      const response = await api.post('/auth/register/', {
+      const response = await api.post(apiUrl, {
         fname: data.fname,
         lname: data.lname,
         email: data.email,
@@ -90,6 +94,16 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         console.error('Server response:', error.response.status, error.response.data);
       } else if (error.request) {
         console.error('No response from server. Request details:', error.request);
+        
+        // CORS issues often result in error.request without error.response
+        if (error.message === 'Network Error' || !error.response) {
+          console.error('This might be a CORS issue. Check your Django server configuration:');
+          console.error('1. Install django-cors-headers');
+          console.error('2. Add corsheaders to INSTALLED_APPS');
+          console.error('3. Add corsheaders.middleware.CorsMiddleware to MIDDLEWARE');
+          console.error('4. Set CORS_ALLOW_ALL_ORIGINS = True or CORS_ALLOWED_ORIGINS = ["https://preview--hr-hub-navigator.lovable.app"]');
+          console.error('5. Set CORS_ALLOW_CREDENTIALS = True');
+        }
       } else {
         console.error('Error details:', error.message);
       }
@@ -107,7 +121,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       toast({
         title: "Registration Failed",
-        description: errorMessage || "Please fix the errors and try again.",
+        description: error.message === 'Network Error' 
+          ? "Cannot connect to the server. Please check if your backend is running and CORS is properly configured." 
+          : (errorMessage || "Please fix the errors and try again."),
         variant: "destructive",
       });
     } finally {
