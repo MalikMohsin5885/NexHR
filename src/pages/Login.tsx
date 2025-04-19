@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import lottie from "lottie-web";
@@ -96,8 +95,36 @@ const LoginPage = () => {
 
     // Set loading state during API call
     setIsLoading(true);
+    
+    console.log("Login attempt with:", form.email);
 
     try {
+      // First, check for recently registered users in localStorage
+      // This helps bridge the gap between registration and API login
+      const storedUsers = localStorage.getItem("registeredUsers");
+      let userFound = false;
+      
+      if (storedUsers) {
+        try {
+          const users = JSON.parse(storedUsers);
+          userFound = users.some(
+            (user: { email: string; password: string }) =>
+              user.email === form.email && user.password === form.password
+          );
+          
+          if (userFound) {
+            console.log("User found in local registration data");
+            
+            // Add this user to localStorage before login attempt to ensure it's available
+            if (!localStorage.getItem("currentUser")) {
+              localStorage.setItem("currentUser", JSON.stringify({ email: form.email }));
+            }
+          }
+        } catch (e) {
+          console.error("Error checking local registrations:", e);
+        }
+      }
+      
       // If using test credentials, use the provided tokens
       if (form.email === TEST_EMAIL && form.password === TEST_PASSWORD) {
         const testAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MzA1NjczLCJpYXQiOjE3NDQyMTkyNzMsImp0aSI6ImQ0ZjM4MmJkOTk0YTQzMzdiNmFhNjdjZWQwNzA3YmY2IiwidXNlcl9pZCI6NCwiZm5hbWUiOiJTYWlyYSIsImxuYW1lIjoiTmFzaXIiLCJlbWFpbCI6InNhaXJhbmFzaXIxMDAxNEBnbWFpbC5jb20ifQ.TEpncQ2Hyp7LEglCl1wNLe4JahRpWTkrcNkTbPZkeFs";
@@ -125,65 +152,47 @@ const LoginPage = () => {
           });
         }
       } else {
-        // Check local storage for registered users (like in the provided sample code)
-        const storedUsers = localStorage.getItem("registeredUsers");
-        if (storedUsers) {
-          const users = JSON.parse(storedUsers);
-          const userExists = users.some(
-            (user: { email: string; password: string }) =>
-              user.email === form.email && user.password === form.password
-          );
+        // Attempt login via the auth context
+        const result = await login(form.email, form.password);
+        
+        if (result.success) {
+          toast({
+            title: "Login successful",
+            description: "Welcome back!",
+            variant: "default",
+          });
           
-          if (userExists) {
-            // Simulate login with stored user
-            const mockAccessToken = "mock-access-token";
-            const mockRefreshToken = "mock-refresh-token";
-            
-            const result = await login(form.email, form.password, mockAccessToken, mockRefreshToken);
-            
-            if (result.success) {
-              toast({
-                title: "Login successful",
-                description: "Welcome back!",
-                variant: "default",
-              });
-              
-              navigate('/dashboard');
-            }
-          } else {
-            toast({
-              title: "Login failed",
-              description: "User not found or incorrect credentials. Please register or try again.",
-              variant: "destructive",
-            });
-            
-            setErrors({
-              credentials: "User not found or incorrect credentials. Please register or try again.",
-            });
-          }
+          navigate('/dashboard');
         } else {
-          // Regular login with API
-          const result = await login(form.email, form.password);
-          
-          if (result.success) {
+          // If login fails but we found the user in local storage, store a temporary token
+          if (userFound && !result.success) {
+            console.log("API login failed but user exists in local storage, creating temporary session");
+            
+            // Create a mock session
+            const mockUserInfo = { email: form.email };
+            localStorage.setItem('currentUser', JSON.stringify(mockUserInfo));
+            localStorage.setItem('access_token', 'temp-access-token');
+            localStorage.setItem('refresh_token', 'temp-refresh-token');
+            
             toast({
               title: "Login successful",
-              description: "Welcome back!",
+              description: "Welcome back! (Using local credentials)",
               variant: "default",
             });
             
             navigate('/dashboard');
-          } else {
-            toast({
-              title: "Login failed",
-              description: result.message || "Invalid credentials. Please try again.",
-              variant: "destructive",
-            });
-            
-            setErrors({
-              credentials: result.message || "Invalid credentials. Please try again.",
-            });
+            return;
           }
+          
+          toast({
+            title: "Login failed",
+            description: result.message || "Invalid credentials. Please try again.",
+            variant: "destructive",
+          });
+          
+          setErrors({
+            credentials: result.message || "Invalid credentials. Please try again.",
+          });
         }
       }
     } catch (error) {

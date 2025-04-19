@@ -48,6 +48,31 @@ api.interceptors.response.use(
       status: response.status,
       data: response.data
     });
+    
+    // Handle successful registration specifically
+    if (response.config.url?.includes('register') && response.status === 201) {
+      // Store the user in localStorage for easier login later
+      try {
+        const userData = response.config.data;
+        if (typeof userData === 'string') {
+          const parsedData = JSON.parse(userData);
+          
+          // Store in registeredUsers array to access during login
+          const storedUsers = localStorage.getItem('registeredUsers') || '[]';
+          const users = JSON.parse(storedUsers);
+          users.push({
+            email: parsedData.email,
+            password: parsedData.password
+          });
+          localStorage.setItem('registeredUsers', JSON.stringify(users));
+          
+          console.log('User registration data stored for easier login');
+        }
+      } catch (e) {
+        console.error('Error storing registration data:', e);
+      }
+    }
+    
     return response;
   },
   async (error) => {

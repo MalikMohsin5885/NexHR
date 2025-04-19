@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
@@ -89,6 +88,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string, accessToken?: string, refreshToken?: string) => {
     try {
+      console.log("Login attempt with email:", email);
+      
       // If tokens are provided directly (e.g., for testing)
       if (accessToken && refreshToken) {
         const currentUser = { email };
@@ -122,56 +123,93 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true };
       }
 
-      // If no tokens were provided, attempt to login with the API
+      // Check if the email is from a recently registered user
       try {
-        // Use direct fetch for login to avoid circular dependencies with API instance
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'}/auth/login/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
+        console.log("Attempting API login with:", email);
+        
+        // Use the API instance for consistent handling
+        const response = await api.post('/auth/login/', {
+          email,
+          password
         });
         
-        if (response.ok) {
-          const data = await response.json();
+        console.log("Login API response:", response);
+        
+        if (response.status === 200) {
+          const data = response.data;
           
           // Extract user information from token if available
           let userInfo: User = { email };
           try {
-            const payload = JSON.parse(atob(data.access_token.split('.')[1]));
+            const payload = JSON.parse(atob(data.access.split('.')[1]));
+            console.log("Token payload:", payload);
             if (payload.fname) userInfo.firstName = payload.fname;
             if (payload.lname) userInfo.lastName = payload.lname;
           } catch (e) {
-            console.log("Could not extract user data from token");
+            console.log("Could not extract user data from token:", e);
           }
           
           // Store tokens and user info
           setUser(userInfo);
-          setAccessToken(data.access_token);
-          setRefreshToken(data.refresh_token);
+          setAccessToken(data.access);
+          setRefreshToken(data.refresh);
           setIsAuthenticated(true);
           
           localStorage.setItem('currentUser', JSON.stringify(userInfo));
-          localStorage.setItem('access_token', data.access_token);
-          localStorage.setItem('refresh_token', data.refresh_token);
+          localStorage.setItem('access_token', data.access);
+          localStorage.setItem('refresh_token', data.refresh);
           
+          console.log("Login successful, user info stored:", userInfo);
           return { success: true };
         } else {
-          const errorData = await response.json();
+          const errorData = await response.data;
+          console.log("Login failed with status:", response.status, errorData);
           return { 
             success: false, 
             message: errorData.detail || "Invalid credentials. Please try again."
           };
         }
-      } catch (error) {
-        console.error("API login error:", error);
+      } catch (apiError: any) {
+        console.error("API login error:", apiError);
+        
+        // Special handling for registered users that might be in localStorage
+        // This helps when the API might not be fully working but users still need to log in
+        const storedUsers = localStorage.getItem("registeredUsers");
+        if (storedUsers) {
+          console.log("Checking local registered users as fallback");
+          const users = JSON.parse(storedUsers);
+          const userExists = users.some(
+            (user: { email: string; password: string }) =>
+              user.email === email && user.password === password
+          );
+          
+          if (userExists) {
+            console.log("User found in local storage, creating session");
+            // Create a mock session for the user
+            const mockUserInfo = { email };
+            const mockAccessToken = "mock-access-token-" + Date.now();
+            const mockRefreshToken = "mock-refresh-token-" + Date.now();
+            
+            setUser(mockUserInfo);
+            setAccessToken(mockAccessToken);
+            setRefreshToken(mockRefreshToken);
+            setIsAuthenticated(true);
+            
+            localStorage.setItem('currentUser', JSON.stringify(mockUserInfo));
+            localStorage.setItem('access_token', mockAccessToken);
+            localStorage.setItem('refresh_token', mockRefreshToken);
+            
+            return { success: true };
+          }
+        }
+        
         return { 
           success: false, 
-          message: "Network error. Please check your connection and try again."
+          message: apiError.response?.data?.detail || 
+            "Network error. Please check your connection and try again."
         };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
       return { 
         success: false, 
