@@ -57,7 +57,10 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     setIsLoading(true);
 
     try {
-      // Use the API endpoint provided by the user
+      console.log("Sending registration request to:", 'http://127.0.0.1:8000/api/auth/register/');
+      console.log("With payload:", data);
+      
+      // Use the API endpoint directly
       const response = await api.post('http://127.0.0.1:8000/api/auth/register/', {
         fname: data.fname,
         lname: data.lname,
@@ -65,6 +68,8 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         phone: data.phone,
         password: data.password,
       });
+
+      console.log("Registration response:", response);
 
       if (response.status === 201) {
         toast({
@@ -77,6 +82,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       }
     } catch (error: any) {
       console.error('Registration error:', error);
+      console.log("Error response data:", error.response?.data);
 
       const apiErrors = error.response?.data;
 
@@ -88,7 +94,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       toast({
         title: "Registration Failed",
-        description: "Please fix the errors and try again.",
+        description: error.response?.data?.detail || "Please fix the errors and try again.",
         variant: "destructive",
       });
     } finally {

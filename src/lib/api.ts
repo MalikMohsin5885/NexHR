@@ -21,18 +21,43 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Log all outgoing requests for debugging
+    console.log(`API Request to ${config.url}:`, { 
+      method: config.method, 
+      data: config.data,
+      headers: config.headers 
+    });
+    
     return config;
   },
   (error) => {
+    console.error('API Request Error:', error);
     return Promise.reject(error);
   }
 );
 
 // Response interceptor to handle token refresh
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`API Response from ${response.config.url}:`, {
+      status: response.status,
+      data: response.data
+    });
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
+    
+    // Log detailed error information
+    console.error('API Response Error:', {
+      url: originalRequest?.url,
+      method: originalRequest?.method,
+      data: originalRequest?.data,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      responseData: error.response?.data
+    });
     
     // Network error handling
     if (!error.response) {

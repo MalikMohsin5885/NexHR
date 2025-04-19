@@ -207,8 +207,12 @@ const LoginPage = () => {
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
           {/* Left side with illustration - only visible on desktop */}
-          <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 bg-transparent">
-            <div ref={animationContainer} className="w-full h-64" />
+          <div className="hidden md:flex md:w-1/2 md:items-center md:justify-center p-8">
+            <div 
+              ref={animationContainer} 
+              className="w-full h-full"
+              style={{ minHeight: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}
+            />
           </div>
 
           {/* Neon vertical gradient divider - only visible on desktop */}

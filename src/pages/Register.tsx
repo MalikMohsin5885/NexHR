@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import lottie from "lottie-web";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaWindows, FaLinkedin, FaFacebook, FaTwitter, FaApple } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 
@@ -41,10 +41,11 @@ const RegisterPage = () => {
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
           {/* Left Side: Lottie Animation - visible on desktop */}
-          <div className="hidden md:block md:w-1/2 items-center justify-center p-8">
+          <div className="hidden md:flex md:w-1/2 md:items-center md:justify-center p-8">
             <div 
               ref={animationContainer} 
-              className="w-full h-full min-h-[400px] flex items-center justify-center" 
+              className="w-full h-full"
+              style={{ minHeight: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}
             />
           </div>
           
@@ -67,15 +68,45 @@ const RegisterPage = () => {
 
             <RegisterForm onSuccess={() => navigate('/login')} />
 
-            {/* Social Login Button */}
+            {/* Social Login Buttons */}
             <div className="mt-6">
               <p className="text-center text-gray-600 mb-4">Or sign up with:</p>
-              <div className="flex justify-center">
+              <div className="flex justify-center space-x-4">
                 <button
                   type="button"
-                  className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50"
+                  className="flex items-center justify-center w-10 h-10 bg-[#0078D4] text-white rounded-full transition duration-300 hover:scale-105"
                 >
-                  <FaGoogle className="w-6 h-6" />
+                  <FaWindows className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-10 h-10 bg-[#0A66C2] text-white rounded-full transition duration-300 hover:scale-105"
+                >
+                  <FaLinkedin className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105"
+                >
+                  <FaGoogle className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-10 h-10 bg-[#1877F2] text-white rounded-full transition duration-300 hover:scale-105"
+                >
+                  <FaFacebook className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-10 h-10 bg-[#1DA1F2] text-white rounded-full transition duration-300 hover:scale-105"
+                >
+                  <FaTwitter className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-full transition duration-300 hover:scale-105"
+                >
+                  <FaApple className="w-5 h-5" />
                 </button>
               </div>
             </div>
