@@ -6,7 +6,8 @@ import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import api from "@/lib/api";
+import api, { handleApiError } from "@/lib/api";
+import { extractErrorMessage } from "@/lib/apiHelpers";
 
 import {
   Form,
@@ -57,11 +58,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     setIsLoading(true);
 
     try {
-      console.log("Sending registration request to:", 'http://127.0.0.1:8000/api/auth/register/');
-      console.log("With payload:", data);
+      // Log the registration request details
+      console.log("Registration data:", data);
+      console.log("Sending registration request to the API endpoint");
       
-      // Use the API endpoint directly
-      const response = await api.post('http://127.0.0.1:8000/api/auth/register/', {
+      // Use the API instance with the correct URL (without hardcoding the full URL)
+      const response = await api.post('/auth/register/', {
         fname: data.fname,
         lname: data.lname,
         email: data.email,
@@ -82,10 +84,21 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       }
     } catch (error: any) {
       console.error('Registration error:', error);
-      console.log("Error response data:", error.response?.data);
+      
+      // Log detailed error information
+      if (error.response) {
+        console.error('Server response:', error.response.status, error.response.data);
+      } else if (error.request) {
+        console.error('No response from server. Request details:', error.request);
+      } else {
+        console.error('Error details:', error.message);
+      }
 
+      // Extract error message for display
+      const errorMessage = extractErrorMessage(error);
+      
+      // Set form field errors if available
       const apiErrors = error.response?.data;
-
       if (apiErrors?.email) form.setError("email", { message: apiErrors.email[0] });
       if (apiErrors?.fname) form.setError("fname", { message: apiErrors.fname[0] });
       if (apiErrors?.lname) form.setError("lname", { message: apiErrors.lname[0] });
@@ -94,7 +107,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       toast({
         title: "Registration Failed",
-        description: error.response?.data?.detail || "Please fix the errors and try again.",
+        description: errorMessage || "Please fix the errors and try again.",
         variant: "destructive",
       });
     } finally {
