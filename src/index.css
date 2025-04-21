@@ -1,0 +1,171 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Updated color palette based on the provided image */
+    --background: 0 0% 100%;
+    --foreground: 252 10% 19%; /* dark-purple-1 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 252 10% 19%; /* dark-purple-1 */
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 252 10% 19%; /* dark-purple-1 */
+
+    --primary: 265 83% 65%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 251 10% 23%; /* dark-purple-2 */
+    --secondary-foreground: 240 5% 95%; /* ghost-white */
+
+    --muted: 246 8% 87%; /* lavender */
+    --muted-foreground: 249 16% 51%; /* english-violet, but lighter for readability */
+
+    --accent: 246 20% 91%; /* lavender, but slightly adjusted */
+    --accent-foreground: 251 10% 23%; /* dark-purple-2 */
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 246 8% 87%; /* lavender */
+    --input: 246 8% 87%; /* lavender */
+    --ring: 251 10% 23%; /* dark-purple-2 */
+
+    --radius: 0.75rem;
+
+    /* Updated sidebar colors */
+    --sidebar-background: 0 0% 100%; /* white background as in the image */
+    --sidebar-foreground: 252 10% 19%; /* dark text */
+    --sidebar-primary: 265 83% 65%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 251 10% 23%; /* dark-purple-2 */
+    --sidebar-accent-foreground: 240 5% 95%; /* ghost-white */
+    --sidebar-border: 220 13% 91%; /* light gray border as in the image */
+    --sidebar-ring: 265 83% 65%;
+
+    --success: 142 72% 29%;
+    --success-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 210 40% 98%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 210 40% 98%;
+  }
+
+  .dark {
+    --background: 252 10% 19%; /* dark-purple-1 */
+    --foreground: 240 5% 95%; /* ghost-white */
+
+    --card: 251 10% 23%; /* dark-purple-2 */
+    --card-foreground: 240 5% 95%; /* ghost-white */
+
+    --popover: 251 10% 23%; /* dark-purple-2 */
+    --popover-foreground: 240 5% 95%; /* ghost-white */
+
+    --primary: 265 83% 65%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 251 10% 23%; /* dark-purple-2 */
+    --secondary-foreground: 240 5% 95%; /* ghost-white */
+
+    --muted: 249 13% 40%; /* english-violet */
+    --muted-foreground: 246 8% 75%; /* lighter lavender */
+
+    --accent: 249 13% 40%; /* english-violet */
+    --accent-foreground: 240 5% 95%; /* ghost-white */
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 249 13% 40%; /* english-violet */
+    --input: 249 13% 40%; /* english-violet */
+    --ring: 246 8% 87%; /* lavender */
+
+    /* Dark mode sidebar colors */
+    --sidebar-background: 252 10% 19%; /* dark-purple-1 */
+    --sidebar-foreground: 246 8% 87%; /* lavender */
+    --sidebar-primary: 265 83% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 251 10% 30%; /* dark-purple-2, but slightly lighter */
+    --sidebar-accent-foreground: 246 8% 87%; /* lavender */
+    --sidebar-border: 251 10% 30%; /* dark-purple-2, but slightly lighter */
+    --sidebar-ring: 265 83% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* ... keep existing code (the component classes) */
+  .hr-card {
+    @apply bg-card text-card-foreground rounded-xl border border-border/40 shadow-soft overflow-hidden transition-all duration-200 hover:shadow-soft-lg;
+  }
+
+  .hr-tag {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+
+  .hr-progress-dot {
+    @apply w-2 h-2 rounded-full transition-all duration-300;
+  }
+
+  .story-link {
+    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  }
+  
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+  
+  .pulse {
+    @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20;
+  }
+
+  .dashboard-grid {
+    @apply grid gap-5 w-full;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  @media (min-width: 1024px) {
+    .dashboard-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .dashboard-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all;
+  }
+
+  .sidebar-link-active {
+    @apply bg-sidebar-primary text-sidebar-primary-foreground;
+  }
+  
+  .sidebar-link-inactive {
+    @apply text-sidebar-foreground hover:bg-sidebar-accent;
+  }
+}
