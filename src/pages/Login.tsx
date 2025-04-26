@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import lottie from "lottie-web";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRedirect } from '@/contexts/RedirectContext';
+
 
 interface LoginErrors {
   email?: string;
@@ -13,63 +14,57 @@ interface LoginErrors {
   credentials?: string;
 }
 
-const TEST_EMAIL = "admin@admin.com";
-const TEST_PASSWORD = "admin";
-
 const LoginPage = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<LoginErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const { redirectPath, setRedirectPath } = useRedirect();
   const navigate = useNavigate();
-  const animationContainer = useRef<HTMLDivElement>(null);
   const { login, isAuthenticated } = useAuth();
+  const desktopAnimationContainer = useRef<HTMLDivElement>(null);
+  const mobileAnimationContainer = useRef<HTMLDivElement>(null);
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate]);
+
+  // useEffect(() => {
+  //   if (isAuthenticated) 
+  //     navigate(redirectPath);
+  // }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    if (animationContainer.current) {
-      const animationPath = "/lottieFiles/login.json";
-      
-      const anim = lottie.loadAnimation({
-        container: animationContainer.current,
-        renderer: "svg",
-        loop: true,
-        autoplay: true,
-        path: animationPath,
-      });
-      
-      console.log("Lottie animation loaded with path:", animationPath);
-      
-      return () => anim.destroy();
-    }
+    const loadLottie = async () => {
+      const lottie = await import("lottie-web");
+
+      const isMobile = window.innerWidth < 768;
+      const container = isMobile
+        ? mobileAnimationContainer.current
+        : desktopAnimationContainer.current;
+
+      if (container) {
+        const anim = lottie.loadAnimation({
+          container,
+          renderer: "svg",
+          loop: true,
+          autoplay: true,
+          path: "/lottieFiles/login.json",
+        });
+
+        return () => anim.destroy();
+      }
+    };
+
+    loadLottie();
   }, []);
 
-  // Normal-case styling for input fields with consistent styling like the provided example
   const inputClass = (fieldError?: string) =>
     `w-full p-2 border rounded-lg focus:outline-none text-[#363636] 
-     placeholder:normal-case placeholder:text-sm normal-case
-     ${
-       fieldError
-         ? "border-red-500 focus:ring-2 focus:ring-red-500"
-         : "border-gray-300 focus:ring-2 focus:ring-[#5C5470]"
-     }`;
+     placeholder:normal-case placeholder:text-sm normal-case 
+     ${fieldError ? "border-red-500 focus:ring-2 focus:ring-red-500" : "border-gray-300 focus:ring-2 focus:ring-[#5C5470]"}`;
 
-  // Helper function to update individual form fields
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    
-    // Clear error when field is updated
     if (errors[field as keyof LoginErrors]) {
-      setErrors(prev => {
+      setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[field as keyof LoginErrors];
         return newErrors;
@@ -80,54 +75,37 @@ const LoginPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: LoginErrors = {};
-
-    if (!form.email.trim()) {
-      newErrors.email = "Email is required.";
-    }
-    if (!form.password.trim()) {
-      newErrors.password = "Password is required.";
-    }
+    if (!form.email.trim()) newErrors.email = "Email is required.";
+    if (!form.password.trim()) newErrors.password = "Password is required.";
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    setErrors({});
 
-    // Set loading state during API call
     setIsLoading(true);
-    
-    console.log("Login attempt with:", form.email);
-
     try {
       const result = await login(form.email, form.password);
-      
       if (result.success) {
-        toast({
-          title: "Login successful",
-          description: "Welcome back!",
-          variant: "default",
-        });
-        
-        navigate('/dashboard');
+        toast({ title: "Login successful", description: "Welcome back!" });
+        navigate(redirectPath || '/dashboard', { replace: true });
+        setRedirectPath(null);
       } else {
         toast({
           title: "Login failed",
           description: result.message || "Invalid credentials. Please try again.",
           variant: "destructive",
         });
-        
         setErrors({
           credentials: result.message || "Invalid credentials. Please try again.",
         });
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       toast({
         title: "Connection error",
         description: "Could not connect to the server. Please try again later.",
         variant: "destructive",
       });
-      
       setErrors({
         credentials: "Network error. Please check your connection and try again.",
       });
@@ -140,37 +118,33 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
         <div className="flex flex-col md:flex-row bg-[#F2F1F7] rounded-[5rem] overflow-hidden">
-          {/* Left side with illustration - only visible on desktop */}
+          {/* Left animation (desktop only) */}
           <div className="hidden md:flex md:w-1/2 md:items-center md:justify-center p-8">
-            <div 
-              ref={animationContainer} 
+            <div
+              ref={desktopAnimationContainer}
               className="w-full h-full"
               style={{ minHeight: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}
             />
           </div>
 
-          {/* Neon vertical gradient divider - only visible on desktop */}
+          {/* Vertical divider */}
           <div className="hidden md:block w-[2px] bg-gradient-to-b from-[#352F44] to-[#5C5470] shadow-[0_0_10px_3px_rgba(80,0,80,0.8)]" />
 
-          {/* Right side with login form */}
+          {/* Right form */}
           <div className="w-full md:w-1/2 p-8">
             <div className="text-center mb-8">
               <h1 className="text-4xl font-extrabold text-[#352F44]">Login</h1>
-              <p className="text-gray-600 mt-2">
-                Enter your details and let's get started.
-              </p>
+              <p className="text-gray-600 mt-2">Enter your details to access your dashboard.</p>
             </div>
 
-            {/* Mobile animation container */}
+            {/* Mobile animation */}
             <div className="md:hidden w-full h-48 mb-6">
-              <div ref={animationContainer} className="w-full h-full" />
+              <div ref={mobileAnimationContainer} className="w-full h-full" />
             </div>
 
             <form onSubmit={handleLogin}>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-1">
-                  Email address
-                </label>
+                <label className="block text-gray-700 text-sm font-bold mb-1">Email address</label>
                 <input
                   type="email"
                   placeholder="Enter your email"
@@ -179,15 +153,11 @@ const LoginPage = () => {
                   className={inputClass(errors.email)}
                   required
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-                )}
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
 
               <div className="mb-6">
-                <label className="block text-gray-700 text-sm font-bold mb-1">
-                  Password
-                </label>
+                <label className="block text-gray-700 text-sm font-bold mb-1">Password</label>
                 <input
                   type="password"
                   placeholder="Enter your password"
@@ -196,9 +166,7 @@ const LoginPage = () => {
                   className={inputClass(errors.password)}
                   required
                 />
-                {errors.password && (
-                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-                )}
+                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
               </div>
 
               <div className="flex items-center justify-between mb-6">
@@ -214,17 +182,12 @@ const LoginPage = () => {
                     Remember Me
                   </label>
                 </div>
-                <Link
-                  to="/forgot-password"
-                  className="text-sm text-[#5C5470] hover:text-[#352F44] hover:underline"
-                >
+                <Link to="/forgot-password" className="text-sm text-[#5C5470] hover:text-[#352F44] hover:underline">
                   Forgot your password?
                 </Link>
               </div>
 
-              {errors.credentials && (
-                <p className="text-red-500 text-xs mb-4">{errors.credentials}</p>
-              )}
+              {errors.credentials && <p className="text-red-500 text-xs mb-4">{errors.credentials}</p>}
 
               <Button
                 type="submit"
@@ -242,8 +205,7 @@ const LoginPage = () => {
               </Button>
             </form>
 
-            {/* Single Google Auth Button */}
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <p className="text-center text-gray-600 mb-4">Or log in with:</p>
               <div className="flex justify-center">
                 <button
@@ -253,14 +215,11 @@ const LoginPage = () => {
                   <FaGoogle className="w-6 h-6" />
                 </button>
               </div>
-            </div>
+            </div> */}
 
             <p className="text-center mt-6 text-gray-600">
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="text-[#5C5470] hover:text-[#352F44] hover:underline"
-              >
+              Don’t have an account?{" "}
+              <Link to="/register" className="text-[#5C5470] hover:text-[#352F44] hover:underline">
                 Sign Up
               </Link>
             </p>

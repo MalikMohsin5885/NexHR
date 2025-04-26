@@ -8,7 +8,7 @@ import {
   PanelRight,
   LifeBuoy
 } from 'lucide-react';
-import { SidebarMenuItem } from './types';
+import { SidebarMenuItem } from '../../types/sidebar/types';
 
 export const sidebarItems: SidebarMenuItem[] = [
   {

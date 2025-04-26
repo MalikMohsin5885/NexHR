@@ -1,8 +1,14 @@
 
 import React from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import { useEffect } from 'react';
 
 const Calendar = () => {
+  
+  useEffect(() => {
+    console.log("Calendar loaded!");
+  }, []);
+  
   return (
     <DashboardLayout>
       <div className="flex flex-col items-center justify-center min-h-[70vh] animate-fade-in">

@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUserData = async (token: string) => {
     try {
-      const response = await api.get('/auth/user/', {
+      const response = await api.get('/auth/profile/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.status === 200) {
@@ -93,18 +93,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      // Handle demo/test credentials (optional)
-      if (email === "admin@admin.com" && password === "admin") {
-        const testAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MzA1NjczLCJpYXQiOjE3NDQyMTkyNzMsImp0aSI6ImQ0ZjM4MmJkOTk0YTQzMzdiNmFhNjdjZWQwNzA3YmY2IiwidXNlcl9pZCI6NCwiZm5hbWUiOiJTYWlyYSIsImxuYW1lIjoiTmFzaXIiLCJlbWFpbCI6InNhaXJhbmFzaXIxMDAxNEBnbWFpbC5jb20ifQ.TEpncQ2Hyp7LEglCl1wNLe4JahRpWTkrcNkTbPZkeFs";
-        const testRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NDMwNTY3MywiaWF0IjoxNzQ0MjE5MjczLCJqdGkiOiJkNGYzODJiZDk5NGE0MzM3YjZhYTY3Y2VkMDcwN2JmNiIsInVzZXJfaWQiOjR9.J_ruMuH5q9MUIMdbN3gVtJqGpQNlKdoes9zcBkT-AZ4";
-        localStorage.setItem('access_token', testAccessToken);
-        localStorage.setItem('refresh_token', testRefreshToken);
-        setAccessToken(testAccessToken);
-        setIsAuthenticated(true);
-        await fetchUserData(testAccessToken);
-        return { success: true };
-      }
-
       const response = await api.post('/auth/login/', { email, password });
       if (response.status === 200) {
         const { access, refresh } = response.data;
@@ -112,6 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('refresh_token', refresh);
         setAccessToken(access);
         setIsAuthenticated(true);
+        console.log("is authenticated set to true in auth context")
         await fetchUserData(access);
         return { success: true };
       }

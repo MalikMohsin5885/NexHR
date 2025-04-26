@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/components/sidebar/Sidebar';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Calendar, Bell, Menu, PanelLeft, PanelRight, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -13,10 +13,12 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   // Get stored sidebar state from localStorage or default to false (expanded)
+
   const storedSidebarState = localStorage.getItem('sidebarCollapsed');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(
     storedSidebarState ? JSON.parse(storedSidebarState) : false
   );
+  
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const location = useLocation();
   const isMobile = useIsMobile();

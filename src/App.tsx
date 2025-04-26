@@ -8,6 +8,8 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { routes } from "./routes";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import { RedirectProvider } from '@/contexts/RedirectContext';
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,7 +33,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <Router />
+            <RedirectProvider> {/* Wrap with RedirectProvider */}
+              <Router />
+            </RedirectProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipPrimitive.Provider>

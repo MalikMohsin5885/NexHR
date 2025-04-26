@@ -1,53 +1,40 @@
-
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRedirect } from '@/contexts/RedirectContext';
 import { useEffect, useState } from 'react';
 import { toast } from "@/components/ui/use-toast";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, accessToken, refreshAccessToken } = useAuth();
+  const { setRedirectPath } = useRedirect();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-  const [isTokenValid, setIsTokenValid] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        // Check if we're authenticated already
-        if (isAuthenticated) {
-          setIsTokenValid(true);
-          setIsLoading(false);
-          return;
-        }
-        
-        // If we have an access token but not authenticated, try to refresh
-        if (accessToken) {
-          const refreshed = await refreshAccessToken();
-          setIsTokenValid(refreshed);
-          if (!refreshed) {
-            toast({
-              title: "Authentication Error",
-              description: "Your session has expired. Please log in again.",
-              variant: "destructive",
-            });
-          }
-        } else {
-          setIsTokenValid(false);
-        }
-      } catch (error) {
-        console.error("Auth check error:", error);
-        setIsTokenValid(false);
-        toast({
-          title: "Authentication Error",
-          description: "There was an issue verifying your authentication. Please log in again.",
-          variant: "destructive",
-        });
-      } finally {
+      if (isAuthenticated) {
         setIsLoading(false);
+        return;
       }
+
+      if (accessToken) {
+        const refreshed = await refreshAccessToken();
+        if (!refreshed) {
+          toast({
+            title: "Authentication Error",
+            description: "Your session has expired. Please log in again.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        setRedirectPath(location.pathname);
+      }
+
+      setIsLoading(false);
     };
 
     checkAuth();
-  }, [isAuthenticated, accessToken, refreshAccessToken]);
+  }, [accessToken, isAuthenticated, refreshAccessToken, location.pathname, setRedirectPath]);
 
   if (isLoading) {
     return (
@@ -57,7 +44,7 @@ const ProtectedRoute = () => {
     );
   }
 
-  return isTokenValid ? <Outlet /> : <Navigate to="/login" />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

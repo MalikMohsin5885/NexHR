@@ -4,12 +4,17 @@ import LoginPage from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
 import ForgotPassword from "@/pages/ForgotPassword";
 import Index from "@/pages/Index";
+import Dashboard from "@/pages/Dasboard";
+import JobPostForm from "@/pages/JobPostForm";
 import Calendar from "@/pages/Calendar";
 import Team from "@/pages/Team";
 import Projects from "@/pages/Projects";
 import Documents from "@/pages/Documents";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import PublicRoute from "@/components/PublicRoute";
+import JobPortal from "@/pages/JobPortal";
+import TestModal from "@/pages/TestModal";
 
 // Create a placeholder component for routes that don't have dedicated pages yet
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -21,28 +26,47 @@ const PlaceholderPage = ({ title }: { title: string }) => (
 
 export const routes: RouteObject[] = [
   {
-    path: "/login",
-    element: <LoginPage />,
+    path: "",
+    element: <Index />,
   },
   {
-    path: "/register",
-    element: <RegisterPage />,
+    path: "/job-portal",
+    element: <JobPortal />,
   },
   {
-    path: "/forgot-password",
-    element: <ForgotPassword />,
+    path: "/modals",
+    element: <TestModal />,
   },
+
+  {
+    element: <PublicRoute />,
+    children: [
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
+    ],
+  },
+
   {
     path: "/",
     element: <ProtectedRoute />,
     children: [
       {
-        path: "",
-        element: <Index />,
+        path: "dashboard",
+        element: <Dashboard />,
       },
       {
-        path: "dashboard",
-        element: <Index />,
+        path: "job-posting",
+        element: <JobPostForm />,
       },
       {
         path: "calendar",
