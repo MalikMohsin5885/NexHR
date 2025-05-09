@@ -1,4 +1,3 @@
-
 import { RouteObject } from "react-router-dom";
 import LoginPage from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
@@ -17,6 +16,7 @@ import JobPortal from "@/pages/JobPortal";
 import TestModal from "@/pages/TestModal";
 
 // Create a placeholder component for routes that don't have dedicated pages yet
+// eslint-disable-next-line react-refresh/only-export-components
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex flex-col items-center justify-center min-h-[60vh]">
     <h1 className="text-2xl font-bold mb-4">{title}</h1>
@@ -36,6 +36,10 @@ export const routes: RouteObject[] = [
   {
     path: "/modals",
     element: <TestModal />,
+  },
+  {
+    path: "/job-posting",
+    element: <JobPostForm />,
   },
 
   {
@@ -63,10 +67,6 @@ export const routes: RouteObject[] = [
       {
         path: "dashboard",
         element: <Dashboard />,
-      },
-      {
-        path: "job-posting",
-        element: <JobPostForm />,
       },
       {
         path: "calendar",

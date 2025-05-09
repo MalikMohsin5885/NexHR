@@ -5,7 +5,7 @@ interface JobPortalLayoutProps {
 }
 
 const JobPortalLayout: React.FC<JobPortalLayoutProps> = ({ children }) => {
-  return <div >{children}</div>
+  return <div>{children}</div>
 }
 
 export default JobPortalLayout

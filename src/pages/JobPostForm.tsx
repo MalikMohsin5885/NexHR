@@ -29,6 +29,15 @@ interface FormData {
   experienceLevel: string;
   educationLevel: string;
   screeningQuestions: string[];
+  customFormQuestions: CustomFormQuestion[];
+  customFormAnswers: Record<string, string>;
+}
+
+interface CustomFormQuestion {
+  id: string;
+  label: string;
+  type: 'text' | 'email' | 'telephone' | 'file' | 'textarea' | 'dropdown';
+  enabled: boolean;
 }
 
 // Type for validation errors
@@ -176,6 +185,17 @@ const JobPostForm: React.FC = () => {
     experienceLevel: "",
     educationLevel: "",
     screeningQuestions: [""],
+    customFormQuestions: [
+      { id: 'fullName', label: 'Full Name', type: 'text', enabled: false },
+      { id: 'email', label: 'Email', type: 'email', enabled: false },
+      { id: 'phone', label: 'Telephone', type: 'telephone', enabled: false },
+      { id: 'resume', label: 'Upload Resume', type: 'file', enabled: false },
+      { id: 'address', label: 'Address', type: 'text', enabled: false },
+      { id: 'education', label: 'Education', type: 'text', enabled: false },
+      { id: 'skills', label: 'Skills', type: 'textarea', enabled: false },
+      { id: 'experienceLevel', label: 'Experience Level', type: 'dropdown', enabled: false },
+    ],
+    customFormAnswers: {},
   });
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [currentStep, setCurrentStep] = useState(1);
@@ -189,6 +209,26 @@ const JobPostForm: React.FC = () => {
   // --- State to Trigger Modal and Mark Review as Completed ---
   const [jobPostedModal, setJobPostedModal] = useState(false);
   const [reviewCompleted, setReviewCompleted] = useState(false);
+
+  // --- Custom Form Builder State ---
+  const [customFormQuestions, setCustomFormQuestions] = useState<CustomFormQuestion[]>([
+    { id: 'fullName', label: 'Full Name', type: 'text', enabled: false },
+    { id: 'email', label: 'Email', type: 'email', enabled: false },
+    { id: 'phone', label: 'Telephone', type: 'telephone', enabled: false },
+    { id: 'resume', label: 'Upload Resume', type: 'file', enabled: false },
+    { id: 'address', label: 'Address', type: 'text', enabled: false },
+    { id: 'education', label: 'Education', type: 'text', enabled: false },
+    { id: 'skills', label: 'Skills', type: 'textarea', enabled: false },
+    { id: 'experienceLevel', label: 'Experience Level', type: 'dropdown', enabled: false },
+  ]);
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customFormAnswers, setCustomFormAnswers] = useState<Record<string, string>>({});
+
+  const toggleQuestion = (questionId: string) => {
+    setCustomFormQuestions(prev =>
+      prev.map(q => q.id === questionId ? { ...q, enabled: !q.enabled } : q)
+    );
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -294,7 +334,7 @@ const JobPostForm: React.FC = () => {
 
   const handleSkillsChange = (
     newValue: MultiValue<OptionType>,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    /// eslint-disable-next-line @typescript-eslint/no-unused-vars
     _actionMeta: ActionMeta<OptionType>
   ) => {
     setFormData((prev) => ({ ...prev, skills: newValue || [] }));
@@ -362,6 +402,148 @@ const JobPostForm: React.FC = () => {
   const skillsOptions = useMemo(() => technicalSkillsOptions, []);
 
   const steps = ["General Info", "Workflow", "Review"];
+
+  // --- Custom Form Builder Component ---
+  const CustomFormBuilder: React.FC = () => {
+    const enabledQuestions = customFormQuestions.filter(q => q.enabled);
+
+    const handleCustomFormInput = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+      const { name, value, type } = e.target;
+      if (type === "file" && e.target instanceof HTMLInputElement) {
+        const files = e.target.files;
+        setCustomFormAnswers(prev => ({
+          ...prev,
+          [name]: files && files[0] ? files[0].name : "",
+        }));
+      } else {
+        setCustomFormAnswers(prev => ({
+          ...prev,
+          [name]: value,
+        }));
+      }
+    };
+
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-gray-900">Custom Application Form</h3>
+        <p className="text-sm text-gray-500">
+          Toggle the questions you want to include in your application form
+        </p>
+        <div className="space-y-4">
+          {customFormQuestions.map((question) => (
+            <div key={question.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+              <div>
+                <h4 className="font-medium text-gray-900">{question.label}</h4>
+                <p className="text-sm text-gray-500">Type: {question.type === 'dropdown' ? 'select' : question.type}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setCustomFormQuestions(prev =>
+                    prev.map(q => q.id === question.id ? { ...q, enabled: !q.enabled } : q)
+                  );
+                  setShowCustomForm(false);
+                }}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                  question.enabled ? 'bg-indigo-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    question.enabled ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          ))}
+        </div>
+        {customFormQuestions.some(q => q.enabled) && !showCustomForm && (
+          <button
+            className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 transition"
+            onClick={() => setShowCustomForm(true)}
+            type="button"
+          >
+            Create
+          </button>
+        )}
+        {showCustomForm && (
+          <form
+            className="mt-6 space-y-4 p-4 border border-gray-200 rounded-lg bg-gray-50"
+            action="#"
+            onSubmit={e => {
+              e.preventDefault();
+              return false; // Do nothing, prevent navigation
+            }}
+          >
+            <h4 className="font-semibold text-gray-900 mb-2">Generated Application Form</h4>
+            {enabledQuestions.map(q => (
+              <div key={q.id} className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700" htmlFor={q.id}>{q.label}</label>
+                {q.type === "file" ? (
+                  <input
+                    type="file"
+                    name={q.id}
+                    id={q.id}
+                    className="border rounded px-3 py-2"
+                    onChange={handleCustomFormInput}
+                  />
+                ) : q.type === "textarea" ? (
+                  <textarea
+                    name={q.id}
+                    id={q.id}
+                    rows={5}
+                    className="border rounded px-3 py-2"
+                    style={{ backgroundColor: "#FFFFFF", color: "#2A2438", borderColor: "#DBD8E3" }}
+                    value={customFormAnswers[q.id] || ""}
+                    onChange={handleCustomFormInput}
+                    placeholder="List any relevant skills"
+                  />
+                ) : q.type === "dropdown" ? (
+                  <select
+                    name={q.id}
+                    id={q.id}
+                    className="border rounded px-3 py-2 text-[#2A2438]"
+                    style={{ backgroundColor: "#FFFFFF", borderColor: "#DBD8E3" }}
+                    value={customFormAnswers[q.id] || ""}
+                    onChange={handleCustomFormInput}
+                  >
+                    <option value="">Select experience level</option>
+                    <option value="Entry Level">Entry Level</option>
+                    <option value="Mid Level">Mid Level</option>
+                    <option value="Senior Level">Senior Level</option>
+                    <option value="Executive Level">Executive Level</option>
+                  </select>
+                ) : (
+                  <input
+                    type={q.type === "telephone" ? "tel" : q.type}
+                    name={q.id}
+                    id={q.id}
+                    className="border rounded px-3 py-2"
+                    value={customFormAnswers[q.id] || ""}
+                    onChange={handleCustomFormInput}
+                  />
+                )}
+                {q.id === 'skills' && (
+                  <span className="text-xs text-[#5C5470] mt-1">List any relevant skills</span>
+                )}
+                {q.id === 'experienceLevel' && (
+                  <span className="text-xs text-[#5C5470] mt-1">Select your experience level</span>
+                )}
+              </div>
+            ))}
+            <button
+              type="submit"
+              tabIndex={-1}
+              className="w-full mt-2 px-6 py-2 bg-[#352F44] text-white rounded-md shadow hover:bg-indigo-700 transition"
+            >
+              Submit
+            </button>
+          </form>
+        )}
+      </div>
+    );
+  };
 
   return (
     <DashboardLayout>
@@ -744,172 +926,83 @@ const JobPostForm: React.FC = () => {
           )}
           {currentStep === 2 && (
             <div className="space-y-6">
-              {/* Workflow Section */}
-              <section className="p-4 rounded-md space-y-6" style={{ backgroundColor: "#F2F1F7", border: "1px solid #DBD8E3" }}>
-                <h2 className="text-xl font-semibold border-b pb-2 mb-4 border-[#DBD8E3]">Workflow & Details</h2>
-
-                {/* Deadline */}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {/* Experience Level */}
                 <div>
-                  <label htmlFor="applicationDeadline" className="block text-sm font-medium mb-1">
-                    Application Deadline (Optional)
+                  <label htmlFor="experienceLevel" className="block text-sm font-medium text-gray-700">
+                    Experience Level
                   </label>
-                  <input
-                    type="date"
-                    id="applicationDeadline"
-                    name="applicationDeadline"
-                    value={formData.applicationDeadline}
+                  <select
+                    id="experienceLevel"
+                    name="experienceLevel"
+                    value={formData.experienceLevel}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border rounded-md shadow-sm"
-                    style={{
-                      borderColor: "#DBD8E3",
-                      backgroundColor: "#FFFFFF",
-                      color: "#2A2438",
-                    }}
-                    min={new Date().toISOString().split("T")[0]}
-                  />
+                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+                      validationErrors.experienceLevel ? "border-red-500" : ""
+                    }`}
+                  >
+                    <option value="">Select Experience Level</option>
+                    <option value="Entry Level">Entry Level</option>
+                    <option value="Mid Level">Mid Level</option>
+                    <option value="Senior Level">Senior Level</option>
+                    <option value="Executive Level">Executive Level</option>
+                  </select>
+                  {validationErrors.experienceLevel && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.experienceLevel}</p>
+                  )}
                 </div>
 
-                {/* Experience & Education */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="experienceLevel" className="block text-sm font-medium mb-1">
-                      Required Experience Level <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="experienceLevel"
-                      name="experienceLevel"
-                      value={formData.experienceLevel}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border rounded-md shadow-sm h-[42px]"
-                      style={{
-                        borderColor: validationErrors.experienceLevel ? "red" : "#DBD8E3",
-                        backgroundColor: "#FFFFFF",
-                        color: "#2A2438",
-                      }}
-                    >
-                      <option value="">Select experience level</option>
-                      <option>Internship</option>
-                      <option>Entry-level</option>
-                      <option>Associate</option>
-                      <option>Mid-level</option>
-                      <option>Senior-level</option>
-                      <option>Director</option>
-                      <option>Executive</option>
-                    </select>
-                    {validationErrors.experienceLevel && (
-                      <p className="text-red-500 text-xs mt-1">{validationErrors.experienceLevel}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label htmlFor="educationLevel" className="block text-sm font-medium mb-1">
-                      Required Education Level <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="educationLevel"
-                      name="educationLevel"
-                      value={formData.educationLevel}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border rounded-md shadow-sm h-[42px]"
-                      style={{
-                        borderColor: validationErrors.educationLevel ? "red" : "#DBD8E3",
-                        backgroundColor: "#FFFFFF",
-                        color: "#2A2438",
-                      }}
-                    >
-                      <option value="">Select education level</option>
-                      <option>High School or equivalent</option>
-                      <option>Associate Degree</option>
-                      <option>a Bachelor Degree</option>
-                      <option>a Master Degree</option>
-                      <option>Doctorate</option>
-                      <option>Professional</option>
-                      <option>Not Required</option>
-                    </select>
-                    {validationErrors.educationLevel && (
-                      <p className="text-red-500 text-xs mt-1">{validationErrors.educationLevel}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Screening Questions */}
+                {/* Education Level */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Screening Questions (Optional)</label>
-                  <div className="space-y-3">
-                    {formData.screeningQuestions.map((question, index) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <input
-                          type="text"
-                          value={question}
-                          onChange={(e) => handleScreeningQuestionChange(index, e.target.value)}
-                          placeholder={`Question ${index + 1}`}
-                          className="flex-grow px-3 py-2 border rounded-md shadow-sm"
-                          style={{
-                            borderColor: "#DBD8E3",
-                            backgroundColor: "#FFFFFF",
-                            color: "#2A2438",
-                          }}
-                        />
-                        {formData.screeningQuestions.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeScreeningQuestion(index)}
-                            className="text-red-500 p-1 rounded-full"
-                            title="Remove question"
-                          >
-                            &times;
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={addScreeningQuestion}
-                    className="mt-3 inline-flex items-center px-3 py-1 rounded-md shadow-sm text-sm text-white"
-                    style={{ backgroundColor: "#352F44" }}
+                  <label htmlFor="educationLevel" className="block text-sm font-medium text-gray-700">
+                    Education Level
+                  </label>
+                  <select
+                    id="educationLevel"
+                    name="educationLevel"
+                    value={formData.educationLevel}
+                    onChange={handleInputChange}
+                    className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+                      validationErrors.educationLevel ? "border-red-500" : ""
+                    }`}
                   >
-                    + Add Question
-                  </button>
+                    <option value="">Select Education Level</option>
+                    <option value="High School">High School</option>
+                    <option value="Associate Degree">Associate Degree</option>
+                    <option value="Bachelor's Degree">Bachelor's Degree</option>
+                    <option value="Master's Degree">Master's Degree</option>
+                    <option value="Doctorate">Doctorate</option>
+                  </select>
+                  {validationErrors.educationLevel && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.educationLevel}</p>
+                  )}
                 </div>
-              </section>
+              </div>
 
-              {/* Candidate Application Form */}
-              <section className="mt-8 p-4 rounded-md" style={{ backgroundColor: "#F2F1F7", border: "1px solid #DBD8E3" }}>
-                <h2 className="mb-4 text-center text-xl font-bold" style={{ color: "#2A2438" }}>
-                  Candidate Application Form
-                </h2>
+              {/* Custom Form Builder */}
+              <div className="mt-8">
+                <CustomFormBuilder />
+              </div>
 
-                {/* Form Fields (Full Name, Email, Phone, Resume, etc.) */}
-                {/* — Keep these as-is or modularize if needed — */}
-
-                <div className="flex justify-between pt-4">
-                  <button
-                    type="button"
-                    onClick={handlePrevious}
-                    className="py-2 px-6 border rounded-md text-sm font-medium"
-                    style={{
-                      backgroundColor: "#FFFFFF",
-                      color: "#2A2438",
-                      borderColor: "#DBD8E3",
-                    }}
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="py-2 px-6 border border-transparent rounded-md text-sm font-medium shadow-sm"
-                    style={{
-                      backgroundColor: "#352F44",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    Save and Continue
-                  </button>
-                </div>
-              </section>
+              {/* Navigation Buttons */}
+              <div className="flex justify-between pt-4">
+                <button
+                  type="button"
+                  onClick={handlePrevious}
+                  className="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md transition duration-150 ease-in-out"
+                  style={{ backgroundColor: "#352F44", color: "#FFFFFF" }}
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md transition duration-150 ease-in-out"
+                  style={{ backgroundColor: "#352F44", color: "#FFFFFF" }}
+                >
+                  Save and Continue
+                </button>
+              </div>
             </div>
           )}
 
@@ -1001,13 +1094,28 @@ const JobPostForm: React.FC = () => {
                     </ul>
                   </div>
                 )}
+                <div className="mt-4 pt-4 border-t border-[#DBD8E3]">
+                  <strong className="block mb-1 text-sm">Custom Application Form:</strong>
+                  <ul className="list-disc pl-6 space-y-2">
+                    {customFormQuestions.filter(q => q.enabled).map(q => (
+                      <li key={q.id} className="text-sm">
+                        <span className="font-medium">{q.label}:</span>{" "}
+                        {customFormAnswers[q.id] ? (
+                          <span>{customFormAnswers[q.id]}</span>
+                        ) : (
+                          <span className="text-[#5C5470] italic">Not answered</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
               <div className="flex justify-between pt-4">
                 <button
                   type="button"
                   onClick={handlePrevious}
-                  className="inline-flex justify-center py-2 px-6 border shadow-sm text-sm font-medium rounded-md transition duration-150 ease-in-out"
-                  style={{ backgroundColor: "#FFFFFF", color: "#2A2438", borderColor: "#DBD8E3" }}
+                  className="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md transition duration-150 ease-in-out"
+                  style={{ backgroundColor: "#352F44", color: "#FFFFFF" }}
                 >
                   Previous
                 </button>
