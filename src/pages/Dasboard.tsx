@@ -1,12 +1,12 @@
 
 import React from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import StatsCard from '@/components/dashboard/StatsCard';
-import TeamTracker from '@/components/dashboard/TeamTracker';
-import EmployeeCard from '@/components/dashboard/EmployeeCard';
-import RecruitmentCard from '@/components/dashboard/RecruitmentCard';
-import SalaryCard from '@/components/dashboard/SalaryCard';
-import ChartCard from '@/components/dashboard/ChartCard';
+import StatsCard from '@/components/Dashboard/StatsCard';
+import TeamTracker from '@/components/Dashboard/TeamTracker';
+import EmployeeCard from '@/components/Dashboard/EmployeeCard';
+import RecruitmentCard from '@/components/Dashboard/RecruitmentCard';
+import SalaryCard from '@/components/Dashboard/SalaryCard';
+import ChartCard from '@/components/Dashboard/ChartCard'; 
 import { Plus, Users, Clock, Calendar, CalendarDays } from 'lucide-react';
 import { employeeStatusData } from '@/data/mockData';
 import { Card, CardContent } from '@/components/ui/card';
