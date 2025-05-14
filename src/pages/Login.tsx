@@ -6,6 +6,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRedirect } from '@/contexts/RedirectContext';
+import { Eye, EyeOff } from "lucide-react";
 
 
 interface LoginErrors {
@@ -24,6 +25,7 @@ const LoginPage = () => {
   const { login, isAuthenticated } = useAuth();
   const desktopAnimationContainer = useRef<HTMLDivElement>(null);
   const mobileAnimationContainer = useRef<HTMLDivElement>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
 
   // useEffect(() => {
@@ -158,14 +160,28 @@ const LoginPage = () => {
 
               <div className="mb-6">
                 <label className="block text-gray-700 text-sm font-bold mb-1">Password</label>
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  value={form.password}
-                  onChange={(e) => updateField("password", e.target.value)}
-                  className={inputClass(errors.password)}
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={form.password}
+                    onChange={(e) => updateField("password", e.target.value)}
+                    className={inputClass(errors.password)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
                 {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
               </div>
 
@@ -218,7 +234,7 @@ const LoginPage = () => {
             </div> */}
 
             <p className="text-center mt-6 text-gray-600">
-              Don’t have an account?{" "}
+              Don't have an account?{" "}
               <Link to="/register" className="text-[#5C5470] hover:text-[#352F44] hover:underline">
                 Sign Up
               </Link>

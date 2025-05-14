@@ -38,11 +38,6 @@ export const routes: RouteObject[] = [
     element: <TestModal />,
   },
   {
-    path: "/job-posting",
-    element: <JobPostForm />,
-  },
-
-  {
     element: <PublicRoute />,
     children: [
       {
@@ -67,6 +62,10 @@ export const routes: RouteObject[] = [
       {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/jobs/create",
+        element: <JobPostForm />,
       },
       {
         path: "calendar",
