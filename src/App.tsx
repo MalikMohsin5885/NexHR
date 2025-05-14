@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import { routes } from "./routes";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { RedirectProvider } from '@/contexts/RedirectContext';
+import { MainAppController } from "@/components/MainAppController";
 
 
 const queryClient = new QueryClient({
@@ -34,7 +34,9 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <RedirectProvider> {/* Wrap with RedirectProvider */}
-              <Router />
+              <MainAppController>
+                <Router />
+              </MainAppController>
             </RedirectProvider>
           </AuthProvider>
         </BrowserRouter>
