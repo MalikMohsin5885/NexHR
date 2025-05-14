@@ -117,12 +117,9 @@ const ReviewTab: React.FC<ReviewTabProps> = ({
           <ul className="list-disc pl-6 space-y-2">
             {customFormQuestions.filter(q => q.enabled).map(q => (
               <li key={q.id} className="text-sm">
-                <span className="font-medium">{q.label}:</span>{" "}
-                {customFormAnswers[q.id] ? (
-                  <span>{customFormAnswers[q.id]}</span>
-                ) : (
-                  <span className="text-[#5C5470] italic">Not answered</span>
-                )}
+                <span className="font-medium">{q.label}:</span>{customFormAnswers[q.id] ? (
+                  <span> {customFormAnswers[q.id]}</span>
+                ) : null}
               </li>
             ))}
           </ul>

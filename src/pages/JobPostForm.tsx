@@ -4,7 +4,7 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import CreatableSelect from 'react-select/creatable';
 import StepProgressBar from '../components/job-post/StepProgressBar';
 import GeneralInfoTab from '../components/job-post/GeneralInfoTab';
-import WorkflowTab from '../components/job-post/WorkflowTab';
+import ApplicationFormTab from '../components/job-post/ApplicationFormTab';
 import ReviewTab from '../components/job-post/ReviewTab';
 
 import {
@@ -192,7 +192,7 @@ const JobPostForm: React.FC = () => {
         }
       }
     } else if (currentStep === 2) {
-      // For Workflow tab, require that Experience and Education are selected.
+      // For Application Form tab, require that Experience and Education are selected.
       if (!formData.experienceLevel.trim()) {
         errors.experienceLevel = "Experience Level is required";
       }
@@ -312,6 +312,36 @@ const JobPostForm: React.FC = () => {
 
   // "Post Job" is now triggered only on Step 3.
   const handlePostJob = () => {
+    // Construct the JSON object as per the required structure
+    const jobJson = {
+      job_title: formData.jobTitle || null,
+      job_category: formData.jobCategory?.value || null,
+      job_type: formData.jobType || null,
+      location_type: formData.locationType || null,
+      city: formData.city?.value || null,
+      state: formData.state?.value || null,
+      country: formData.country?.value || null,
+      salary_from: formData.salaryMin || null,
+      salary_to: formData.salaryMax || null,
+      currency: formData.currency || null,
+      period: formData.period || null,
+      job_description: formData.jobDescription || null,
+      job_requirements: formData.requirements || null,
+      job_schema: {
+        name: !!(formData.customFormQuestions.find(q => q.id === 'candidate_fname' && q.enabled) || formData.customFormQuestions.find(q => q.id === 'candidate_lname' && q.enabled)),
+        email: !!formData.customFormQuestions.find(q => q.id === 'email' && q.enabled),
+        phone: !!formData.customFormQuestions.find(q => q.id === 'phone' && q.enabled),
+        resume_url: !!formData.customFormQuestions.find(q => q.id === 'resume_url' && q.enabled),
+        gender: !!formData.customFormQuestions.find(q => q.id === 'gender' && q.enabled),
+        address: !!formData.customFormQuestions.find(q => q.id === 'address' && q.enabled),
+        cover_letter_url: !!formData.customFormQuestions.find(q => q.id === 'cover_letter' && q.enabled),
+        dob: !!formData.customFormQuestions.find(q => q.id === 'DOB' && q.enabled),
+        education: !!formData.customFormQuestions.find(q => q.id === 'education' && q.enabled),
+        experience: !!formData.customFormQuestions.find(q => q.id === 'experience' && q.enabled),
+        skills: !!formData.customFormQuestions.find(q => q.id === 'skills' && q.enabled),
+      }
+    };
+    console.log(jobJson);
     setReviewCompleted(true);
     setJobPostedModal(true);
   };
@@ -336,7 +366,7 @@ const JobPostForm: React.FC = () => {
   const jobCategoryOptions = useMemo(() => jobCategories, []);
   const skillsOptions = useMemo(() => technicalSkillsOptions, []);
 
-  const steps = ["General Info", "Workflow", "Review"];
+  const steps = ["General Info", "Application Form", "Review"];
 
   // --- Custom Form Builder Component ---
   const CustomFormBuilder: React.FC = () => {
@@ -598,18 +628,18 @@ const JobPostForm: React.FC = () => {
             />
           )}
 
-          {/* Step 2: Workflow */}
+          {/* Step 2: Application Form */}
           {currentStep === 2 && (
-            <WorkflowTab
+            <ApplicationFormTab
               formData={formData}
               validationErrors={validationErrors}
               customFormQuestions={formData.customFormQuestions}
-              customFormAnswers={formData.customFormAnswers as Record<string, string>}
+              customFormAnswers={formData.customFormAnswers}
               showCustomForm={showCustomForm}
               handleInputChange={handleInputChange}
-              onCustomFormInput={handleCustomFormInput}
               onToggleQuestion={toggleQuestion}
               onShowCustomForm={setShowCustomForm}
+              onCustomFormInput={handleCustomFormInput}
             />
           )}
 

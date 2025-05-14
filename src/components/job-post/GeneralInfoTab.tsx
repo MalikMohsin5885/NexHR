@@ -20,6 +20,8 @@ interface GeneralInfoTabProps {
     jobDescription: string;
     deadline: string | null;
     requirements: string | null;
+    experienceLevel: string;
+    educationLevel: string;
   };
   validationErrors: Record<string, string>;
   isClient: boolean;
@@ -91,6 +93,56 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
           className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
           style={{ borderColor: "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
         />
+      </div>
+      {/* Experience Level & Education Level */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="experienceLevel" className="block text-sm font-medium mb-1">
+            Experience Level <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="experienceLevel"
+            name="experienceLevel"
+            value={formData.experienceLevel}
+            onChange={handleInputChange}
+            required
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out h-[42px]"
+            style={{ borderColor: validationErrors.experienceLevel ? "red" : "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
+          >
+            <option value="">Select Experience Level</option>
+            <option value="Entry Level">Entry Level</option>
+            <option value="Mid Level">Mid Level</option>
+            <option value="Senior Level">Senior Level</option>
+            <option value="Executive Level">Executive Level</option>
+          </select>
+          {validationErrors.experienceLevel && (
+            <p className="text-red-500 text-xs mt-1">{validationErrors.experienceLevel}</p>
+          )}
+        </div>
+        <div>
+          <label htmlFor="educationLevel" className="block text-sm font-medium mb-1">
+            Education Level <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="educationLevel"
+            name="educationLevel"
+            value={formData.educationLevel}
+            onChange={handleInputChange}
+            required
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out h-[42px]"
+            style={{ borderColor: validationErrors.educationLevel ? "red" : "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
+          >
+            <option value="">Select Education Level</option>
+            <option value="High School">High School</option>
+            <option value="Associate Degree">Associate Degree</option>
+            <option value="Bachelor's Degree">Bachelor's Degree</option>
+            <option value="Master's Degree">Master's Degree</option>
+            <option value="Doctorate">Doctorate</option>
+          </select>
+          {validationErrors.educationLevel && (
+            <p className="text-red-500 text-xs mt-1">{validationErrors.educationLevel}</p>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
