@@ -20,12 +20,12 @@ export const MainAppController: React.FC<MainAppControllerProps> = ({ children }
   console.log('[MainAppController] isAuthenticated:', isAuthenticated);
   console.log('[MainAppController] needsCompanyInfo:', needsCompanyInfo);
 
-  if (isAuthenticated && needsCompanyInfo) {
-    console.log('[MainAppController] Rendering CompanyInfoModal');
-    return <CompanyInfoModal isOpen={true} onClose={() => { 
-      console.log("CompanyInfoModal was signaled to close by user/dialog interaction.");
-    }} />;
-  }
+  // if (isAuthenticated && needsCompanyInfo) {
+  //   console.log('[MainAppController] Rendering CompanyInfoModal');
+  //   return <CompanyInfoModal isOpen={true} onClose={() => { 
+  //     console.log("CompanyInfoModal was signaled to close by user/dialog interaction.");
+  //   }} />;
+  // }
 
   console.log('[MainAppController] Rendering children (app routes)');
   return <>{children}</>;

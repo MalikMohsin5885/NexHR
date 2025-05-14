@@ -1,4 +1,3 @@
-
 import React from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import StatsCard from '@/components/dashboard/StatsCard';
@@ -11,10 +10,30 @@ import { Plus, Users, Clock, Calendar, CalendarDays } from 'lucide-react';
 import { employeeStatusData } from '@/data/mockData';
 import { Card, CardContent } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { useAuth } from '@/contexts/AuthContext';
+import CompanyInfoModal from '@/components/CompanyInfoModal';
 
 const Index = () => {
   const isMobile = useIsMobile();
+  const { isAuthenticated } = useAuth();
+  const { needsCompanyInfo } = useSelector((state: RootState) => state.company);
 
+  // Log the values to help debug
+  console.log('[Dasboard.tsx] isAuthenticated:', isAuthenticated);
+  console.log('[Dasboard.tsx] needsCompanyInfo:', needsCompanyInfo);
+
+  if (isAuthenticated && needsCompanyInfo) {
+    console.log('[Dasboard.tsx] Rendering CompanyInfoModal');
+    return <CompanyInfoModal isOpen={true} onClose={() => {
+      // TODO: Decide what happens when modal is closed
+      // For now, just log. Might need to refetch company info or navigate.
+      console.log("CompanyInfoModal closed from Dashboard");
+    }} />;
+  }
+
+  console.log('[Dasboard.tsx] Rendering Dashboard content');
   return (
     <DashboardLayout>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3 sm:mb-4">
