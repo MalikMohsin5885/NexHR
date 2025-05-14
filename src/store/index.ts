@@ -1,11 +1,13 @@
-
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./authSlice";
+import authReducer from './authSlice';
+import companyReducer from './companySlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer
-  }
+    auth: authReducer,
+    company: companyReducer,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
