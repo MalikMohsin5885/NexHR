@@ -51,7 +51,6 @@ const CompanyInfoModal: React.FC<CompanyInfoModalProps> = ({ isOpen, onClose }) 
   const [data, setData] = useState<CompanyInfo>({
     name: '',
     industry: '',
-    location: '',
     email: '',
     phone: '',
   });
@@ -72,9 +71,6 @@ const CompanyInfoModal: React.FC<CompanyInfoModalProps> = ({ isOpen, onClose }) 
     }
     if (!data.industry) {
       newErrors.industry = 'Please select an industry';
-    }
-    if (!data.location.trim()) {
-      newErrors.location = 'Location cannot be empty';
     }
     if (!data.email.trim()) {
       newErrors.email = 'Email cannot be empty';
@@ -120,7 +116,7 @@ const CompanyInfoModal: React.FC<CompanyInfoModalProps> = ({ isOpen, onClose }) 
         });
         
         // Reset form and close modal
-        setData({ name: '', industry: '', location: '', email: '', phone: '' });
+        setData({ name: '', industry: '', email: '', phone: '' });
         setErrors({});
         onClose();
         
@@ -209,22 +205,6 @@ const CompanyInfoModal: React.FC<CompanyInfoModalProps> = ({ isOpen, onClose }) 
             </select>
             {errors.industry && (
               <p className="text-sm text-red-600">{errors.industry}</p>
-            )}
-          </div>
-
-          {/* Location */}
-          <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
-            <Input
-              id="location"
-              name="location"
-              value={data.location}
-              onChange={handleChange}
-              className={errors.location ? 'border-red-500' : ''}
-              placeholder="e.g., Lahore, Karachi"
-            />
-            {errors.location && (
-              <p className="text-sm text-red-600">{errors.location}</p>
             )}
           </div>
 
