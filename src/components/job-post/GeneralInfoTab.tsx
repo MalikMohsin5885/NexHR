@@ -6,7 +6,7 @@ import { OptionType } from "../../data/formData";
 interface GeneralInfoTabProps {
   formData: {
     jobTitle: string;
-    jobCategory: OptionType | null;
+    Department: OptionType | null;
     jobType: string;
     locationType: string;
     country: OptionType | null;
@@ -28,7 +28,7 @@ interface GeneralInfoTabProps {
   states: OptionType[];
   cities: OptionType[];
   countryOptions: OptionType[];
-  jobCategoryOptions: OptionType[];
+  DepartmentOptions: OptionType[];
   skillsOptions: OptionType[];
   selectStyles: StylesConfig<OptionType, boolean>;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
@@ -43,7 +43,7 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
   states,
   cities,
   countryOptions,
-  jobCategoryOptions,
+  DepartmentOptions,
   skillsOptions,
   selectStyles,
   handleInputChange,
@@ -147,18 +147,18 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="jobCategory" className="block text-sm font-medium mb-1">
-            Job Category <span className="text-red-500">*</span>
+          <label htmlFor="Department" className="block text-sm font-medium mb-1">
+            Department <span className="text-red-500">*</span>
           </label>
           {isClient ? (
             <Select<OptionType>
-              id="jobCategory"
-              name="jobCategory"
-              options={jobCategoryOptions}
-              value={formData.jobCategory}
-              onChange={(option) => handleSelectChange("jobCategory", option)}
+              id="Department"
+              name="Department"
+              options={DepartmentOptions}
+              value={formData.Department}
+              onChange={(option) => handleSelectChange("Department", option)}
               classNamePrefix="select"
-              placeholder="Select category..."
+              placeholder="Select Department..."
               isClearable
               required
               styles={{
@@ -166,10 +166,10 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
                 control: (base) => ({
                   ...base,
                   backgroundColor: "#FFFFFF",
-                  borderColor: validationErrors.jobCategory ? "red" : "#DBD8E3",
+                  borderColor: validationErrors.Department ? "red" : "#DBD8E3",
                   color: "#2A2438",
                   "&:hover": {
-                    borderColor: validationErrors.jobCategory ? "red" : "#DBD8E3",
+                    borderColor: validationErrors.Department ? "red" : "#DBD8E3",
                   },
                 }),
               }}
@@ -177,8 +177,8 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
           ) : (
             <div className="w-full h-[42px] rounded-md animate-pulse" style={{ backgroundColor: "#F2F1F7", border: "1px solid #DBD8E3" }} />
           )}
-          {validationErrors.jobCategory && (
-            <p className="text-red-500 text-xs mt-1">{validationErrors.jobCategory}</p>
+          {validationErrors.Department && (
+            <p className="text-red-500 text-xs mt-1">{validationErrors.Department}</p>
           )}
         </div>
         <div>

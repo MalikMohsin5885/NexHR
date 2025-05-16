@@ -1,6 +1,6 @@
-
 import React from 'react';
-import { ArrowRight, Calendar, Plus } from 'lucide-react';
+import { ArrowRight, Calendar, Plus, Briefcase } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface GreetingHeaderProps {
   userName: string;
@@ -37,6 +37,13 @@ const GreetingHeader: React.FC<GreetingHeaderProps> = ({ userName }) => {
           <Calendar className="h-4 w-4" />
           <span>18 - 22 November</span>
         </button>
+        <Link 
+          to="/job-portal"
+          className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          <Briefcase className="h-4 w-4" />
+          <span>Job Portal</span>
+        </Link>
         <button className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground">
           <Plus className="h-4 w-4" />
           <span>Add report</span>

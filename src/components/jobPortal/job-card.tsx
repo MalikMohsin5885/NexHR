@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Bookmark, BookmarkCheck } from "lucide-react"
 import type { JobListing } from "@/types/jobPortal/types"
+import { Navigate, useNavigate } from 'react-router-dom';
 
 interface JobCardProps {
   job: JobListing
@@ -12,113 +13,95 @@ interface JobCardProps {
 
 export default function JobCard({ job, isSaved, onToggleSave }: JobCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const navigate = useNavigate();
 
-  // Determine background color based on company
+  // Determine background color based on department (formerly company)
   const getBgColor = () => {
-    switch (job.company.toLowerCase()) {
-      case "amazon":
-        return "bg-orange-50"
-      case "google":
-        return "bg-green-50"
-      case "dribbble":
-        return "bg-purple-50"
-      case "twitter":
+    const department = job.company.toLowerCase();
+
+    switch (department) {
+      case "marketing":
         return "bg-blue-50"
-      case "airbnb":
+      case "development":
+        return "bg-green-50"
+      case "design":
+        return "bg-purple-50"
+      case "sales":
+        return "bg-yellow-50"
+      case "customer service":
         return "bg-pink-50"
-      case "apple":
+      case "finance":
         return "bg-gray-50"
-      // More varied colors for additional companies
-      case "microsoft":
-        return "bg-blue-100"
-      case "netflix":
+      case "human resources":
         return "bg-red-50"
-      case "spotify":
-        return "bg-green-100"
-      case "adobe":
-        return "bg-red-100"
-      case "facebook":
-        return "bg-indigo-100"
-      case "uber":
-        return "bg-slate-100"
+      case "engineering":
+        return "bg-indigo-50"
+      case "product":
+        return "bg-teal-50"
+      case "operations":
+        return "bg-orange-50"
       default:
         return "bg-[#F2F1F7]"
     }
   }
 
-  // Get company logo
-  const getCompanyLogo = () => {
-    switch (job.company.toLowerCase()) {
-      case "amazon":
-        return "A"
-      case "google":
-        return "G"
-      case "dribbble":
-        return "D"
-      case "twitter":
-        return "T"
-      case "airbnb":
-        return "A"
-      case "apple":
-        return "A"
-      case "microsoft":
-        return "M"
-      case "netflix":
-        return "N"
-      case "spotify":
-        return "S"
-      case "adobe":
-        return "A"
-      case "facebook":
-        return "F"
-      case "uber":
-        return "U"
-      default:
-        return "C"
-    }
+  // Get company/department logo initial
+  const getDepartmentLogo = () => {
+    return job.company.charAt(0).toUpperCase();
   }
+
+  // const navigateToJobDetails = () => {
+  //   navigate(`/jobs/${jobId}`);
+  // };
 
   // Get logo background color
   const getLogoBgColor = () => {
-    switch (job.company.toLowerCase()) {
-      case "amazon":
-        return "bg-black text-white"
-      case "google":
-        return "bg-white border border-gray-200"
-      case "dribbble":
-        return "bg-pink-500 text-white"
-      case "twitter":
-        return "bg-blue-400 text-white"
-      case "airbnb":
-        return "bg-pink-600 text-white"
-      case "apple":
-        return "bg-white text-black border border-gray-200"
-      case "microsoft":
+    const department = job.company.toLowerCase();
+
+    switch (department) {
+      case "marketing":
         return "bg-blue-600 text-white"
-      case "netflix":
-        return "bg-red-600 text-white"
-      case "spotify":
+      case "development":
         return "bg-green-600 text-white"
-      case "adobe":
-        return "bg-red-700 text-white"
-      case "facebook":
-        return "bg-blue-700 text-white"
-      case "uber":
-        return "bg-black text-white"
+      case "design":
+        return "bg-purple-600 text-white"
+      case "sales":
+        return "bg-yellow-600 text-white"
+      case "customer service":
+        return "bg-pink-600 text-white"
+      case "finance":
+        return "bg-gray-700 text-white"
+      case "human resources":
+        return "bg-red-600 text-white"
+      case "engineering":
+        return "bg-indigo-600 text-white"
+      case "product":
+        return "bg-teal-600 text-white"
+      case "operations":
+        return "bg-orange-600 text-white"
       default:
-        return "bg-gray-200"
+        return "bg-[#2A2438] text-white"
     }
+  }
+
+  // Format the salary display
+  const formatSalary = () => {
+    const currencyInfo = job.tags.find(tag => tag.includes("USD") || tag.includes("EUR") || tag.includes("GBP"));
+    if (currencyInfo) {
+      return currencyInfo; // Return the full salary range with currency
+    }
+    return `$${job.salary}/hr`; // Fallback
   }
 
   return (
     <div
       className={`rounded-xl overflow-hidden ${getBgColor()} transition-all duration-200 ${
         isHovered ? "shadow-lg transform translate-y-[-4px]" : "shadow"
-      } flex flex-col h-[280px]`} /* Fixed height for consistent cards */
+      } flex flex-col h-[280px]`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Main content area with flex-grow to push the details button to bottom */}
+      {/* Main content area */}
       <div className="p-4 flex flex-col flex-grow">
         {/* Date and Bookmark */}
         <div className="flex justify-between items-center mb-4">
@@ -134,7 +117,7 @@ export default function JobCard({ job, isSaved, onToggleSave }: JobCardProps) {
           </button>
         </div>
 
-        {/* Company and Title */}
+        {/* Job Title and department */}
         <div className="mb-3">
           <div className="text-sm text-[#5C5470] mb-1">{job.company}</div>
           <div className="flex justify-between items-start">
@@ -142,7 +125,7 @@ export default function JobCard({ job, isSaved, onToggleSave }: JobCardProps) {
             <div
               className={`w-8 h-8 rounded-full ${getLogoBgColor()} flex items-center justify-center font-bold text-sm`}
             >
-              {getCompanyLogo()}
+              {getDepartmentLogo()}
             </div>
           </div>
         </div>
@@ -165,7 +148,7 @@ export default function JobCard({ job, isSaved, onToggleSave }: JobCardProps) {
         {/* Salary and Location */}
         <div className="flex justify-between items-center mt-auto">
           <div>
-            <div className="text-base font-bold text-[#2A2438]">${job.salary}/hr</div>
+            <div className="text-base font-bold text-[#2A2438]">{formatSalary()}</div>
             <div className="text-xs text-[#5C5470]">{job.location}</div>
           </div>
 

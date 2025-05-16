@@ -6,6 +6,9 @@ import StepProgressBar from '../components/job-post/StepProgressBar';
 import GeneralInfoTab from '../components/job-post/GeneralInfoTab';
 import ApplicationFormTab from '../components/job-post/ApplicationFormTab';
 import ReviewTab from '../components/job-post/ReviewTab';
+import JobPostedModal from '../components/modals/JobPostedModal';
+import { jobService, JobPostData } from '@/services/JobService';
+import { linkedinService } from '@/services/linkedinService';
 
 import {
   countryData,
@@ -17,7 +20,7 @@ import {
 // --- Helper Types ---
 interface FormData {
   jobTitle: string;
-  jobCategory: OptionType | null;
+  Department: OptionType | null;
   jobType: string;
   locationType: string;
   country: OptionType | null;
@@ -103,7 +106,7 @@ const JobPostForm: React.FC = () => {
   // --- Main Job Post State Initialization ---
   const [formData, setFormData] = useState<FormData>({
     jobTitle: "",
-    jobCategory: null,
+    Department: null,
     jobType: "Full-time",
     locationType: "On-site",
     country: null,
@@ -137,6 +140,7 @@ const JobPostForm: React.FC = () => {
     ],
     customFormAnswers: {},
   });
+  const [jobId, setJobId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [currentStep, setCurrentStep] = useState(1);
   const [states, setStates] = useState<OptionType[]>([]);
@@ -148,6 +152,7 @@ const JobPostForm: React.FC = () => {
 
   // --- State to Trigger Modal and Mark Review as Completed ---
   const [jobPostedModal, setJobPostedModal] = useState(false);
+  
   const [reviewCompleted, setReviewCompleted] = useState(false);
 
   // --- Custom Form Builder State ---
@@ -174,8 +179,8 @@ const JobPostForm: React.FC = () => {
       if (!formData.jobTitle.trim()) {
         errors.jobTitle = "Job Title cannot be empty";
       }
-      if (!formData.jobCategory) {
-        errors.jobCategory = "Job Category is required";
+      if (!formData.Department) {
+        errors.Department = "Department is required";
       }
       if (!formData.jobDescription.trim()) {
         errors.jobDescription = "Job Description cannot be empty";
@@ -311,24 +316,26 @@ const JobPostForm: React.FC = () => {
   };
 
   // "Post Job" is now triggered only on Step 3.
-  const handlePostJob = () => {
-    // Construct the JSON object as per the required structure
-    const jobJson = {
+  const handlePostJob = async () => {
+    const jobJson: JobPostData = {
       job_title: formData.jobTitle || null,
-      job_category: formData.jobCategory?.value || null,
+      department: formData.Department?.value || null,
       job_type: formData.jobType || null,
       location_type: formData.locationType || null,
       city: formData.city?.value || null,
       state: formData.state?.value || null,
       country: formData.country?.value || null,
-      salary_from: formData.salaryMin || null,
-      salary_to: formData.salaryMax || null,
+      salary_from: formData.salaryMin ? Number(formData.salaryMin) : null,
+      salary_to: formData.salaryMax ? Number(formData.salaryMax) : null,
       currency: formData.currency || null,
       period: formData.period || null,
       job_description: formData.jobDescription || null,
       job_requirements: formData.requirements || null,
+      experience_level: formData.experienceLevel || null, // ✅ Must be a string: 'entry', 'mid', 'senior', or 'lead'
       job_schema: {
-        name: !!(formData.customFormQuestions.find(q => q.id === 'candidate_fname' && q.enabled) || formData.customFormQuestions.find(q => q.id === 'candidate_lname' && q.enabled)),
+        name:
+          !!(formData.customFormQuestions.find(q => q.id === 'candidate_fname' && q.enabled) ||
+            formData.customFormQuestions.find(q => q.id === 'candidate_lname' && q.enabled)),
         email: !!formData.customFormQuestions.find(q => q.id === 'email' && q.enabled),
         phone: !!formData.customFormQuestions.find(q => q.id === 'phone' && q.enabled),
         resume_url: !!formData.customFormQuestions.find(q => q.id === 'resume_url' && q.enabled),
@@ -339,20 +346,24 @@ const JobPostForm: React.FC = () => {
         education: !!formData.customFormQuestions.find(q => q.id === 'education' && q.enabled),
         experience: !!formData.customFormQuestions.find(q => q.id === 'experience' && q.enabled),
         skills: !!formData.customFormQuestions.find(q => q.id === 'skills' && q.enabled),
-      }
+      },
     };
-    console.log(jobJson);
-    setReviewCompleted(true);
-    setJobPostedModal(true);
-  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (currentStep === 3) {
+    console.log('Posting Job Object:', jobJson);
+
+    const response = await jobService.postJob(jobJson);
+
+    if (response.success) {
+      console.log('Job posted successfully!', response.jobId);
       setReviewCompleted(true);
+      setJobId(response.jobId)
       setJobPostedModal(true);
+    } else {
+      console.error('Failed to post job:', response.message);
+      // optionally show error to user
     }
   };
+
 
   // --- Memoized Options for Select Dropdowns ---
   const countryOptions = useMemo(
@@ -363,7 +374,7 @@ const JobPostForm: React.FC = () => {
       })),
     []
   );
-  const jobCategoryOptions = useMemo(() => jobCategories, []);
+  const DepartmentOptions = useMemo(() => jobCategories, []);
   const skillsOptions = useMemo(() => technicalSkillsOptions, []);
 
   const steps = ["General Info", "Application Form", "Review"];
@@ -395,14 +406,12 @@ const JobPostForm: React.FC = () => {
                   }));
                   setShowCustomForm(false);
                 }}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                  question.enabled ? 'bg-indigo-600' : 'bg-gray-200'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${question.enabled ? 'bg-indigo-600' : 'bg-gray-200'
+                  }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    question.enabled ? 'translate-x-6' : 'translate-x-1'
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${question.enabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
                 />
               </button>
             </div>
@@ -597,6 +606,17 @@ const JobPostForm: React.FC = () => {
     });
   };
 
+  // Handler for posting job on LinkedIn
+  const handlePostLinkedIn = async () => {
+    console.log(`job of id ${jobId} is going to be posted on linked in`)
+    try {
+      const res = await linkedinService.postJobToLinkedIn(jobId);
+      alert(res.message);
+    } catch {
+      alert('Failed to post job to LinkedIn');
+    }
+  };
+
   return (
     <DashboardLayout>
       <div
@@ -609,7 +629,12 @@ const JobPostForm: React.FC = () => {
 
         <StepProgressBar currentStep={currentStep} steps={steps} reviewCompleted={reviewCompleted} />
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (currentStep === 3) {
+            handlePostJob();
+          }
+        }}>
           {/* Step 1: General Information */}
           {currentStep === 1 && (
             <GeneralInfoTab
@@ -619,7 +644,7 @@ const JobPostForm: React.FC = () => {
               states={states}
               cities={cities}
               countryOptions={countryOptions}
-              jobCategoryOptions={jobCategoryOptions}
+              DepartmentOptions={DepartmentOptions}
               skillsOptions={skillsOptions}
               selectStyles={selectStyles}
               handleInputChange={handleInputChange}
@@ -691,21 +716,11 @@ const JobPostForm: React.FC = () => {
 
         {/* Job Posted Modal Dialog */}
         {jobPostedModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-8 rounded-md shadow-lg">
-              <h1 className="text-4xl font-bold text-center mb-4">JOB POSTED!</h1>
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  onClick={() => setJobPostedModal(false)}
-                  className="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md transition duration-150 ease-in-out"
-                  style={{ backgroundColor: "#352F44", color: "#FFFFFF" }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
+          <JobPostedModal
+            open={jobPostedModal}
+            onClose={() => setJobPostedModal(false)}
+            onPostLinkedIn={handlePostLinkedIn}
+          />
         )}
       </div>
     </DashboardLayout>

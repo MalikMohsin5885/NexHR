@@ -13,7 +13,9 @@ import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PublicRoute from "@/components/PublicRoute";
 import JobPortal from "@/pages/JobPortal";
+import JobDetail from "@/components/jobPortal/job-detail";
 import TestModal from "@/pages/TestModal";
+import LinkedInAuth from '@/pages/LinkedInAuth';
 
 // Create a placeholder component for routes that don't have dedicated pages yet
 // eslint-disable-next-line react-refresh/only-export-components
@@ -32,6 +34,14 @@ export const routes: RouteObject[] = [
   {
     path: "/job-portal",
     element: <JobPortal />,
+  },
+  {
+    path: "/job-detail",
+    element: <JobDetail />,
+  },
+  {
+    path: "/application",
+    element: <JobDetail />,
   },
   {
     path: "/modals",
@@ -146,6 +156,10 @@ export const routes: RouteObject[] = [
       {
         path: "support",
         element: <PlaceholderPage title="Help & Support" />,
+      },
+      {
+        path: 'linkedin-auth/callback',
+        element: <LinkedInAuth />,
       },
     ],
   },

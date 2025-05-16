@@ -1,4 +1,3 @@
-
 import { 
   Home,
   Users, 
@@ -6,14 +5,15 @@ import {
   DollarSign, 
   Settings,
   PanelRight,
-  LifeBuoy
+  LifeBuoy,
+  PlusCircle
 } from 'lucide-react';
 import { SidebarMenuItem } from '../../types/sidebar/types';
 
 export const sidebarItems: SidebarMenuItem[] = [
   {
     title: 'Dashboard',
-    path: '/',
+    path: '/dashboard',
     icon: Home,
   },
   {
@@ -34,6 +34,7 @@ export const sidebarItems: SidebarMenuItem[] = [
     submenu: [
       { title: 'Onboarding', path: '/onboarding' },
       { title: 'Hiring handbook', path: '/hiring-handbook' },
+      { title: 'Post job', path: '/jobs/create' },
     ],
   },
   {

@@ -5,7 +5,7 @@ import { CustomFormQuestion } from '../../pages/JobPostForm';
 interface ReviewTabProps {
   formData: {
     jobTitle: string;
-    jobCategory: OptionType | null;
+    Department: OptionType | null;
     jobType: string;
     locationType: string;
     country: OptionType | null;
@@ -40,8 +40,8 @@ const ReviewTab: React.FC<ReviewTabProps> = ({
             {formData.jobTitle || (<span className="text-[#5C5470]">Not specified</span>)}
           </div>
           <div>
-            <strong className="block">Category:</strong>{" "}
-            {formData.jobCategory?.label || (<span className="text-[#5C5470]">Not specified</span>)}
+            <strong className="block">Department:</strong>{" "}
+            {formData.Department?.label || (<span className="text-[#5C5470]">Not specified</span>)}
           </div>
           <div>
             <strong className="block">Job Type:</strong> {formData.jobType}

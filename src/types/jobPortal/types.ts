@@ -1,10 +1,10 @@
 export interface JobListing {
-    id: string
-    company: string
-    title: string
-    date: string
-    salary: number
-    location: string
-    tags: string[]
-  }
-  
+  id: string;
+  title: string;
+  company: string;
+  date: string;
+  salary: string;
+  location: string;
+  salary_period: string;
+  tags: string[];
+}
