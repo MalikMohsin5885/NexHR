@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, Briefcase, Clock, DollarSign, Calendar, Users, ChevronDown, ChevronUp, Bookmark, Share2 } from "lucide-react";
+import { MapPin, Briefcase, Clock, DollarSign, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 
 // Job interface
 interface Job {
@@ -12,12 +12,10 @@ interface Job {
   jobType: string;
   postedDate: string;
   applicationDeadline: string;
-  applicants: number;
   experience: string;
   description: string;
   responsibilities: string[];
   requirements: string[];
-  benefits: string[];
 }
 
 // Sample job data
@@ -31,7 +29,6 @@ const jobData: Job = {
   jobType: "Full-time",
   postedDate: "3 days ago",
   applicationDeadline: "June 15, 2025",
-  applicants: 42,
   experience: "3+ years",
   description: "We're seeking a talented Senior Frontend Developer to join our innovative team. In this role, you'll be responsible for building exceptional user experiences using modern frameworks like React. You'll collaborate with designers and backend developers to create responsive, scalable applications that delight our users.",
   responsibilities: [
@@ -47,26 +44,13 @@ const jobData: Job = {
     "Experience with responsive design and cross-browser compatibility",
     "Knowledge of state management solutions (Redux, Context API)",
     "Familiarity with testing frameworks like Jest and React Testing Library"
-  ],
-  benefits: [
-    "Competitive salary and equity package",
-    "Remote-first work environment",
-    "Flexible working hours",
-    "Health, dental, and vision insurance",
-    "401(k) matching",
-    "Professional development budget"
   ]
 };
 
 // JobDetail component
 export default function JobDetail() {
   const [activeTab, setActiveTab] = useState<string>("description");
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
-  
-  const handleToggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-  };
   
   const displayedDescription = showFullDescription 
     ? jobData.description 
@@ -75,180 +59,145 @@ export default function JobDetail() {
       : jobData.description;
   
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-xl">
-      {/* Header */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center mr-4">
+    <div className="max-w-7xl mx-auto p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column - Job Details */}
+        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div className="flex items-center space-x-6 mb-8">
+            <div className="w-20 h-20 bg-[#dbd8e3] rounded-xl overflow-hidden flex items-center justify-center">
               <img
-                src={jobData.companyLogo}
+                // src={jobData.companyLogo}
+                src='/images/company-logo.png'
                 alt={`${jobData.company} logo`}
-                className="object-cover"
+                className="object-cover w-12 h-12"
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">{jobData.title}</h1>
-              <p className="text-lg text-gray-600">{jobData.company}</p>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <div className="flex items-center text-gray-500 text-sm">
-                  <MapPin size={16} className="mr-1 text-indigo-500" />
-                  {jobData.location}
+              <h1 className="text-3xl font-bold text-[#352f44] mb-2">{jobData.title}</h1>
+              <p className="text-xl text-gray-600">{jobData.company}</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="flex items-center text-gray-600">
+              <MapPin size={20} className="mr-3 text-[#352f44]" />
+              <span className="text-lg">{jobData.location}</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <DollarSign size={20} className="mr-3 text-[#352f44]" />
+              <span className="text-lg">{jobData.salary}</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <Briefcase size={20} className="mr-3 text-[#352f44]" />
+              <span className="text-lg">{jobData.jobType}</span>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-6 mt-8">
+            <div className="bg-[#dbd8e3] p-5 rounded-xl">
+              <div className="flex items-center space-x-3">
+                <Clock size={24} className="text-[#352f44]" />
+                <div>
+                  <p className="text-sm text-gray-600">Posted</p>
+                  <p className="font-medium text-[#352f44]">{jobData.postedDate}</p>
                 </div>
-                <div className="flex items-center text-gray-500 text-sm">
-                  <DollarSign size={16} className="mr-1 text-green-500" />
-                  {jobData.salary}
-                </div>
-                <div className="flex items-center text-gray-500 text-sm">
-                  <Briefcase size={16} className="mr-1 text-blue-500" />
-                  {jobData.jobType}
+              </div>
+            </div>
+            <div className="bg-[#dbd8e3] p-5 rounded-xl">
+              <div className="flex items-center space-x-3">
+                <Calendar size={24} className="text-[#352f44]" />
+                <div>
+                  <p className="text-sm text-gray-600">Deadline</p>
+                  <p className="font-medium text-[#352f44]">{jobData.applicationDeadline}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex space-x-2">
-            <button 
-              onClick={handleToggleBookmark}
-              className={`p-2 rounded-full ${isBookmarked ? 'bg-yellow-100 text-yellow-600' : 'bg-gray-100 text-gray-500'}`}
+          
+          <div className="mt-8">
+            <button className="w-full bg-[#352f44] hover:bg-[#2a2535] text-white font-medium py-3 px-8 rounded-xl transition-all duration-300">
+              Apply Now
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column - Description & Requirements */}
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="flex border-b">
+            <button
+              className={`flex-1 py-5 px-6 text-center font-medium text-lg transition-all duration-300 ${
+                activeTab === "description"
+                  ? "text-[#352f44] border-b-2 border-[#352f44]"
+                  : "text-gray-500 hover:text-[#352f44]"
+              }`}
+              onClick={() => setActiveTab("description")}
             >
-              <Bookmark size={20} className={isBookmarked ? "fill-yellow-500" : ""} />
+              Description
             </button>
-            <button className="p-2 rounded-full bg-gray-100 text-gray-500">
-              <Share2 size={20} />
+            <button
+              className={`flex-1 py-5 px-6 text-center font-medium text-lg transition-all duration-300 ${
+                activeTab === "requirements"
+                  ? "text-[#352f44] border-b-2 border-[#352f44]"
+                  : "text-gray-500 hover:text-[#352f44]"
+              }`}
+              onClick={() => setActiveTab("requirements")}
+            >
+              Requirements
             </button>
           </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-          <div className="bg-indigo-50 p-4 rounded-lg flex flex-col items-center">
-            <Clock size={24} className="text-indigo-600 mb-2" />
-            <p className="text-sm text-gray-500">Posted</p>
-            <p className="font-medium">{jobData.postedDate}</p>
-          </div>
-          <div className="bg-indigo-50 p-4 rounded-lg flex flex-col items-center">
-            <Calendar size={24} className="text-indigo-600 mb-2" />
-            <p className="text-sm text-gray-500">Deadline</p>
-            <p className="font-medium">{jobData.applicationDeadline}</p>
-          </div>
-          <div className="bg-indigo-50 p-4 rounded-lg flex flex-col items-center">
-            <Users size={24} className="text-indigo-600 mb-2" />
-            <p className="text-sm text-gray-500">Applicants</p>
-            <p className="font-medium">{jobData.applicants}</p>
-          </div>
-        </div>
-        
-        <div className="mt-6 flex justify-end">
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300">
-            Apply Now
-          </button>
-        </div>
-      </div>
-      
-      {/* Tabs */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="flex border-b">
-          <button
-            className={`flex-1 py-4 px-6 text-center font-medium ${
-              activeTab === "description"
-                ? "text-indigo-600 border-b-2 border-indigo-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab("description")}
-          >
-            Description
-          </button>
-          <button
-            className={`flex-1 py-4 px-6 text-center font-medium ${
-              activeTab === "requirements"
-                ? "text-indigo-600 border-b-2 border-indigo-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab("requirements")}
-          >
-            Requirements
-          </button>
-          <button
-            className={`flex-1 py-4 px-6 text-center font-medium ${
-              activeTab === "benefits"
-                ? "text-indigo-600 border-b-2 border-indigo-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab("benefits")}
-          >
-            Benefits
-          </button>
-        </div>
-        
-        {/* Tab Content */}
-        <div className="p-6">
-          {activeTab === "description" && (
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Job Description</h2>
-              <p className="text-gray-600 mb-4">{displayedDescription}</p>
-              {jobData.description.length > 150 && (
-                <button
-                  onClick={() => setShowFullDescription(!showFullDescription)}
-                  className="flex items-center text-indigo-600 font-medium mb-6"
-                >
-                  {showFullDescription ? (
-                    <>
-                      Show Less <ChevronUp size={16} className="ml-1" />
-                    </>
-                  ) : (
-                    <>
-                      Read More <ChevronDown size={16} className="ml-1" />
-                    </>
-                  )}
-                </button>
-              )}
-              
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Responsibilities</h3>
-              <ul className="list-none space-y-2 mb-6">
-                {jobData.responsibilities.map((item, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="min-w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-sm mr-3 mt-0.5">
-                      {index + 1}
-                    </div>
-                    <span className="text-gray-600">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
           
-          {activeTab === "requirements" && (
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Requirements</h2>
-              <ul className="list-none space-y-3">
-                {jobData.requirements.map((item, index) => (
-                  <li key={index} className="flex items-start bg-gray-50 p-3 rounded-lg">
-                    <div className="min-w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-sm mr-3 mt-0.5">
-                      {index + 1}
-                    </div>
-                    <span className="text-gray-600">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          
-          {activeTab === "benefits" && (
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Benefits & Perks</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {jobData.benefits.map((benefit, index) => (
-                  <div key={index} className="bg-green-50 p-4 rounded-lg border border-green-100">
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-3">
-                        ✓
+          <div className="p-8">
+            {activeTab === "description" && (
+              <div>
+                <h2 className="text-2xl font-bold text-[#352f44] mb-6">Job Description</h2>
+                <p className="text-gray-600 mb-6 leading-relaxed">{displayedDescription}</p>
+                {jobData.description.length > 150 && (
+                  <button
+                    onClick={() => setShowFullDescription(!showFullDescription)}
+                    className="flex items-center text-[#352f44] font-medium mb-8 hover:opacity-80 transition-opacity"
+                  >
+                    {showFullDescription ? (
+                      <>
+                        Show Less <ChevronUp size={18} className="ml-1" />
+                      </>
+                    ) : (
+                      <>
+                        Read More <ChevronDown size={18} className="ml-1" />
+                      </>
+                    )}
+                  </button>
+                )}
+                
+                <h3 className="text-xl font-semibold text-[#352f44] mb-4">Responsibilities</h3>
+                <ul className="space-y-4">
+                  {jobData.responsibilities.map((item, index) => (
+                    <li key={index} className="flex items-start bg-[#dbd8e3] p-4 rounded-xl">
+                      <div className="min-w-8 h-8 bg-[#352f44] rounded-full flex items-center justify-center text-white font-medium text-sm mr-4">
+                        {index + 1}
                       </div>
-                      <span className="text-gray-700">{benefit}</span>
-                    </div>
-                  </div>
-                ))}
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          )}
+            )}
+            
+            {activeTab === "requirements" && (
+              <div>
+                <h2 className="text-2xl font-bold text-[#352f44] mb-6">Requirements</h2>
+                <ul className="space-y-4">
+                  {jobData.requirements.map((item, index) => (
+                    <li key={index} className="flex items-start bg-[#dbd8e3] p-4 rounded-xl">
+                      <div className="min-w-8 h-8 bg-[#352f44] rounded-full flex items-center justify-center text-white font-medium text-sm mr-4">
+                        {index + 1}
+                      </div>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

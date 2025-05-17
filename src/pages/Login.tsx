@@ -88,9 +88,11 @@ const LoginPage = () => {
     try {
       const result = await login(form.email, form.password);
       if (result.success) {
+        
         toast({ title: "Login successful", description: "Welcome back!" });
         navigate(redirectPath || '/dashboard', { replace: true });
         setRedirectPath(null);
+
       } else {
         toast({
           title: "Login failed",

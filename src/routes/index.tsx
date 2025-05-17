@@ -12,10 +12,12 @@ import Documents from "@/pages/Documents";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PublicRoute from "@/components/PublicRoute";
+import CompanyRegistrationGuard from "@/components/CompanyRegistrationGuard";
 import JobPortal from "@/pages/JobPortal";
 import JobDetail from "@/components/jobPortal/job-detail";
 import TestModal from "@/pages/TestModal";
 import LinkedInAuth from '@/pages/LinkedInAuth';
+import CompanyInfoForm from "@/pages/CompanyInfo";
 
 // Create a placeholder component for routes that don't have dedicated pages yet
 // eslint-disable-next-line react-refresh/only-export-components
@@ -64,102 +66,110 @@ export const routes: RouteObject[] = [
       },
     ],
   },
-
   {
     path: "/",
     element: <ProtectedRoute />,
     children: [
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        path: "/company",
+        element: <CompanyInfoForm />,
       },
       {
-        path: "/jobs/create",
-        element: <JobPostForm />,
-      },
-      {
-        path: "calendar",
-        element: <Calendar />,
-      },
-      {
-        path: "team",
-        element: <Team />,
-      },
-      {
-        path: "projects",
-        element: <Projects />,
-      },
-      {
-        path: "documents",
-        element: <Documents />,
-      },
-      {
-        path: "teams",
-        element: <PlaceholderPage title="Teams" />,
-      },
-      {
-        path: "employees",
-        element: <PlaceholderPage title="Employees" />,
-      },
-      {
-        path: "attendance",
-        element: <PlaceholderPage title="Attendance" />,
-      },
-      {
-        path: "checklist",
-        element: <PlaceholderPage title="Checklist" />,
-      },
-      {
-        path: "time-off",
-        element: <PlaceholderPage title="Time Off" />,
-      },
-      {
-        path: "hiring",
-        element: <PlaceholderPage title="Hiring" />,
-      },
-      {
-        path: "onboarding",
-        element: <PlaceholderPage title="Onboarding" />,
-      },
-      {
-        path: "hiring-handbook",
-        element: <PlaceholderPage title="Hiring Handbook" />,
-      },
-      {
-        path: "finance",
-        element: <PlaceholderPage title="Finance" />,
-      },
-      {
-        path: "payroll",
-        element: <PlaceholderPage title="Payroll" />,
-      },
-      {
-        path: "expenses",
-        element: <PlaceholderPage title="Expenses" />,
-      },
-      {
-        path: "invoices",
-        element: <PlaceholderPage title="Invoices" />,
-      },
-      {
-        path: "payment-information",
-        element: <PlaceholderPage title="Payment Information" />,
-      },
-      {
-        path: "settings",
-        element: <PlaceholderPage title="Settings" />,
-      },
-      {
-        path: "integrations",
-        element: <PlaceholderPage title="Integrations" />,
-      },
-      {
-        path: "support",
-        element: <PlaceholderPage title="Help & Support" />,
-      },
-      {
-        path: 'linkedin-auth/callback',
-        element: <LinkedInAuth />,
+        element: <CompanyRegistrationGuard />,
+        children: [
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "/jobs/create",
+            element: <JobPostForm />,
+          },
+          {
+            path: "calendar",
+            element: <Calendar />,
+          },
+          {
+            path: "team",
+            element: <Team />,
+          },
+          {
+            path: "projects",
+            element: <Projects />,
+          },
+          {
+            path: "documents",
+            element: <Documents />,
+          },
+          {
+            path: "teams",
+            element: <PlaceholderPage title="Teams" />,
+          },
+          {
+            path: "employees",
+            element: <PlaceholderPage title="Employees" />,
+          },
+          {
+            path: "attendance",
+            element: <PlaceholderPage title="Attendance" />,
+          },
+          {
+            path: "checklist",
+            element: <PlaceholderPage title="Checklist" />,
+          },
+          {
+            path: "time-off",
+            element: <PlaceholderPage title="Time Off" />,
+          },
+          {
+            path: "hiring",
+            element: <PlaceholderPage title="Hiring" />,
+          },
+          {
+            path: "onboarding",
+            element: <PlaceholderPage title="Onboarding" />,
+          },
+          {
+            path: "hiring-handbook",
+            element: <PlaceholderPage title="Hiring Handbook" />,
+          },
+          {
+            path: "finance",
+            element: <PlaceholderPage title="Finance" />,
+          },
+          {
+            path: "payroll",
+            element: <PlaceholderPage title="Payroll" />,
+          },
+          {
+            path: "expenses",
+            element: <PlaceholderPage title="Expenses" />,
+          },
+          {
+            path: "invoices",
+            element: <PlaceholderPage title="Invoices" />,
+          },
+          {
+            path: "payment-information",
+            element: <PlaceholderPage title="Payment Information" />,
+          },
+          {
+            path: "settings",
+            element: <PlaceholderPage title="Settings" />,
+          },
+          {
+            path: "integrations",
+            element: <PlaceholderPage title="Integrations" />,
+          },
+          {
+            path: "support",
+            element: <PlaceholderPage title="Help & Support" />,
+          },
+          {
+            path: 'linkedin-auth/callback',
+            element: <LinkedInAuth />,
+          },
+        ],
       },
     ],
   },
