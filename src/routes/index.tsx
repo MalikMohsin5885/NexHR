@@ -19,6 +19,7 @@ import TestModal from "@/pages/TestModal";
 import LinkedInAuth from '@/pages/LinkedInAuth';
 import CompanyInfoForm from "@/pages/CompanyInfo";
 import ResetPassword from "@/pages/ResetPassword";
+import Employees from "@/pages/Employees";
 
 // Create a placeholder component for routes that don't have dedicated pages yet
 // eslint-disable-next-line react-refresh/only-export-components
@@ -112,7 +113,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: "employees",
-            element: <PlaceholderPage title="Employees" />,
+            element: <Employees />,
           },
           {
             path: "attendance",
