@@ -152,7 +152,7 @@ export default function JobCard({ job, isSaved, onToggleSave }: JobCardProps) {
             <div className="text-xs text-[#5C5470]">{job.location}</div>
           </div>
 
-          <button className="bg-[#2A2438] hover:bg-[#352F44] text-white text-sm font-medium px-5 py-2 rounded-full transition-colors">
+          <button onClick={()=> navigate("/job-detail")} className="bg-[#2A2438] hover:bg-[#352F44] text-white text-sm font-medium px-5 py-2 rounded-full transition-colors">
             Details
           </button>
         </div>

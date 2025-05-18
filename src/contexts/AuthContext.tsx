@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
@@ -19,6 +18,18 @@ interface AuthContextType {
   isAuthenticated: boolean;
   accessToken: string | null;
   refreshAccessToken: () => Promise<boolean>;
+  loginWithGoogle: (accessToken: string) => Promise<{ success: boolean; data?: GoogleAuthResponse; message?: string }>;
+}
+
+
+interface GoogleAuthResponse {
+  access: string;
+  refresh: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+  };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -66,6 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+
   const refreshAccessToken = async () => {
     try {
       const refreshToken = localStorage.getItem('refresh_token');
@@ -91,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     }
   };
+
 
   const login = async (email: string, password: string) => {
     try {
@@ -118,6 +131,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+
+  const loginWithGoogle = async (accessToken: string) => {
+    try {
+      const response = await api.post<GoogleAuthResponse>('/auth/google/', { access_token: accessToken });
+      if (response.status === 200) {
+        const { access, refresh } = response.data;
+        localStorage.setItem('access_token', access);
+        localStorage.setItem('refresh_token', refresh);
+        setAccessToken(access);
+        setIsAuthenticated(true);
+        await fetchUserData(access);
+        return { success: true };
+      }
+      // return { success: false, message: "Failed to authenticate with Google" };
+    } catch (error: any) {
+      console.error("Google authentication failed:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to authenticate with Google"
+      };
+    }
+  };
+
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     setAccessToken(null);
@@ -139,7 +176,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logout,
     isAuthenticated,
     accessToken,
-    refreshAccessToken
+    refreshAccessToken,
+    loginWithGoogle
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

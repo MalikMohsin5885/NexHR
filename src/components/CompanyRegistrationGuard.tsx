@@ -11,13 +11,11 @@ const CompanyRegistrationGuard = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Add a small delay to ensure Redux state is properly loaded
-        const timer = setTimeout(() => {
+        // Wait until Redux has loaded the user
+        if (isAuthenticated && user !== null) {
             setIsLoading(false);
-        }, 100);
-
-        return () => clearTimeout(timer);
-    }, []);
+        }
+    }, [isAuthenticated, user]);
 
     if (isLoading) {
         return (
@@ -27,19 +25,14 @@ const CompanyRegistrationGuard = () => {
         );
     }
 
-    // If not authenticated, redirect to login
     if (!isAuthenticated) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    // If user has no company, redirect to company registration
-    console.log("user in company registartion guard------------------", user)
     if (!user?.company) {
-        console.log("navigate to company in company guard ------------------",user?.company)
         return <Navigate to="/company" replace />;
     }
 
-    // If user has company, allow access to protected routes
     return <Outlet />;
 };
 

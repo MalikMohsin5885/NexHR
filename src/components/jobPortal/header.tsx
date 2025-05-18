@@ -179,53 +179,59 @@ export default function Header() {
     <header className="bg-[#2A2438]">
       {/* Top navigation bar */}
       <div className="container mx-auto flex items-center justify-between py-4 px-6 border-b border-[#352F44]">
-        <div className="flex items-center space-x-3 text-white">
-          <FileText className="w-5 h-5" />
-          <span className="font-bold text-lg">NexHR</span>
+        <div className="flex items-center space-x-2">
+          <img
+            src="/images/nexhr-logo.png"
+            alt="NexHR Logo"
+            className="h-10 w-auto object-contain"
+          />
+          <div className="flex items-center">
+            <span className="text-2xl font-bold text-[#e6e6ef]">
+              Nex
+            </span>
+            <span className="text-2xl font-bold text-[#e6e6ef]">
+              HR
+            </span>
+          </div>
         </div>
 
         <nav className="hidden md:flex items-center space-x-8">
           <a
             href="#"
-            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${
-              activeLink === "find-job" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
-            }`}
+            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "find-job" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
+              }`}
             onClick={() => handleLinkClick("find-job")}
           >
             Find job
           </a>
           <a
             href="#"
-            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${
-              activeLink === "messages" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
-            }`}
+            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "messages" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
+              }`}
             onClick={() => handleLinkClick("messages")}
           >
             Messages
           </a>
           <a
             href="#"
-            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${
-              activeLink === "hiring" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
-            }`}
+            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "hiring" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
+              }`}
             onClick={() => handleLinkClick("hiring")}
           >
             Hiring
           </a>
           <a
             href="#"
-            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${
-              activeLink === "community" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
-            }`}
+            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "community" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
+              }`}
             onClick={() => handleLinkClick("community")}
           >
             Community
           </a>
           <a
             href="#"
-            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${
-              activeLink === "faq" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
-            }`}
+            className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "faq" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
+              }`}
             onClick={() => handleLinkClick("faq")}
           >
             FAQ

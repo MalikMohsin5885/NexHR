@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRedirect } from '@/contexts/RedirectContext';
 import { Eye, EyeOff } from "lucide-react";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 
 interface LoginErrors {
@@ -118,6 +119,16 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleSuccess = () => {
+    console.log("Google login successful, redirecting...", isAuthenticated);
+    if (isAuthenticated) {
+      setTimeout(() => {
+        navigate(redirectPath || '/dashboard', { replace: true });
+        setRedirectPath(null);
+      }, 100);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
@@ -223,17 +234,12 @@ const LoginPage = () => {
               </Button>
             </form>
 
-            {/* <div className="mt-6">
+            <div className="mt-6">
               <p className="text-center text-gray-600 mb-4">Or log in with:</p>
               <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full transition duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5C5470]/50"
-                >
-                  <FaGoogle className="w-6 h-6" />
-                </button>
+                <GoogleLoginButton onSuccess={handleGoogleSuccess} />
               </div>
-            </div> */}
+            </div>
 
             <p className="text-center mt-6 text-gray-600">
               Don't have an account?{" "}

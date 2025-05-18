@@ -25,6 +25,7 @@ const JobPostedModal: React.FC<JobPostedModalProps> = ({ open, onClose, onPostLi
     } else if (onPostLinkedIn && !isPostedToLinkedIn) {
       onPostLinkedIn(); // Assume this is async and handles actual API posting
       setIsPostedToLinkedIn(true); // Mark as posted
+      navigate('/dashboard')
     }
   };
 

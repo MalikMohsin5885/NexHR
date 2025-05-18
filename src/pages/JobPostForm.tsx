@@ -9,6 +9,8 @@ import ReviewTab from '../components/job-post/ReviewTab';
 import JobPostedModal from '../components/modals/JobPostedModal';
 import { jobService, JobPostData } from '@/services/JobService';
 import { linkedinService } from '@/services/linkedinService';
+import { useNavigate } from 'react-router-dom';
+
 
 import {
   countryData,
@@ -146,6 +148,7 @@ const JobPostForm: React.FC = () => {
   const [states, setStates] = useState<OptionType[]>([]);
   const [cities, setCities] = useState<OptionType[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const navigate = useNavigate();
 
   // --- Candidate Application Form State ---
   const [candidateTechSkills, setCandidateTechSkills] = useState<MultiValue<OptionType>>([]);
@@ -718,7 +721,10 @@ const JobPostForm: React.FC = () => {
         {jobPostedModal && (
           <JobPostedModal
             open={jobPostedModal}
-            onClose={() => setJobPostedModal(false)}
+            onClose={() => {
+              setJobPostedModal(false) 
+              navigate('/job-portal')}
+            }
             onPostLinkedIn={handlePostLinkedIn}
           />
         )}

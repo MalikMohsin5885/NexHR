@@ -4,6 +4,8 @@ import { FaGoogle, FaWindows, FaLinkedin, FaFacebook, FaTwitter, FaApple } from 
 import { useAuth } from "../contexts/AuthContext";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { useRedirect } from '@/contexts/RedirectContext';
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
+
 
 
 const RegisterPage = () => {
@@ -40,6 +42,17 @@ const RegisterPage = () => {
     loadLottie();
   }, []);
 
+
+  const handleGoogleSuccess = () => {
+    console.log("Google login successful, redirecting...", isAuthenticated);
+    if (isAuthenticated) {
+      setTimeout(() => {
+        navigate(redirectPath || '/dashboard', { replace: true });
+        setRedirectPath(null);
+      }, 100);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#2A2438] px-4 py-8">
       <div className="relative w-full max-w-5xl p-[3px] bg-gradient-to-r from-[#5C5470] to-[#DBD8E3] rounded-[5rem] shadow-2xl">
@@ -75,8 +88,10 @@ const RegisterPage = () => {
 
             {/* Social Login Buttons */}
             <div className="mt-6">
-              <p className="text-center text-gray-600 mb-4">Or sign up with:</p>
-              {/* login with google component */}
+              <p className="text-center text-gray-600 mb-4">Or log in with:</p>
+              <div className="flex justify-center">
+                <GoogleLoginButton onSuccess={handleGoogleSuccess} />
+              </div>
             </div>
 
             <p className="text-center mt-6 text-gray-600">
