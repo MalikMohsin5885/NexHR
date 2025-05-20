@@ -1,26 +1,29 @@
 import React from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import StatsCard from '@/components/dashboard/StatsCard';
-import TeamTracker from '@/components/dashboard/TeamTracker';
-import EmployeeCard from '@/components/dashboard/EmployeeCard';
-import RecruitmentCard from '@/components/dashboard/RecruitmentCard';
-import SalaryCard from '@/components/dashboard/SalaryCard';
-import ChartCard from '@/components/dashboard/ChartCard'; 
-import GreetingHeader from '@/components/dashboard/GreetingHeader';
-import { Plus, Users, Clock, Calendar, CalendarDays } from 'lucide-react';
+import StatsCard from '@/components/Dashboard/StatsCard';
+import TeamTracker from '@/components/Dashboard/TeamTracker';
+import EmployeeCard from '@/components/Dashboard/EmployeeCard';
+import RecruitmentCard from '@/components/Dashboard/RecruitmentCard';
+import SalaryCard from '@/components/Dashboard/SalaryCard';
+import ChartCard from '@/components/Dashboard/ChartCard'; 
+import GreetingHeader from '@/components/Dashboard/GreetingHeader';
+import { Plus, Users, Clock } from 'lucide-react';
 import { employeeStatusData } from '@/data/mockData';
 import { Card, CardContent } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSelector } from 'react-redux';
 
-const Index = () => {
+const Dasboard = () => {
   const isMobile = useIsMobile();
+
+  // Fix: type the state as 'any' to avoid TS error
+  const user = useSelector((state: any) => state.auth.user);
+  const fullName = [user?.fname, user?.lname].filter(Boolean).join(' ');
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <GreetingHeader userName="John" />
-
-        
+        <GreetingHeader userName={fullName || 'User'} />
 
         {/* Main dashboard grid layout */}
         <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-5">
@@ -140,4 +143,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Dasboard;

@@ -1,13 +1,24 @@
-
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Phone, Mail, BarChart2 } from 'lucide-react';
-import { employees } from '@/data/mockData';
 
 const EmployeeCard: React.FC = () => {
-  const employee = employees[0]; // Using Chris Jonathan from mock data
+  const user = useSelector((state: any) => state.auth.user);
+
+  if (!user) return <div>Loading...</div>;
+
+  const fullName = [user.fname, user.lname].filter(Boolean).join(' ');
+
+  // Hardcode the avatar URL for every user
+  const employee = {
+    ...user,
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80',
+    name: fullName
+  };
 
   return (
     <div className="hr-card col-span-1 row-span-2 overflow-hidden flex flex-col animate-scale-in h-full">
+      {/* Avatar: always the same for every user */}
       <div className="relative h-56 w-full overflow-hidden bg-gradient-to-br from-cyan-500/40 to-blue-500/40">
         <img
           src={employee.avatar}
@@ -15,38 +26,40 @@ const EmployeeCard: React.FC = () => {
           className="h-full w-full object-cover opacity-90 transition-transform duration-500 hover:scale-105"
         />
         <div className="absolute bottom-4 left-4 rounded-lg bg-black/20 backdrop-blur-sm px-3 py-1 text-white text-sm font-medium">
-          <span>6+ years experience</span>
+          <span>{user.is_verified ? 'Verified' : 'Not Verified'}</span>
         </div>
       </div>
 
       <div className="p-5 flex-1 flex flex-col">
         <div className="text-center mb-6">
           <h3 className="text-xl font-bold">{employee.name}</h3>
-          <p className="text-muted-foreground text-sm">{employee.position}</p>
+          <p className="text-muted-foreground text-sm">{user.department || 'No department'}</p>
         </div>
 
         <div className="flex space-x-3 justify-center mb-6">
-          <button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors p-2">
+          <a href={`tel:${user.phone}`} className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors p-2">
             <Phone className="h-5 w-5" />
-          </button>
-          <button className="rounded-full bg-muted hover:bg-muted/80 transition-colors p-2">
+          </a>
+          <a href={`mailto:${user.email}`} className="rounded-full bg-muted hover:bg-muted/80 transition-colors p-2">
             <Mail className="h-5 w-5" />
-          </button>
+          </a>
         </div>
 
         <div className="border-t border-border/40 pt-4 mt-auto flex-1 flex flex-col justify-between">
           <div>
-            <div className="text-sm text-muted-foreground mb-1">Average work time</div>
+            <div className="text-sm text-muted-foreground mb-1">Account Status</div>
             <div className="flex items-baseline">
-              <span className="text-2xl font-bold">46 hours</span>
-              <span className="ml-2 text-xs font-medium text-green-600">+0.5%</span>
+              <span className={`text-2xl font-bold ${user.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>
+                {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+              </span>
             </div>
 
             <div className="mt-4 h-20">
               <div className="flex items-end justify-between h-full">
+                {/* Example static bars */}
                 {[4, 6, 8, 7, 6, 9, 8].map((value, i) => (
-                  <div 
-                    key={i} 
+                  <div
+                    key={i}
                     className="w-1/12 bg-blue-400/80 rounded-t"
                     style={{ height: `${value * 10}%` }}
                   ></div>
