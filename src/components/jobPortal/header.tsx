@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Search, MapPin, Activity, Monitor, ChevronDown, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   // Selected values for dropdowns
@@ -14,7 +15,7 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const sliderRef = useRef(null);
   const dropdownRefs = useRef({});
-
+  const navigate = useNavigate();
   // Filter options
   const jobTypes = ["Designer", "Developer", "Manager", "Marketing", "Sales"];
   const locations = ["Remote", "New York", "San Francisco", "London", "Berlin"];
@@ -62,7 +63,8 @@ export default function Header() {
   };
 
   const handleLinkClick = (link) => {
-    setActiveLink(link);
+    // setActiveLink(link);
+    navigate(`/${link}`);
   };
 
   const handleLeftThumbMouseDown = (e) => {
@@ -200,7 +202,7 @@ export default function Header() {
             href="#"
             className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "find-job" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
               }`}
-            onClick={() => handleLinkClick("find-job")}
+            onClick={() => handleLinkClick("job-portal")}
           >
             Find job
           </a>
@@ -208,11 +210,11 @@ export default function Header() {
             href="#"
             className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "messages" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
               }`}
-            onClick={() => handleLinkClick("messages")}
+            onClick={() => handleLinkClick("")}
           >
-            Messages
+            Home
           </a>
-          <a
+          {/* <a
             href="#"
             className={`text-white py-1 text-sm font-medium transition-colors hover:text-[#DBD8E3] ${activeLink === "hiring" ? "border-b-2 border-white" : "hover:border-b-2 hover:border-white"
               }`}
@@ -235,7 +237,7 @@ export default function Header() {
             onClick={() => handleLinkClick("faq")}
           >
             FAQ
-          </a>
+          </a> */}
         </nav>
 
         <div className="hidden md:flex items-center">

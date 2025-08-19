@@ -31,10 +31,10 @@ export const employeeService = {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
+            console.log("Import response:", response);
             return {
                 success: true,
-                message: 'Employees imported successfully'
+                message: response.data?.detail || 'Employees imported successfully'
             };
         } catch (error: any) {
             console.error('Error importing employees:', error);
