@@ -7,7 +7,6 @@ interface GoogleLoginButtonProps {
   onSuccess?: () => void;
   className?: string;
 }
-
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ onSuccess, className = "" }) => {
   const { loginWithGoogle } = useAuth();
 
