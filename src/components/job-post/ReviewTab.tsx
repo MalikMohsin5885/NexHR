@@ -15,7 +15,6 @@ interface ReviewTabProps {
     salaryMax: string;
     currency: string;
     period: string;
-    skills: OptionType[];
     jobDescription: string;
     experienceLevel: string;
     educationLevel: string;
@@ -76,24 +75,10 @@ const ReviewTab: React.FC<ReviewTabProps> = ({
             )}
           </div>
           <div>
-            <strong className="block">Experience:</strong> {formData.experienceLevel}
+            <strong className="block">Experience:</strong> {formData.experienceLevel} years
           </div>
           <div>
             <strong className="block">Education:</strong> {formData.educationLevel}
-          </div>
-        </div>
-        <div className="mt-4 pt-4 border-t border-[#DBD8E3]">
-          <strong className="block mb-1 text-sm">Skills:</strong>
-          <div className="flex flex-wrap gap-2">
-            {formData.skills.length > 0 ? (
-              formData.skills.map((skill) => (
-                <span key={skill.value} className="px-2.5 py-1 text-xs font-medium rounded-full" style={{ backgroundColor: "#DBD8E3", color: "#2A2438" }}>
-                  {skill.label}
-                </span>
-              ))
-            ) : (
-              <span className="text-sm text-[#5C5470]">None specified</span>
-            )}
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-[#DBD8E3]">

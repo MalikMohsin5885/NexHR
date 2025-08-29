@@ -29,8 +29,7 @@ export interface JobPostData {
   currency: string | null;
   period: string | null;
   job_description: string | null;
-  job_requirements: string | null;
-  experience_level: string | null;
+  experience_level: number | null;
   job_schema: JobSchema;
 }
 

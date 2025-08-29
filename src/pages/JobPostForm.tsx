@@ -1,7 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, useMemo } from "react";
-import Select, { MultiValue, ActionMeta, StylesConfig } from "react-select";
+import Select, { StylesConfig } from "react-select";
 import DashboardLayout from '@/layouts/DashboardLayout';
-import CreatableSelect from 'react-select/creatable';
 import StepProgressBar from '../components/job-post/StepProgressBar';
 import GeneralInfoTab from '../components/job-post/GeneralInfoTab';
 import ApplicationFormTab from '../components/job-post/ApplicationFormTab';
@@ -15,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   countryData,
   jobCategories,
-  technicalSkillsOptions,
   OptionType,
 } from "../data/formData";
 
@@ -32,10 +30,8 @@ interface FormData {
   salaryMax: string;
   currency: string;
   period: string;
-  skills: MultiValue<OptionType>;
   jobDescription: string;
   deadline: string | null;
-  requirements: string | null;
   applicationDeadline: string;
   experienceLevel: string;
   educationLevel: string;
@@ -118,10 +114,8 @@ const JobPostForm: React.FC = () => {
     salaryMax: "",
     currency: "USD",
     period: "Monthly",
-    skills: [],
     jobDescription: "",
     deadline: null,
-    requirements: null,
     applicationDeadline: "",
     experienceLevel: "",
     educationLevel: "",
@@ -149,9 +143,6 @@ const JobPostForm: React.FC = () => {
   const [cities, setCities] = useState<OptionType[]>([]);
   const [isClient, setIsClient] = useState(false);
   const navigate = useNavigate();
-
-  // --- Candidate Application Form State ---
-  const [candidateTechSkills, setCandidateTechSkills] = useState<MultiValue<OptionType>>([]);
 
   // --- State to Trigger Modal and Mark Review as Completed ---
   const [jobPostedModal, setJobPostedModal] = useState(false);
@@ -199,11 +190,16 @@ const JobPostForm: React.FC = () => {
           errors.city = "City is required";
         }
       }
-    } else if (currentStep === 2) {
-      // For Application Form tab, require that Experience and Education are selected.
       if (!formData.experienceLevel.trim()) {
         errors.experienceLevel = "Experience Level is required";
+      } else {
+        const expLevel = Number(formData.experienceLevel);
+        if (isNaN(expLevel) || expLevel < 0 || expLevel > 50) {
+          errors.experienceLevel = "Experience Level must be a valid number between 0 and 50";
+        }
       }
+    } else if (currentStep === 2) {
+      // For Application Form tab, require that Education is selected.
       if (!formData.educationLevel.trim()) {
         errors.educationLevel = "Education Level is required";
       }
@@ -229,7 +225,7 @@ const JobPostForm: React.FC = () => {
 
   const handleSelectChange = (
     name: keyof FormData,
-    selectedOption: OptionType | MultiValue<OptionType> | null
+    selectedOption: OptionType | null
   ) => {
     if (validationErrors[name]) {
       setValidationErrors((prev) => {
@@ -238,7 +234,6 @@ const JobPostForm: React.FC = () => {
         return newErrors;
       });
     }
-    if (name === "skills") return;
     if (name === "country") {
       const country = selectedOption as OptionType | null;
       setFormData((prev) => ({ ...prev, country, state: null, city: null }));
@@ -271,14 +266,6 @@ const JobPostForm: React.FC = () => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: selectedOption }));
     }
-  };
-
-  const handleSkillsChange = (
-    newValue: MultiValue<OptionType>,
-    /// eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _actionMeta: ActionMeta<OptionType>
-  ) => {
-    setFormData((prev) => ({ ...prev, skills: newValue || [] }));
   };
 
   const handleScreeningQuestionChange = (index: number, value: string) => {
@@ -333,8 +320,7 @@ const JobPostForm: React.FC = () => {
       currency: formData.currency || null,
       period: formData.period || null,
       job_description: formData.jobDescription || null,
-      job_requirements: formData.requirements || null,
-      experience_level: formData.experienceLevel || null, // ✅ Must be a string: 'entry', 'mid', 'senior', or 'lead'
+      experience_level: formData.experienceLevel ? Number(formData.experienceLevel) : null,
       job_schema: {
         name:
           !!(formData.customFormQuestions.find(q => q.id === 'candidate_fname' && q.enabled) ||
@@ -348,7 +334,7 @@ const JobPostForm: React.FC = () => {
         dob: !!formData.customFormQuestions.find(q => q.id === 'DOB' && q.enabled),
         education: !!formData.customFormQuestions.find(q => q.id === 'education' && q.enabled),
         experience: !!formData.customFormQuestions.find(q => q.id === 'experience' && q.enabled),
-        skills: !!formData.customFormQuestions.find(q => q.id === 'skills' && q.enabled),
+        skills: false, // Always false since we removed the skills field
       },
     };
 
@@ -378,7 +364,6 @@ const JobPostForm: React.FC = () => {
     []
   );
   const DepartmentOptions = useMemo(() => jobCategories, []);
-  const skillsOptions = useMemo(() => technicalSkillsOptions, []);
 
   const steps = ["General Info", "Application Form", "Review"];
 
@@ -648,11 +633,9 @@ const JobPostForm: React.FC = () => {
               cities={cities}
               countryOptions={countryOptions}
               DepartmentOptions={DepartmentOptions}
-              skillsOptions={skillsOptions}
               selectStyles={selectStyles}
               handleInputChange={handleInputChange}
               handleSelectChange={handleSelectChange}
-              handleSkillsChange={handleSkillsChange}
             />
           )}
 
@@ -675,8 +658,21 @@ const JobPostForm: React.FC = () => {
           {currentStep === 3 && (
             <ReviewTab
               formData={{
-                ...formData,
-                skills: [...formData.skills] // Convert readonly array to mutable array
+                jobTitle: formData.jobTitle,
+                Department: formData.Department,
+                jobType: formData.jobType,
+                locationType: formData.locationType,
+                country: formData.country,
+                state: formData.state,
+                city: formData.city,
+                salaryMin: formData.salaryMin,
+                salaryMax: formData.salaryMax,
+                currency: formData.currency,
+                period: formData.period,
+                jobDescription: formData.jobDescription,
+                experienceLevel: formData.experienceLevel,
+                educationLevel: formData.educationLevel,
+                screeningQuestions: formData.screeningQuestions
               }}
               customFormQuestions={formData.customFormQuestions}
               customFormAnswers={formData.customFormAnswers as Record<string, string>}

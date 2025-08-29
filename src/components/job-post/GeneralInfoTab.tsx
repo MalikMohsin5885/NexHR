@@ -16,10 +16,8 @@ interface GeneralInfoTabProps {
     salaryMax: string;
     currency: string;
     period: string;
-    skills: MultiValue<OptionType>;
     jobDescription: string;
     deadline: string | null;
-    requirements: string | null;
     experienceLevel: string;
     educationLevel: string;
   };
@@ -29,11 +27,9 @@ interface GeneralInfoTabProps {
   cities: OptionType[];
   countryOptions: OptionType[];
   DepartmentOptions: OptionType[];
-  skillsOptions: OptionType[];
   selectStyles: StylesConfig<OptionType, boolean>;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleSelectChange: (name: string, selectedOption: OptionType | MultiValue<OptionType> | null) => void;
-  handleSkillsChange: (newValue: MultiValue<OptionType>, actionMeta: ActionMeta<OptionType>) => void;
 }
 
 const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
@@ -44,77 +40,81 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
   cities,
   countryOptions,
   DepartmentOptions,
-  skillsOptions,
   selectStyles,
   handleInputChange,
   handleSelectChange,
-  handleSkillsChange,
 }) => {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold border-b pb-2 mb-4 border-[#DBD8E3]">
         General Information
       </h2>
-      {/* Job Title */}
-      <div>
-        <label htmlFor="jobTitle" className="block text-sm font-medium mb-1">
-          Job Title <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="text"
-          id="jobTitle"
-          name="jobTitle"
-          value={formData.jobTitle}
-          onChange={handleInputChange}
-          required
-          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
-          style={{
-            borderColor: validationErrors.jobTitle ? "red" : "#DBD8E3",
-            backgroundColor: "#FFFFFF",
-            color: "#2A2438",
-          }}
-          placeholder="e.g., Senior Software Engineer"
-        />
-        {validationErrors.jobTitle && (
-          <p className="text-red-500 text-xs mt-1">{validationErrors.jobTitle}</p>
-        )}
+      
+      {/* Job Title and Deadline - Side by Side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="jobTitle" className="block text-sm font-medium mb-1">
+            Job Title <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="jobTitle"
+            name="jobTitle"
+            value={formData.jobTitle}
+            onChange={handleInputChange}
+            required
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
+            style={{
+              borderColor: validationErrors.jobTitle ? "red" : "#DBD8E3",
+              backgroundColor: "#FFFFFF",
+              color: "#2A2438",
+            }}
+            placeholder="e.g., Senior Software Engineer"
+          />
+          {validationErrors.jobTitle && (
+            <p className="text-red-500 text-xs mt-1">{validationErrors.jobTitle}</p>
+          )}
+        </div>
+        
+        <div>
+          <label htmlFor="deadline" className="block text-sm font-medium mb-1">
+            Deadline
+          </label>
+          <input
+            type="date"
+            id="deadline"
+            name="deadline"
+            value={formData.deadline || ''}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
+            style={{ borderColor: "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
+          />
+        </div>
       </div>
-      {/* Deadline */}
-      <div>
-        <label htmlFor="deadline" className="block text-sm font-medium mb-1">
-          Deadline
-        </label>
-        <input
-          type="date"
-          id="deadline"
-          name="deadline"
-          value={formData.deadline || ''}
-          onChange={handleInputChange}
-          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
-          style={{ borderColor: "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
-        />
-      </div>
+
       {/* Experience Level & Education Level */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="experienceLevel" className="block text-sm font-medium mb-1">
-            Experience Level <span className="text-red-500">*</span>
+            Experience Level (Years) <span className="text-red-500">*</span>
           </label>
-          <select
+          <input
+            type="number"
             id="experienceLevel"
             name="experienceLevel"
             value={formData.experienceLevel}
             onChange={handleInputChange}
             required
-            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out h-[42px]"
-            style={{ borderColor: validationErrors.experienceLevel ? "red" : "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
-          >
-            <option value="">Select Experience Level</option>
-            <option value="Entry Level">Entry Level</option>
-            <option value="Mid Level">Mid Level</option>
-            <option value="Senior Level">Senior Level</option>
-            <option value="Executive Level">Executive Level</option>
-          </select>
+            min="0"
+            max="50"
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
+            style={{ 
+              borderColor: validationErrors.experienceLevel ? "red" : "#DBD8E3", 
+              backgroundColor: "#FFFFFF", 
+              color: "#2A2438" 
+            }}
+            placeholder="e.g., 5"
+          />
           {validationErrors.experienceLevel && (
             <p className="text-red-500 text-xs mt-1">{validationErrors.experienceLevel}</p>
           )}
@@ -430,22 +430,6 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
         {validationErrors.jobDescription && (
           <p className="text-red-500 text-xs mt-1">{validationErrors.jobDescription}</p>
         )}
-      </div>
-      {/* Requirements */}
-      <div>
-        <label htmlFor="requirements" className="block text-sm font-medium mb-1">
-          Requirements
-        </label>
-        <textarea
-          id="requirements"
-          name="requirements"
-          rows={4}
-          value={formData.requirements || ''}
-          onChange={handleInputChange}
-          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
-          style={{ borderColor: "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
-          placeholder="List the requirements for this job..."
-        />
       </div>
     </div>
   );
