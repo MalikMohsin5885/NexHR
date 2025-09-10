@@ -81,7 +81,7 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
             Deadline
           </label>
           <input
-            type="date"
+            type="datetime-local"
             id="deadline"
             name="deadline"
             value={formData.deadline || ''}
@@ -89,6 +89,7 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
             className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-1 focus:ring-[#352F44] focus:border-[#352F44] transition duration-150 ease-in-out"
             style={{ borderColor: "#DBD8E3", backgroundColor: "#FFFFFF", color: "#2A2438" }}
           />
+          <p className="mt-1 text-xs text-gray-500">Select both date and time for the application deadline</p>
         </div>
       </div>
 

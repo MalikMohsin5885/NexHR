@@ -16,6 +16,7 @@ interface ReviewTabProps {
     currency: string;
     period: string;
     jobDescription: string;
+    deadline: string | null;
     experienceLevel: string;
     educationLevel: string;
     screeningQuestions: string[];
@@ -79,6 +80,21 @@ const ReviewTab: React.FC<ReviewTabProps> = ({
           </div>
           <div>
             <strong className="block">Education:</strong> {formData.educationLevel}
+          </div>
+          <div>
+            <strong className="block">Deadline:</strong>{" "}
+            {formData.deadline ? (
+              new Date(formData.deadline).toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+              })
+            ) : (
+              <span className="text-[#5C5470]">Not specified</span>
+            )}
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-[#DBD8E3]">

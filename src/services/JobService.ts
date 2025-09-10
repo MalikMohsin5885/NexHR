@@ -30,6 +30,7 @@ export interface JobPostData {
   period: string | null;
   job_description: string | null;
   experience_level: number | null;
+  job_deadline: string | null;
   job_schema: JobSchema;
 }
 

@@ -307,6 +307,14 @@ const JobPostForm: React.FC = () => {
 
   // "Post Job" is now triggered only on Step 3.
   const handlePostJob = async () => {
+    // Convert datetime-local value to ISO string format
+    const formatDeadline = (deadline: string | null): string | null => {
+      if (!deadline) return null;
+      // Convert from datetime-local format (YYYY-MM-DDTHH:MM) to ISO format (YYYY-MM-DDTHH:MM:SS.sssZ)
+      const date = new Date(deadline);
+      return date.toISOString();
+    };
+
     const jobJson: JobPostData = {
       job_title: formData.jobTitle || null,
       department: formData.Department?.value || null,
@@ -321,6 +329,7 @@ const JobPostForm: React.FC = () => {
       period: formData.period || null,
       job_description: formData.jobDescription || null,
       experience_level: formData.experienceLevel ? Number(formData.experienceLevel) : null,
+      job_deadline: formatDeadline(formData.deadline),
       job_schema: {
         name:
           !!(formData.customFormQuestions.find(q => q.id === 'candidate_fname' && q.enabled) ||
@@ -670,6 +679,7 @@ const JobPostForm: React.FC = () => {
                 currency: formData.currency,
                 period: formData.period,
                 jobDescription: formData.jobDescription,
+                deadline: formData.deadline,
                 experienceLevel: formData.experienceLevel,
                 educationLevel: formData.educationLevel,
                 screeningQuestions: formData.screeningQuestions
