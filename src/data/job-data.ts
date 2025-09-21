@@ -9,6 +9,7 @@ export const jobData: JobListing[] = [
     date: "20 May, 2023",
     salary: 250,
     location: "San Francisco, CA",
+    salary_period: "per hour",
     tags: ["Part time", "Senior level", "Distant", "Project work"],
   },
   {
@@ -18,6 +19,7 @@ export const jobData: JobListing[] = [
     date: "4 Feb, 2023",
     salary: 150,
     location: "California, CA",
+    salary_period: "per hour",
     tags: ["Full time", "Junior level", "Distant", "Project work", "Flexible Schedule"],
   },
   {
@@ -27,6 +29,7 @@ export const jobData: JobListing[] = [
     date: "29 Jan, 2023",
     salary: 260,
     location: "New York, NY",
+    salary_period: "per hour",
     tags: ["Part time", "Senior level", "Full Day", "Shift work"],
   },
   {
@@ -36,6 +39,7 @@ export const jobData: JobListing[] = [
     date: "11 Apr, 2023",
     salary: 120,
     location: "California, CA",
+    salary_period: "per hour",
     tags: ["Full time", "Middle level", "Distant", "Project work"],
   },
   {
@@ -45,6 +49,7 @@ export const jobData: JobListing[] = [
     date: "2 Apr, 2023",
     salary: 300,
     location: "New York, NY",
+    salary_period: "per hour",
     tags: ["Part time", "Senior level"],
   },
   {
@@ -54,6 +59,7 @@ export const jobData: JobListing[] = [
     date: "18 Jan, 2023",
     salary: 140,
     location: "San Francisco, CA",
+    salary_period: "per hour",
     tags: ["Part time", "Distant"],
   },
   {
@@ -63,6 +69,7 @@ export const jobData: JobListing[] = [
     date: "5 Mar, 2023",
     salary: 180,
     location: "Seattle, WA",
+    salary_period: "per hour",
     tags: ["Full time", "Senior level", "Hybrid"],
   },
   {
@@ -72,6 +79,7 @@ export const jobData: JobListing[] = [
     date: "12 Feb, 2023",
     salary: 220,
     location: "Los Angeles, CA",
+    salary_period: "per hour",
     tags: ["Full time", "Senior level", "Remote"],
   },
   {
@@ -81,6 +89,7 @@ export const jobData: JobListing[] = [
     date: "8 Apr, 2023",
     salary: 190,
     location: "New York, NY",
+    salary_period: "per hour",
     tags: ["Full time", "Mid level", "Remote"],
   },
   {
@@ -90,6 +99,7 @@ export const jobData: JobListing[] = [
     date: "15 Mar, 2023",
     salary: 210,
     location: "San Jose, CA",
+    salary_period: "per hour",
     tags: ["Full time", "Senior level", "On-site"],
   },
   {
@@ -99,6 +109,7 @@ export const jobData: JobListing[] = [
     date: "22 Feb, 2023",
     salary: 230,
     location: "Menlo Park, CA",
+    salary_period: "per hour",
     tags: ["Full time", "Senior level", "Hybrid"],
   },
   {
@@ -108,6 +119,7 @@ export const jobData: JobListing[] = [
     date: "10 Jan, 2023",
     salary: 200,
     location: "San Francisco, CA",
+    salary_period: "per hour",
     tags: ["Full time", "Mid level", "Remote"],
   },
 ]

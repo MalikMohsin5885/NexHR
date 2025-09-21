@@ -86,11 +86,14 @@ export default function JobCard({ job, isSaved, onToggleSave }: JobCardProps) {
 
   // Format the salary display
   const formatSalary = () => {
-    const currencyInfo = job.tags.find(tag => tag.includes("USD") || tag.includes("EUR") || tag.includes("GBP"));
+    // Check if tags exist and are strings before calling includes
+    const currencyInfo = job.tags.find(tag => 
+      typeof tag === 'string' && (tag.includes("USD") || tag.includes("EUR") || tag.includes("GBP"))
+    );
     if (currencyInfo) {
       return currencyInfo; // Return the full salary range with currency
     }
-    return `$${job.salary}/hr`; // Fallback
+    return `$${job.salary}/${job.salary_period}`; // Use salary_period from job data
   }
 
   return (
