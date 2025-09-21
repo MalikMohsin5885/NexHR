@@ -6,7 +6,7 @@ import GeneralInfoTab from '../components/job-post/GeneralInfoTab';
 import ApplicationFormTab from '../components/job-post/ApplicationFormTab';
 import ReviewTab from '../components/job-post/ReviewTab';
 import JobPostedModal from '../components/modals/JobPostedModal';
-import { jobService, JobPostData } from '@/services/JobService';
+import { jobService, JobPostData, RequiredSkill } from '@/services/JobService';
 import { linkedinService } from '@/services/linkedinService';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,7 +38,9 @@ interface FormData {
   screeningQuestions: string[];
   customFormQuestions: CustomFormQuestion[];
   customFormAnswers: CustomFormAnswers;
+  required_skills: RequiredSkill[];
 }
+
 
 interface CustomFormAnswers {
   [key: string]: string | Array<Record<string, string>>;
@@ -135,6 +137,7 @@ const JobPostForm: React.FC = () => {
       { id: 'experience', label: 'Experience', type: 'experience', enabled: false },
     ],
     customFormAnswers: {},
+    required_skills: [],
   });
   const [jobId, setJobId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -197,6 +200,9 @@ const JobPostForm: React.FC = () => {
         if (isNaN(expLevel) || expLevel < 0 || expLevel > 50) {
           errors.experienceLevel = "Experience Level must be a valid number between 0 and 50";
         }
+      }
+      if (!formData.required_skills || formData.required_skills.length === 0) {
+        errors.required_skills = "At least one required skill must be selected";
       }
     } else if (currentStep === 2) {
       // For Application Form tab, require that Education is selected.
@@ -268,6 +274,17 @@ const JobPostForm: React.FC = () => {
     }
   };
 
+  const handleSkillsChange = (skills: RequiredSkill[]) => {
+    if (validationErrors.required_skills) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.required_skills;
+        return newErrors;
+      });
+    }
+    setFormData((prev) => ({ ...prev, required_skills: skills }));
+  };
+
   const handleScreeningQuestionChange = (index: number, value: string) => {
     const updatedQuestions = [...formData.screeningQuestions];
     updatedQuestions[index] = value;
@@ -330,6 +347,7 @@ const JobPostForm: React.FC = () => {
       job_description: formData.jobDescription || null,
       experience_level: formData.experienceLevel ? Number(formData.experienceLevel) : null,
       job_deadline: formatDeadline(formData.deadline),
+      required_skills: formData.required_skills || [],
       job_schema: {
         name:
           !!(formData.customFormQuestions.find(q => q.id === 'candidate_fname' && q.enabled) ||
@@ -645,6 +663,7 @@ const JobPostForm: React.FC = () => {
               selectStyles={selectStyles}
               handleInputChange={handleInputChange}
               handleSelectChange={handleSelectChange}
+              handleSkillsChange={handleSkillsChange}
             />
           )}
 

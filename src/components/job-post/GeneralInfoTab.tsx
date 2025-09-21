@@ -2,6 +2,9 @@ import React from 'react';
 import Select, { MultiValue, ActionMeta, StylesConfig } from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import { OptionType } from "../../data/formData";
+import RequiredSkillsField from './RequiredSkillsField';
+import { RequiredSkill } from '../../services/JobService';
+import SkillsTest from './SkillsTest';
 
 interface GeneralInfoTabProps {
   formData: {
@@ -20,6 +23,7 @@ interface GeneralInfoTabProps {
     deadline: string | null;
     experienceLevel: string;
     educationLevel: string;
+    required_skills: RequiredSkill[];
   };
   validationErrors: Record<string, string>;
   isClient: boolean;
@@ -30,6 +34,7 @@ interface GeneralInfoTabProps {
   selectStyles: StylesConfig<OptionType, boolean>;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleSelectChange: (name: string, selectedOption: OptionType | MultiValue<OptionType> | null) => void;
+  handleSkillsChange: (skills: RequiredSkill[]) => void;
 }
 
 const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
@@ -43,6 +48,7 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
   selectStyles,
   handleInputChange,
   handleSelectChange,
+  handleSkillsChange,
 }) => {
   return (
     <div className="space-y-6">
@@ -431,6 +437,18 @@ const GeneralInfoTab: React.FC<GeneralInfoTabProps> = ({
         {validationErrors.jobDescription && (
           <p className="text-red-500 text-xs mt-1">{validationErrors.jobDescription}</p>
         )}
+      </div>
+
+      
+
+      {/* Required Skills */}
+      <div>
+        <RequiredSkillsField
+          value={formData.required_skills}
+          onChange={handleSkillsChange}
+          validationError={validationErrors.required_skills}
+          selectStyles={selectStyles}
+        />
       </div>
     </div>
   );
